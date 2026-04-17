@@ -89,7 +89,7 @@ The dcyfr-labs application uses Redis caching for external API data to prevent r
 
 - Daily health check after cache refresh
 - Alerts on failure (configurable Slack/Discord webhook)
-- Visible in Actions tab: https://github.com/dcyfr/dcyfr-labs/actions
+- Visible in Actions tab: https://github.com/dcyfr-labs/dcyfr-labs/actions
 
 **Sentry Integration:**
 
@@ -371,7 +371,7 @@ on:
 ### Monitoring Dashboards
 
 - **Cache Health:** https://www.dcyfr.ai/api/health/cache
-- **GitHub Actions:** https://github.com/dcyfr/dcyfr-labs/actions/workflows/cache-refresh.yml
+- **GitHub Actions:** https://github.com/dcyfr-labs/dcyfr-labs/actions/workflows/cache-refresh.yml
 - **Sentry Errors:** https://dcyfr.sentry.io/issues/?query=tag:cache
 - **Upstash Console:** https://console.upstash.com/
 
@@ -432,8 +432,8 @@ curl -X POST https://www.dcyfr.ai/api/admin/populate-cache \
 
 **If cache issues persist after following this guide:**
 
-1. Check [GitHub Discussions](https://github.com/dcyfr/dcyfr-labs/discussions)
-2. Create incident in [Issues](https://github.com/dcyfr/dcyfr-labs/issues)
+1. Check [GitHub Discussions](https://github.com/dcyfr-labs/dcyfr-labs/discussions)
+2. Create incident in [Issues](https://github.com/dcyfr-labs/dcyfr-labs/issues)
 3. Contact: hello@dcyfr.ai
 
 **Emergency Contacts:**

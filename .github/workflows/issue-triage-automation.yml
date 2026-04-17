@@ -126,9 +126,9 @@ jobs:
           echo "no-comment=${NO_COMMENT}"        >> "$GITHUB_OUTPUT"
 
           if [[ "${BATCH_MODE}" == "true" ]]; then
-            echo "🔍 Batch triage | limit=${LIMIT} | dry-run=${DRY_RUN} | repo=dcyfr/dcyfr-labs"
+            echo "🔍 Batch triage | limit=${LIMIT} | dry-run=${DRY_RUN} | repo=dcyfr-labs/dcyfr-labs"
           else
-            echo "🔍 Issue #${ISSUE_NUMBER} | dry-run=${DRY_RUN} | repo=dcyfr/dcyfr-labs"
+            echo "🔍 Issue #${ISSUE_NUMBER} | dry-run=${DRY_RUN} | repo=dcyfr-labs/dcyfr-labs"
           fi
 
       # ── 2. Checkout dcyfr-workspace for automation scripts ───────────────
@@ -234,7 +234,7 @@ jobs:
             else
               echo "| Issue | #${ISSUE_NUMBER} |"
             fi
-            echo "| Repository | \`dcyfr/dcyfr-labs\` |"
+            echo "| Repository | \`dcyfr-labs/dcyfr-labs\` |"
             echo "| Scripts | \`dcyfr/dcyfr-workspace\` |"
             echo "| Dry-run | \`${DRY_RUN}\` |"
             echo "| Exit code | \`${EXIT_CODE:-N/A}\` |"

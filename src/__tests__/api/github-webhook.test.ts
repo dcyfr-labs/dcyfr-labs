@@ -5,21 +5,21 @@
  * and Inngest event queuing for GitHub push events.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { createHmac } from "crypto";
-import { NextRequest } from "next/server";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { createHmac } from 'crypto';
+import { NextRequest } from 'next/server';
 
 // Mock Inngest client
 const mockSend = vi.fn();
-vi.mock("@/inngest/client", () => ({
+vi.mock('@/inngest/client', () => ({
   inngest: {
     send: mockSend,
   },
 }));
 
-describe("GitHub Webhook API Route", () => {
-  const WEBHOOK_SECRET = "test-webhook-secret";
-  const REPO_NAME = "dcyfr/dcyfr-labs";
+describe('GitHub Webhook API Route', () => {
+  const WEBHOOK_SECRET = 'test-webhook-secret';
+  const REPO_NAME = 'dcyfr-labs/dcyfr-labs';
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -34,7 +34,7 @@ describe("GitHub Webhook API Route", () => {
    * Helper: Create valid GitHub webhook signature
    */
   function createSignature(payload: string, secret: string): string {
-    const hash = createHmac("sha256", secret).update(payload).digest("hex");
+    const hash = createHmac('sha256', secret).update(payload).digest('hex');
     return `sha256=${hash}`;
   }
 
@@ -43,16 +43,16 @@ describe("GitHub Webhook API Route", () => {
    */
   function createPushPayload(commits: number = 1) {
     return {
-      ref: "refs/heads/main",
+      ref: 'refs/heads/main',
       repository: {
         full_name: REPO_NAME,
       },
       commits: Array.from({ length: commits }, (_, i) => ({
-        id: `abc123${i}`.padEnd(40, "0"),
+        id: `abc123${i}`.padEnd(40, '0'),
         message: `Test commit ${i + 1}\n\nDetailed description`,
         author: {
-          name: "Test Author",
-          email: "test@example.com",
+          name: 'Test Author',
+          email: 'test@example.com',
         },
         timestamp: new Date().toISOString(),
         url: `https://github.com/${REPO_NAME}/commit/abc123${i}`,
@@ -60,16 +60,16 @@ describe("GitHub Webhook API Route", () => {
     };
   }
 
-  describe("Signature Verification", () => {
-    it("should reject requests without signature header", async () => {
+  describe('Signature Verification', () => {
+    it('should reject requests without signature header', async () => {
       const payload = JSON.stringify(createPushPayload());
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
+          'x-github-event': 'push',
         },
       });
 
@@ -77,20 +77,20 @@ describe("GitHub Webhook API Route", () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Missing signature header");
+      expect(data.error).toBe('Missing signature header');
     });
 
-    it("should reject requests with invalid signature", async () => {
+    it('should reject requests with invalid signature', async () => {
       const payload = JSON.stringify(createPushPayload());
-      const invalidSignature = "sha256=invalid";
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const invalidSignature = 'sha256=invalid';
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": invalidSignature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': invalidSignature,
         },
       });
 
@@ -98,20 +98,20 @@ describe("GitHub Webhook API Route", () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Invalid signature");
+      expect(data.error).toBe('Invalid signature');
     });
 
-    it("should accept requests with valid signature", async () => {
+    it('should accept requests with valid signature', async () => {
       const payload = JSON.stringify(createPushPayload());
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -120,18 +120,18 @@ describe("GitHub Webhook API Route", () => {
     });
   });
 
-  describe("Event Type Filtering", () => {
-    it("should only process push events", async () => {
+  describe('Event Type Filtering', () => {
+    it('should only process push events', async () => {
       const payload = JSON.stringify(createPushPayload());
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "pull_request",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'pull_request',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -139,21 +139,21 @@ describe("GitHub Webhook API Route", () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data.message).toContain("Event type not supported");
+      expect(data.message).toContain('Event type not supported');
       expect(mockSend).not.toHaveBeenCalled();
     });
 
-    it("should process push events", async () => {
+    it('should process push events', async () => {
       const payload = JSON.stringify(createPushPayload());
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -163,20 +163,20 @@ describe("GitHub Webhook API Route", () => {
     });
   });
 
-  describe("Repository Filtering", () => {
-    it("should only process configured repository", async () => {
+  describe('Repository Filtering', () => {
+    it('should only process configured repository', async () => {
       const payloadData = createPushPayload();
-      payloadData.repository.full_name = "other/repo";
+      payloadData.repository.full_name = 'other/repo';
       const payload = JSON.stringify(payloadData);
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -184,23 +184,23 @@ describe("GitHub Webhook API Route", () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data.message).toContain("Repository not configured");
+      expect(data.message).toContain('Repository not configured');
       expect(mockSend).not.toHaveBeenCalled();
     });
   });
 
-  describe("Commit Processing", () => {
-    it("should extract commits from payload", async () => {
+  describe('Commit Processing', () => {
+    it('should extract commits from payload', async () => {
       const payload = JSON.stringify(createPushPayload(2));
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -213,17 +213,17 @@ describe("GitHub Webhook API Route", () => {
       expect(mockSend).toHaveBeenCalledTimes(2);
     });
 
-    it("should queue Inngest events for each commit", async () => {
+    it('should queue Inngest events for each commit', async () => {
       const payload = JSON.stringify(createPushPayload(1));
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -231,33 +231,33 @@ describe("GitHub Webhook API Route", () => {
 
       expect(mockSend).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: "github/commit.pushed",
+          name: 'github/commit.pushed',
           data: expect.objectContaining({
             hash: expect.any(String),
             message: expect.any(String),
-            author: "Test Author",
-            email: "test@example.com",
-            url: expect.stringContaining("github.com"),
+            author: 'Test Author',
+            email: 'test@example.com',
+            url: expect.stringContaining('github.com'),
             timestamp: expect.any(String),
-            branch: "main",
+            branch: 'main',
             repository: REPO_NAME,
           }),
         })
       );
     });
 
-    it("should handle empty commit list", async () => {
+    it('should handle empty commit list', async () => {
       const payloadData = createPushPayload(0);
       const payload = JSON.stringify(payloadData);
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -265,21 +265,21 @@ describe("GitHub Webhook API Route", () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data.message).toBe("No commits in payload");
+      expect(data.message).toBe('No commits in payload');
       expect(mockSend).not.toHaveBeenCalled();
     });
 
-    it("should extract short SHA from commit hash", async () => {
+    it('should extract short SHA from commit hash', async () => {
       const payload = JSON.stringify(createPushPayload(1));
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -294,17 +294,17 @@ describe("GitHub Webhook API Route", () => {
       );
     });
 
-    it("should extract first line of commit message", async () => {
+    it('should extract first line of commit message', async () => {
       const payload = JSON.stringify(createPushPayload(1));
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -313,25 +313,25 @@ describe("GitHub Webhook API Route", () => {
       expect(mockSend).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
-            message: "Test commit 1",
+            message: 'Test commit 1',
           }),
         })
       );
     });
   });
 
-  describe("Error Handling", () => {
-    it("should handle malformed JSON payload", async () => {
-      const payload = "invalid json";
+  describe('Error Handling', () => {
+    it('should handle malformed JSON payload', async () => {
+      const payload = 'invalid json';
       const signature = createSignature(payload, WEBHOOK_SECRET);
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": signature,
+          'x-github-event': 'push',
+          'x-hub-signature-256': signature,
         },
       });
 
@@ -339,17 +339,17 @@ describe("GitHub Webhook API Route", () => {
       expect(response.status).toBe(500);
     });
 
-    it("should handle missing GITHUB_WEBHOOK_SECRET", async () => {
+    it('should handle missing GITHUB_WEBHOOK_SECRET', async () => {
       delete process.env.GITHUB_WEBHOOK_SECRET;
       const payload = JSON.stringify(createPushPayload());
-      const { POST } = await import("@/app/api/github/webhook/route");
+      const { POST } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "POST",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'POST',
         body: payload,
         headers: {
-          "x-github-event": "push",
-          "x-hub-signature-256": "sha256=test",
+          'x-github-event': 'push',
+          'x-hub-signature-256': 'sha256=test',
         },
       });
 
@@ -357,16 +357,16 @@ describe("GitHub Webhook API Route", () => {
       const data = await response.json();
 
       expect(response.status).toBe(401);
-      expect(data.error).toBe("Invalid signature");
+      expect(data.error).toBe('Invalid signature');
     });
   });
 
-  describe("Health Check Endpoint", () => {
-    it("should respond to GET requests", async () => {
-      const { GET } = await import("@/app/api/github/webhook/route");
+  describe('Health Check Endpoint', () => {
+    it('should respond to GET requests', async () => {
+      const { GET } = await import('@/app/api/github/webhook/route');
 
-      const request = new NextRequest("http://localhost:3000/api/github/webhook", {
-        method: "GET",
+      const request = new NextRequest('http://localhost:3000/api/github/webhook', {
+        method: 'GET',
       });
 
       const response = await GET(request);
@@ -374,8 +374,8 @@ describe("GitHub Webhook API Route", () => {
 
       expect(response.status).toBe(200);
       expect(data).toEqual({
-        status: "ok",
-        webhook: "github",
+        status: 'ok',
+        webhook: 'github',
         repository: REPO_NAME,
       });
     });

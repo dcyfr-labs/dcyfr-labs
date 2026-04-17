@@ -13,6 +13,7 @@ This guide provides step-by-step implementation instructions for all recommended
 ## 📋 Quick Implementation Checklist
 
 **Critical (This Week)** - Estimated time: 2 hours
+
 - [ ] Enable branch protection for `main` and `preview`
 - [ ] Enable auto-delete head branches
 - [ ] Disable merge commits (squash-only)
@@ -21,11 +22,13 @@ This guide provides step-by-step implementation instructions for all recommended
 - [ ] Enable Codecov token (if using Codecov Cloud)
 
 **High Priority (This Week)** - Estimated time: 30 min
+
 - [ ] Test new developer helper scripts
 - [ ] Verify PR automation workflow
 - [ ] Review auto-labeling configuration
 
 **Medium Priority (Next Week)** - Estimated time: 1 hour
+
 - [ ] Test bundle size budget enforcement
 - [ ] Review consolidated workflows
 - [ ] Update team documentation
@@ -47,6 +50,7 @@ chmod +x scripts/setup-branch-protection.sh
 ```
 
 **What it does**:
+
 - ✅ Configures `main` branch protection (requires PR + 1 approval)
 - ✅ Configures `preview` branch protection (automated workflow friendly)
 - ✅ Enables auto-delete head branches
@@ -56,7 +60,7 @@ chmod +x scripts/setup-branch-protection.sh
 
 #### Option B: Manual Setup (Via GitHub UI)
 
-1. Navigate to [Branch Protection Rules](https://github.com/dcyfr/dcyfr-labs/settings/branches)
+1. Navigate to [Branch Protection Rules](https://github.com/dcyfr-labs/dcyfr-labs/settings/branches)
 
 2. Click "Add rule" for `main` branch
 
@@ -87,17 +91,20 @@ git push origin test/branch-protection
 
 ### 1.2 Repository Settings
 
-Navigate to [Settings → General](https://github.com/dcyfr/dcyfr-labs/settings):
+Navigate to [Settings → General](https://github.com/dcyfr-labs/dcyfr-labs/settings):
 
 **Pull Requests section**:
+
 - [x] Allow squash merging ✅ (already enabled)
 - [ ] Allow merge commits ❌ **DISABLE THIS**
 - [ ] Allow rebase merging ❌ (already disabled)
 
 **After PR is merged**:
+
 - [x] Automatically delete head branches ✅ **ENABLE THIS**
 
 **Wikis section**:
+
 - [ ] Wikis ❌ **DISABLE THIS** (using `/docs` instead)
 
 **Save changes**
@@ -118,29 +125,36 @@ Navigate to [Settings → General](https://github.com/dcyfr/dcyfr-labs/settings)
 #### Migration Steps
 
 1. **Test the new consolidated workflow**:
+
    ```bash
    # Trigger manually to verify it works
    gh workflow run ai-sync-consolidated.yml
    ```
 
 2. **Monitor the run**:
+
    ```bash
    gh run watch
    ```
 
 3. **After successful test, disable old workflows**:
+
    ```bash
    # Rename old workflows to disable them
    git mv .github/workflows/ai-instructions-sync.yml .github/workflows/_archived_ai-instructions-sync.yml.bak
    git mv .github/workflows/scheduled-instruction-sync.yml .github/workflows/_archived_scheduled-instruction-sync.yml.bak
 
    git commit -m "chore(ci): consolidate AI sync workflows
+   ```
 
 - Merged ai-instructions-sync + scheduled-instruction-sync
 - New workflow: ai-sync-consolidated.yml
 - Reduces workflow count from 30 → 28
 - Archived old workflows for reference"
-   ```
+
+  ```
+
+  ```
 
 4. **Update documentation references** (if any point to old workflows)
 
@@ -149,10 +163,12 @@ Navigate to [Settings → General](https://github.com/dcyfr/dcyfr-labs/settings)
 ### 2.2 Enable PR Automation
 
 **Created files**:
+
 - ✅ `.github/workflows/pr-automation.yml` - Auto-labeling + size checks
 - ✅ `.github/labeler.yml` - Label configuration
 
 **Features**:
+
 - Auto-labels PRs based on changed files
 - Warns on large PRs (>50 files or >1000 lines)
 - Welcomes first-time contributors
@@ -171,13 +187,14 @@ Navigate to [Settings → General](https://github.com/dcyfr/dcyfr-labs/settings)
 1. Sign up for Codecov (if not already):
    - Visit [codecov.io](https://codecov.io)
    - Sign in with GitHub
-   - Add `dcyfr/dcyfr-labs` repository
+   - Add `dcyfr-labs/dcyfr-labs` repository
 
 2. Get upload token:
    - Navigate to repository settings on Codecov
    - Copy the `CODECOV_TOKEN`
 
 3. Add to GitHub secrets:
+
    ```bash
    # Via GitHub CLI
    gh secret set CODECOV_TOKEN
@@ -203,6 +220,7 @@ Navigate to [Settings → General](https://github.com/dcyfr/dcyfr-labs/settings)
 
 **Created**: `scripts/dev-check.mjs`
 **Added to package.json**:
+
 - `npm run dev:check` - Run all pre-commit checks locally
 - `npm run dev:check:fast` - Skip slow tests
 - `npm run dev:check:fix` - Auto-fix issues
@@ -221,6 +239,7 @@ npm run dev:check:fix
 ```
 
 **What it checks**:
+
 1. PII/PI scan
 2. ESLint (with optional auto-fix)
 3. TypeScript compilation
@@ -237,6 +256,7 @@ npm run dev:check:fix
 **Already exists**: `scripts/performance/check-bundle-size.mjs` (sophisticated!)
 
 **Current budgets**:
+
 - Total JavaScript: 500 KB
 - Main route: 200 KB
 - Initial load: 300 KB
@@ -289,6 +309,7 @@ pii-scan.yml + reports-pii-scan.yml → pii-scan-suite.yml
 ### 5.1 Test New Workflows
 
 **PR Automation**:
+
 ```bash
 # Create test PR
 git checkout -b test/pr-automation
@@ -303,6 +324,7 @@ gh pr create --title "Test PR Automation" --body "Testing auto-labeling and size
 ```
 
 **AI Sync (consolidated)**:
+
 ```bash
 # Manual trigger
 gh workflow run ai-sync-consolidated.yml --field sync_type=both
@@ -312,6 +334,7 @@ gh run watch
 ```
 
 **Developer check script**:
+
 ```bash
 # Run locally
 npm run dev:check
@@ -345,11 +368,13 @@ Add to the **Workflow Guidelines** section:
 ## Developer Helper Scripts
 
 **Pre-commit checks** (run locally):
+
 - `npm run dev:check` - Full pre-flight check
 - `npm run dev:check:fast` - Quick check (skip tests)
 - `npm run dev:check:fix` - Auto-fix issues
 
 **Branch protection**:
+
 - Direct pushes to main/preview are blocked
 - All changes require PR + passing CI
 - Code owner approval required for main
@@ -365,8 +390,8 @@ Add to **Development** section:
 Run these commands before pushing to avoid CI failures:
 
 \`\`\`bash
-npm run dev:check        # Run all checks
-npm run dev:check:fast   # Quick check (skip tests)
+npm run dev:check # Run all checks
+npm run dev:check:fast # Quick check (skip tests)
 \`\`\`
 ```
 
@@ -380,8 +405,8 @@ If issues arise, here's how to rollback:
 
 ```bash
 # Via GitHub CLI
-gh api repos/dcyfr/dcyfr-labs/branches/main/protection --method DELETE
-gh api repos/dcyfr/dcyfr-labs/branches/preview/protection --method DELETE
+gh api repos/dcyfr-labs/dcyfr-labs/branches/main/protection --method DELETE
+gh api repos/dcyfr-labs/dcyfr-labs/branches/preview/protection --method DELETE
 ```
 
 ### Rollback Workflow Consolidation
@@ -414,18 +439,21 @@ git push
 Track these metrics after implementation:
 
 **Week 1**:
+
 - [ ] Zero direct pushes to main/preview (blocked)
 - [ ] All PRs have auto-applied labels
 - [ ] No CI failures due to branch protection
 - [ ] Developer helper scripts used successfully
 
 **Week 2**:
+
 - [ ] Coverage trending data available in Codecov
 - [ ] Large PR warnings working correctly
 - [ ] Workflow consolidation stable
 - [ ] CI time impact measured (target: -20%)
 
 **Week 4**:
+
 - [ ] 90%+ of PRs auto-labeled correctly
 - [ ] Zero workflow failures from consolidation
 - [ ] Developers using `dev:check` regularly

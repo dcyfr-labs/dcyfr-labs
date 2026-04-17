@@ -206,7 +206,7 @@ export default async function SecurityPage() {
                   <li className={TYPOGRAPHY.body}>
                     Visit{' '}
                     <a
-                      href="https://github.com/dcyfr/dcyfr-labs/security/advisories"
+                      href="https://github.com/dcyfr-labs/dcyfr-labs/security/advisories"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:underline"
@@ -326,7 +326,7 @@ export default async function SecurityPage() {
               <li className={TYPOGRAPHY.body}>
                 Follow our security guidelines in{' '}
                 <a
-                  href="https://github.com/dcyfr/dcyfr-labs/blob/main/CONTRIBUTING.md"
+                  href="https://github.com/dcyfr-labs/dcyfr-labs/blob/main/CONTRIBUTING.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
@@ -343,7 +343,7 @@ export default async function SecurityPage() {
               <li className={TYPOGRAPHY.body}>
                 Review our{' '}
                 <a
-                  href="https://github.com/dcyfr/dcyfr-labs/blob/main/SECURITY.md"
+                  href="https://github.com/dcyfr-labs/dcyfr-labs/blob/main/SECURITY.md"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
@@ -478,7 +478,7 @@ export default async function SecurityPage() {
           <ul className="space-y-2 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
               <a
-                href="https://github.com/dcyfr/dcyfr-labs/blob/main/SECURITY.md"
+                href="https://github.com/dcyfr-labs/dcyfr-labs/blob/main/SECURITY.md"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
@@ -489,7 +489,7 @@ export default async function SecurityPage() {
             </li>
             <li className={TYPOGRAPHY.body}>
               <a
-                href="https://github.com/dcyfr/dcyfr-labs/security/advisories"
+                href="https://github.com/dcyfr-labs/dcyfr-labs/security/advisories"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
@@ -530,7 +530,7 @@ export default async function SecurityPage() {
           <ul className="space-y-1 list-disc pl-6">
             <li className={TYPOGRAPHY.body}>
               <a
-                href="https://github.com/dcyfr/dcyfr-labs/security/advisories"
+                href="https://github.com/dcyfr-labs/dcyfr-labs/security/advisories"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
@@ -562,7 +562,7 @@ export default async function SecurityPage() {
             </a>{' '}
             or report vulnerabilities via{' '}
             <a
-              href="https://github.com/dcyfr/dcyfr-labs/security/advisories"
+              href="https://github.com/dcyfr-labs/dcyfr-labs/security/advisories"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline"

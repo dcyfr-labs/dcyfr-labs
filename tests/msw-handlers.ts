@@ -1,18 +1,18 @@
-import { http, HttpResponse } from 'msw'
-import { apiHandlers } from './mocks/handlers'
+import { http, HttpResponse } from 'msw';
+import { apiHandlers } from './mocks/handlers';
 
 /**
  * MSW (Mock Service Worker) handlers for API mocking in tests
- * 
+ *
  * These handlers intercept network requests during tests and return mock responses.
  * Useful for integration tests that need to mock external APIs and services.
- * 
+ *
  * @see https://mswjs.io/docs/
- * 
+ *
  * For modular handler definitions, see: tests/mocks/handlers/
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 /**
  * PUBLIC API HANDLERS
@@ -31,7 +31,7 @@ const publicApiHandlers = [
               {
                 name: 'dcyfr-labs',
                 description: 'Personal development lab',
-                url: 'https://github.com/dcyfr/dcyfr-labs',
+                url: 'https://github.com/dcyfr-labs/dcyfr-labs',
                 stargazerCount: 10,
                 forkCount: 2,
                 primaryLanguage: { name: 'TypeScript', color: '#3178c6' },
@@ -51,25 +51,24 @@ const publicApiHandlers = [
           },
         },
       },
-    })
+    });
   }),
-]
+];
 
 /**
  * MAIN HANDLERS EXPORT
  * Combines:
  * - Public API handlers (GitHub GraphQL, external services)
  * - Internal API handlers (from tests/mocks/handlers/api.ts)
- * 
+ *
  * These are used in vitest.setup.ts with:
  * const server = setupServer(...handlers)
  */
-export const handlers = [...publicApiHandlers, ...apiHandlers]
+export const handlers = [...publicApiHandlers, ...apiHandlers];
 
 /**
  * For advanced mocking, import individual handlers:
- * 
+ *
  * import { errorHandlers } from '@/tests/mocks/handlers/api'
  * server.use(errorHandlers.viewsRateLimited) // Override specific handler
  */
-

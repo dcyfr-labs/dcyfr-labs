@@ -111,7 +111,7 @@ const EXCLUDED_REPO = {
   ...REPO_FIXTURE,
   id: 99,
   name: 'dcyfr-labs',
-  full_name: 'dcyfr/dcyfr-labs',
+  full_name: 'dcyfr-labs/dcyfr-labs',
 };
 
 const NON_SHOWCASE_REPO = {

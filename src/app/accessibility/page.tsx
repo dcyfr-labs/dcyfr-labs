@@ -273,7 +273,7 @@ export default async function AccessibilityPage() {
               <li className={TYPOGRAPHY.body}>
                 <strong>GitHub Issues:</strong>{' '}
                 <a
-                  href="https://github.com/dcyfr/dcyfr-labs/issues"
+                  href="https://github.com/dcyfr-labs/dcyfr-labs/issues"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"

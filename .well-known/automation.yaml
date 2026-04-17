@@ -10,7 +10,7 @@ glossary_version: '1.0.0'
 
 repo:
   name: dcyfr-labs
-  url: https://github.com/dcyfr/dcyfr-labs
+  url: https://github.com/dcyfr-labs/dcyfr-labs
   production_url: https://www.dcyfr.ai
   stack: [nextjs-16, react-19, typescript, tailwind-v4, shadcn-ui, mdx]
   versioning: calver

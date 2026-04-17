@@ -1,4 +1,5 @@
 <!-- TLP:CLEAR -->
+
 # Automation System Guide
 
 {/_ TLP:CLEAR _/}
@@ -286,8 +287,8 @@ Quarterly Sync Failed: Immediate
 
 #### Dashboard Links
 
-- **GitHub Actions:** [Repository Actions](https://github.com/dcyfr/dcyfr-labs/actions)
-- **Dependabot:** [Security tab](https://github.com/dcyfr/dcyfr-labs/security)
+- **GitHub Actions:** [Repository Actions](https://github.com/dcyfr-labs/dcyfr-labs/actions)
+- **Dependabot:** [Security tab](https://github.com/dcyfr-labs/dcyfr-labs/security)
 - **Metrics:** `reports/metrics.json` in repository
 
 ---
@@ -354,7 +355,7 @@ Quarterly Sync Failed: Immediate
 
 ```bash
 # Disable auto-merge globally
-gh api repos/dcyfr/dcyfr-labs --method PATCH \
+gh api repos/dcyfr-labs/dcyfr-labs --method PATCH \
     --field allow_auto_merge=false
 ```
 

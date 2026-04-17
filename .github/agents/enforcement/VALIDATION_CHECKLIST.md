@@ -72,7 +72,7 @@ npm run test:e2e
 
 ### 6. Security Scanning (for API routes, user input handling)
 ```bash
-gh api repos/dcyfr/dcyfr-labs/code-scanning/alerts --jq '.[] | select(.state == "open")'
+gh api repos/dcyfr-labs/dcyfr-labs/code-scanning/alerts --jq '.[] | select(.state == "open")'
 ```
 **Validates:**
 - ✅ No NEW high/critical security findings

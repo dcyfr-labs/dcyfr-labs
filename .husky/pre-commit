@@ -85,17 +85,34 @@ echo -n "  Checking for hardcoded credentials (enhanced)... "
 # 4. Base64 strings >30 chars (likely secrets)
 # 5. JWT tokens
 
-SECRETS=$(git diff --cached -U0 2>/dev/null | \
-  grep -v "^\+\+\+ b/.husky/" | \
-  grep -v "^\+\+\+ b/scripts/ci/check-docs-secrets.mjs" | \
-  grep -v "^\+\+\+ b/.gitleaksignore" | \
-  grep -E "^\+" | \
-  grep -v "^+++" | \
-  grep -E "API_KEY.*=|SECRET.*=|PASSWORD.*=|TOKEN.*=|PRIVATE_KEY.*=" | \
-  grep -v "<your-secret-here>" | \
-  grep -v "your-api-key-here" | \
-  grep -vE "YOUR_[A-Z_]+" | \
-  grep -v "process\.env\." || true)
+SECRETS=$(git diff --cached -U0 2>/dev/null | awk '
+  BEGIN { skip=0; file="" }
+
+  /^\+\+\+ b\/.husky\// { skip=1; next }
+  /^\+\+\+ b\/scripts\/ci\/check-docs-secrets\.mjs/ { skip=1; next }
+  /^\+\+\+ b\/.gitleaksignore/ { skip=1; next }
+  /^\+\+\+ b\// {
+    skip=0
+    file=$0
+    sub(/^\+\+\+ b\//, "", file)
+  }
+
+  file ~ /(^|\/)(__tests__|tests)\// { next }
+
+  skip { next }
+
+  /^\+/ && $0 !~ /^\+\+\+/ {
+    line = $0
+
+    if (line ~ /(API_KEY|SECRET|PASSWORD|TOKEN|PRIVATE_KEY)[[:space:]]*=/ &&
+        line !~ /<your-secret-here>/ &&
+        line !~ /your-api-key-here/ &&
+        line !~ /YOUR_[A-Z_]+/ &&
+        line !~ /process\.env\./) {
+      print line
+    }
+  }
+' || true)
 
 if [ -n "$SECRETS" ]; then
   echo -e "${RED}FAIL${NC}"

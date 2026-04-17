@@ -9,6 +9,19 @@ export const DOMAIN_PRODUCTION_ALT = 'dcyfr.vercel.app';
 export const AUTHOR_NAME = 'Drew (dcyfr)';
 export const AUTHOR_EMAIL = 'drew@dcyfr.ai';
 
+const CANONICAL_GISCUS_REPO = 'dcyfr-labs/dcyfr-labs' as const;
+const LEGACY_GISCUS_REPOS = new Set(['dcyfr/dcyfr-labs', 'dcyfr-labs-labs/dcyfr-labs']);
+const CANONICAL_GISCUS_REPO_ID = 'R_kgDOPSp3Ww';
+const CANONICAL_GISCUS_CATEGORY = 'Blog Comments';
+const CANONICAL_GISCUS_CATEGORY_ID = 'DIC_kwDOPSp3W84CxCMg';
+
+function normalizeGiscusRepo(repo: string | undefined): `${string}/${string}` | undefined {
+  if (!repo) return undefined;
+  if (LEGACY_GISCUS_REPOS.has(repo)) return CANONICAL_GISCUS_REPO;
+
+  return repo as `${string}/${string}`;
+}
+
 // For display in UI (with sparkle character)
 export const SITE_TITLE = 'DCYFR Labs';
 export const SITE_TITLE_PLAIN = 'DCYFR Labs'; // For meta tags (without special characters)
@@ -92,16 +105,53 @@ export const SERVICES = {
   },
 
   giscus: {
-    enabled: !!(
-      process.env.NEXT_PUBLIC_GISCUS_REPO &&
-      process.env.NEXT_PUBLIC_GISCUS_REPO_ID &&
-      process.env.NEXT_PUBLIC_GISCUS_CATEGORY &&
-      process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID
-    ),
-    repo: process.env.NEXT_PUBLIC_GISCUS_REPO as `${string}/${string}` | undefined,
-    repoId: process.env.NEXT_PUBLIC_GISCUS_REPO_ID,
-    category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY,
-    categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID,
+    // Production guardrail: normalize known legacy/typo repo values that would break comments.
+    // This keeps existing deployments working after org/repo migrations.
+    enabled: (() => {
+      const rawRepo = process.env.NEXT_PUBLIC_GISCUS_REPO;
+      const normalizedRepo = normalizeGiscusRepo(rawRepo);
+      const useCanonicalFallback = !!rawRepo && !!normalizedRepo && rawRepo !== normalizedRepo;
+
+      const repoId = useCanonicalFallback
+        ? CANONICAL_GISCUS_REPO_ID
+        : process.env.NEXT_PUBLIC_GISCUS_REPO_ID;
+      const category = useCanonicalFallback
+        ? CANONICAL_GISCUS_CATEGORY
+        : process.env.NEXT_PUBLIC_GISCUS_CATEGORY;
+      const categoryId = useCanonicalFallback
+        ? CANONICAL_GISCUS_CATEGORY_ID
+        : process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID;
+
+      return !!(normalizedRepo && repoId && category && categoryId);
+    })(),
+    repo: (() => {
+      const rawRepo = process.env.NEXT_PUBLIC_GISCUS_REPO;
+      return normalizeGiscusRepo(rawRepo);
+    })(),
+    repoId: (() => {
+      const rawRepo = process.env.NEXT_PUBLIC_GISCUS_REPO;
+      const normalizedRepo = normalizeGiscusRepo(rawRepo);
+      const useCanonicalFallback = !!rawRepo && !!normalizedRepo && rawRepo !== normalizedRepo;
+      return useCanonicalFallback
+        ? CANONICAL_GISCUS_REPO_ID
+        : process.env.NEXT_PUBLIC_GISCUS_REPO_ID;
+    })(),
+    category: (() => {
+      const rawRepo = process.env.NEXT_PUBLIC_GISCUS_REPO;
+      const normalizedRepo = normalizeGiscusRepo(rawRepo);
+      const useCanonicalFallback = !!rawRepo && !!normalizedRepo && rawRepo !== normalizedRepo;
+      return useCanonicalFallback
+        ? CANONICAL_GISCUS_CATEGORY
+        : process.env.NEXT_PUBLIC_GISCUS_CATEGORY;
+    })(),
+    categoryId: (() => {
+      const rawRepo = process.env.NEXT_PUBLIC_GISCUS_REPO;
+      const normalizedRepo = normalizeGiscusRepo(rawRepo);
+      const useCanonicalFallback = !!rawRepo && !!normalizedRepo && rawRepo !== normalizedRepo;
+      return useCanonicalFallback
+        ? CANONICAL_GISCUS_CATEGORY_ID
+        : process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID;
+    })(),
     mapping: 'pathname' as const,
     reactionsEnabled: true,
     emitMetadata: false,

@@ -235,7 +235,7 @@ For quick setup via CLI:
 #!/bin/bash
 # scripts/setup-branch-protection.sh
 
-REPO="dcyfr/dcyfr-labs"
+REPO="dcyfr-labs/dcyfr-labs"
 
 echo "Setting up branch protection for $REPO..."
 

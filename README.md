@@ -14,7 +14,7 @@ Built with **Next.js 16** (App Router), **React 19**, **TypeScript**, **Tailwind
 ## Quick start
 
 ```bash
-git clone https://github.com/dcyfr/dcyfr-labs.git
+git clone https://github.com/dcyfr-labs/dcyfr-labs.git
 cd dcyfr-labs
 cp .env.example .env.local   # fill in any keys you need; most are optional
 npm install

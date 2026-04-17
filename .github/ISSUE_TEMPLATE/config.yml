@@ -1,10 +1,10 @@
 blank_issues_enabled: true
 contact_links:
   - name: 💬 Question or Discussion
-    url: https://github.com/dcyfr/dcyfr-labs/discussions
+    url: https://github.com/dcyfr-labs/dcyfr-labs/discussions
     about: Ask questions or start a discussion
   - name: 🔒 Security Vulnerability
-    url: https://github.com/dcyfr/dcyfr-labs/security/advisories/new
+    url: https://github.com/dcyfr-labs/dcyfr-labs/security/advisories/new
     about: Report a security vulnerability privately
   - name: 📧 Direct Contact
     url: https://www.dcyfr.ai/contact

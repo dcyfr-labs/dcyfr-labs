@@ -407,7 +407,7 @@ export default async function AcceptableUsePage() {
             <li className={TYPOGRAPHY.body}>
               Reporting findings promptly via{' '}
               <a
-                href="https://github.com/dcyfr/dcyfr-labs/security/advisories"
+                href="https://github.com/dcyfr-labs/dcyfr-labs/security/advisories"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"

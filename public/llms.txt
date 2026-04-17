@@ -150,8 +150,8 @@ When citing DCYFR Labs content:
 ## Additional Resources
 
 **Documentation:** https://www.dcyfr.ai/dev/docs (preview environment)
-**GitHub:** https://github.com/dcyfr/dcyfr-labs
-**Issues:** https://github.com/dcyfr/dcyfr-labs/issues
+**GitHub:** https://github.com/dcyfr-labs/dcyfr-labs
+**Issues:** https://github.com/dcyfr-labs/dcyfr-labs/issues
 
 ---
 

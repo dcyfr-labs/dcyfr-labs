@@ -159,7 +159,7 @@ if (categories.dependencies.length > 0) {
 // Add comparison link footer
 if (values.previous) {
   entry += `---\n\n`;
-  entry += `**Full Changelog**: [${values.previous}...${values.version}](https://github.com/dcyfr/dcyfr-labs/compare/v${values.previous}...v${values.version})\n\n`;
+  entry += `**Full Changelog**: [${values.previous}...${values.version}](https://github.com/dcyfr-labs/dcyfr-labs/compare/v${values.previous}...v${values.version})\n\n`;
 }
 
 // Write to output file

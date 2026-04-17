@@ -71,7 +71,7 @@ export default function McpHealthClient() {
           </Button>
           <Button variant="outline" size="sm" asChild className="gap-2">
             <a
-              href="https://github.com/dcyfr/dcyfr-labs/actions/workflows/mcp-server-check.yml"
+              href="https://github.com/dcyfr-labs/dcyfr-labs/actions/workflows/mcp-server-check.yml"
               target="_blank"
               rel="noopener noreferrer"
             >

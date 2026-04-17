@@ -83,7 +83,7 @@ jobs:
 
           echo "pr-number=${PR_NUMBER}"   >> "$GITHUB_OUTPUT"
           echo "dry-run=${DRY_RUN}"       >> "$GITHUB_OUTPUT"
-          echo "🔍 PR #${PR_NUMBER} | dry-run=${DRY_RUN} | repo=dcyfr/dcyfr-labs"
+          echo "🔍 PR #${PR_NUMBER} | dry-run=${DRY_RUN} | repo=dcyfr-labs/dcyfr-labs"
 
       # ── 2. Checkout dcyfr-workspace for automation scripts ───────────────
       # The review scripts live in dcyfr-workspace, not dcyfr-labs.
@@ -174,7 +174,7 @@ jobs:
             echo "| Parameter | Value |"
             echo "|-----------|-------|"
             echo "| PR | #${PR_NUMBER} |"
-            echo "| Repository | \`dcyfr/dcyfr-labs\` |"
+            echo "| Repository | \`dcyfr-labs/dcyfr-labs\` |"
             echo "| Scripts | \`dcyfr/dcyfr-workspace\` |"
             echo "| Dry-run | \`${DRY_RUN}\` |"
             echo "| Exit code | \`${EXIT_CODE:-N/A}\` |"

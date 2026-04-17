@@ -9,6 +9,7 @@ This guide covers the complete setup and configuration of GitHub Dependabot for 
 ---
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Quick Setup Checklist](#quick-setup-checklist)
 - [Configuration Details](#configuration-details)
@@ -22,11 +23,13 @@ This guide covers the complete setup and configuration of GitHub Dependabot for 
 ## Overview
 
 **Dependabot** provides three key services:
+
 1. **Security Alerts**: Immediate notifications for known vulnerabilities
 2. **Security Updates**: Automatic PRs to fix vulnerabilities
 3. **Version Updates**: Regular PRs to keep dependencies current
 
 **Benefits:**
+
 - ⚡ **Proactive Security**: Catch vulnerabilities before they're exploited
 - ⏱️ **Time Savings**: 4-8 hours/month on manual dependency updates
 - 🛡️ **Risk Mitigation**: Stay current with patches and fixes
@@ -39,8 +42,9 @@ This guide covers the complete setup and configuration of GitHub Dependabot for 
 ### Step 1: Enable Dependabot Features (GitHub Web UI)
 
 1. **Navigate to Repository Settings**:
+
    ```
-   https://github.com/dcyfr/dcyfr-labs/settings/security_analysis
+   https://github.com/dcyfr-labs/dcyfr-labs/settings/security_analysis
    ```
 
 2. **Enable Security Features**:
@@ -62,6 +66,7 @@ This guide covers the complete setup and configuration of GitHub Dependabot for 
 ### Step 2: Verify Configuration File
 
 The `.github/dependabot.yml` file is already created and configured with:
+
 - ✅ **Weekly updates** every Monday at 9 AM PST
 - ✅ **Grouped PRs** for related packages (Next.js, TypeScript, testing, etc.)
 - ✅ **10 concurrent PRs** maximum
@@ -71,17 +76,19 @@ The `.github/dependabot.yml` file is already created and configured with:
 ### Step 3: Test the Setup
 
 After enabling in GitHub settings, Dependabot will:
+
 1. **Immediate**: Scan for security vulnerabilities (within minutes)
 2. **Within 24 hours**: Open first batch of update PRs (if updates available)
 3. **Weekly**: Check for new updates every Monday at 9 AM PST
 
 **To verify it's working:**
+
 ```bash
 # Check if Dependabot has opened any PRs
 gh pr list --label "dependencies"
 
 # Or visit:
-https://github.com/dcyfr/dcyfr-labs/pulls?q=is%3Apr+is%3Aopen+label%3Adependencies
+https://github.com/dcyfr-labs/dcyfr-labs/pulls?q=is%3Apr+is%3Aopen+label%3Adependencies
 ```
 
 ---
@@ -98,21 +105,22 @@ https://github.com/dcyfr/dcyfr-labs/pulls?q=is%3Apr+is%3Aopen+label%3Adependenci
 
 Dependabot groups related packages to reduce PR noise:
 
-| Group Name | Packages | Purpose |
-|------------|----------|---------|
-| `nextjs` | Next.js, React, Vercel packages | Keep framework in sync |
-| `typescript` | TypeScript, @types/* | Type definitions together |
-| `testing` | Vitest, Testing Library, Playwright | Test infrastructure |
-| `code-quality` | ESLint, Prettier, TS-ESLint | Linting/formatting tools |
-| `ui-packages` | Tailwind, Radix UI, shadcn/ui deps | UI library updates |
-| `content` | MDX, Shiki, rehype/remark plugins | Content processing |
-| `monitoring` | Sentry packages | Error tracking |
-| `background-jobs` | Inngest | Background jobs |
-| `development-dependencies` | All dev deps (minor/patch) | Non-production deps |
+| Group Name                 | Packages                            | Purpose                   |
+| -------------------------- | ----------------------------------- | ------------------------- |
+| `nextjs`                   | Next.js, React, Vercel packages     | Keep framework in sync    |
+| `typescript`               | TypeScript, @types/\*               | Type definitions together |
+| `testing`                  | Vitest, Testing Library, Playwright | Test infrastructure       |
+| `code-quality`             | ESLint, Prettier, TS-ESLint         | Linting/formatting tools  |
+| `ui-packages`              | Tailwind, Radix UI, shadcn/ui deps  | UI library updates        |
+| `content`                  | MDX, Shiki, rehype/remark plugins   | Content processing        |
+| `monitoring`               | Sentry packages                     | Error tracking            |
+| `background-jobs`          | Inngest                             | Background jobs           |
+| `development-dependencies` | All dev deps (minor/patch)          | Non-production deps       |
 
 ### Commit Message Format
 
 All Dependabot PRs use **Conventional Commits**:
+
 ```
 chore(deps): bump next from 15.0.0 to 15.0.1
 chore(deps-dev): bump eslint from 8.0.0 to 8.1.0
@@ -135,27 +143,29 @@ This integrates with automated changelogs and release notes.
 
 ### Alert Severity Levels
 
-| Severity | Response Time | Example |
-|----------|---------------|---------|
+| Severity     | Response Time   | Example                            |
+| ------------ | --------------- | ---------------------------------- |
 | **Critical** | Within 24 hours | Remote code execution, auth bypass |
-| **High** | Within 72 hours | SQL injection, XSS vulnerabilities |
-| **Moderate** | Within 1 week | DoS, information disclosure |
-| **Low** | Next sprint | Minor security improvements |
+| **High**     | Within 72 hours | SQL injection, XSS vulnerabilities |
+| **Moderate** | Within 1 week   | DoS, information disclosure        |
+| **Low**      | Next sprint     | Minor security improvements        |
 
 ### Viewing Active Alerts
 
 **GitHub Web UI:**
+
 ```
-https://github.com/dcyfr/dcyfr-labs/security/dependabot
+https://github.com/dcyfr-labs/dcyfr-labs/security/dependabot
 ```
 
 **GitHub CLI:**
+
 ```bash
 # List all security alerts
 gh api /repos/dcyfr/dcyfr-labs/dependabot/alerts
 
 # List only open alerts
-gh api /repos/dcyfr/dcyfr-labs/dependabot/alerts?state=open
+gh api /repos/dcyfr-labs/dcyfr-labs/dependabot/alerts?state=open
 ```
 
 ---
@@ -183,15 +193,15 @@ jobs:
         id: metadata
         uses: dependabot/fetch-metadata@v1
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
+
       - name: Auto-merge minor and patch updates
         if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      
+
       - name: Auto-approve security updates
         if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: gh pr review --approve "$PR_URL"
@@ -203,11 +213,13 @@ jobs:
 ### Auto-Merge Rules
 
 **Safe to auto-merge:**
+
 - ✅ Patch updates (1.2.3 → 1.2.4)
 - ✅ Minor updates for dev dependencies
 - ✅ Security updates (after CI passes)
 
 **Requires manual review:**
+
 - ⚠️ Major version updates (breaking changes)
 - ⚠️ Updates to core dependencies (Next.js, React)
 - ⚠️ Updates that fail CI checks
@@ -219,11 +231,13 @@ jobs:
 ### Weekly PR Review Process
 
 **Monday (Update Day):**
+
 1. Dependabot opens PRs (up to 10 at once)
 2. CI runs automatically (build, lint, type-check)
 3. Review grouped PRs by category
 
 **Review Priority:**
+
 1. **🚨 Security Updates** - Merge ASAP (within 24-48 hours)
 2. **🔧 Bug Fixes** - Review and merge within week
 3. **📦 Feature Updates** - Test locally if significant
@@ -232,11 +246,13 @@ jobs:
 ### PR Labels
 
 Dependabot automatically adds labels for filtering:
+
 - `dependencies` - All dependency updates
 - `automated` - Automated PRs
 - `github-actions` - CI/CD workflow updates
 
 **Custom labels you can add:**
+
 - `priority: high` - Security or blocking issues
 - `ready to merge` - Approved and tested
 - `needs testing` - Requires local verification
@@ -244,6 +260,7 @@ Dependabot automatically adds labels for filtering:
 ### Bulk Actions
 
 **Close all dev dependency PRs:**
+
 ```bash
 gh pr list --label "dependencies" --label "automated" \
   --json number --jq '.[].number' | \
@@ -251,6 +268,7 @@ gh pr list --label "dependencies" --label "automated" \
 ```
 
 **Merge all patch updates:**
+
 ```bash
 gh pr list --label "dependencies" --search "chore(deps): bump" \
   --json number --jq '.[].number' | \
@@ -264,12 +282,14 @@ gh pr list --label "dependencies" --search "chore(deps): bump" \
 ### Issue: No PRs Being Created
 
 **Possible Causes:**
+
 1. Dependabot not enabled in repo settings
 2. All dependencies are up to date
 3. Open PR limit reached (10 max)
 4. Configuration file has syntax errors
 
 **Solutions:**
+
 ```bash
 # Validate dependabot.yml syntax
 npx @dependabot/cli validate .github/dependabot.yml
@@ -281,26 +301,29 @@ npx @dependabot/cli validate .github/dependabot.yml
 ### Issue: Too Many PRs
 
 **Solution: Adjust configuration**
+
 ```yaml
 # In .github/dependabot.yml
-open-pull-requests-limit: 5  # Reduce from 10 to 5
+open-pull-requests-limit: 5 # Reduce from 10 to 5
 
 # Or increase grouping
 groups:
   all-minor-patch:
     update-types:
-      - "minor"
-      - "patch"
+      - 'minor'
+      - 'patch'
 ```
 
 ### Issue: Failed Security Updates
 
 **Common causes:**
+
 1. Breaking changes in dependency
 2. Test failures after update
 3. Incompatible peer dependencies
 
 **Resolution:**
+
 ```bash
 # Locally reproduce and fix
 git checkout -b fix/dependabot-security-update
@@ -314,6 +337,7 @@ git push
 ### Issue: Notifications Too Noisy
 
 **Adjust notification settings:**
+
 1. GitHub Settings → Notifications
 2. Under **"Dependabot alerts"**:
    - Change to "Only critical and high severity"
@@ -326,6 +350,7 @@ git push
 ### Monthly Review
 
 **First Monday of each month:**
+
 1. Review open Dependabot PRs (should be < 5)
 2. Check for any ignored/postponed security alerts
 3. Review auto-merge success rate
@@ -334,6 +359,7 @@ git push
 ### Quarterly Audit
 
 **Every 3 months:**
+
 1. Review ignored dependencies in `dependabot.yml`
 2. Update grouping strategy based on update patterns
 3. Review major version updates that were deferred
@@ -360,12 +386,14 @@ git push
 ## Success Metrics
 
 **After 1 month, you should see:**
+
 - ✅ Zero critical/high severity vulnerabilities
 - ✅ 80%+ of minor/patch updates merged
 - ✅ 4-8 hours saved on manual dependency management
 - ✅ Proactive security posture (alerts before exploits)
 
 **ROI Calculation:**
+
 - **Setup Time**: 1 hour (one-time)
 - **Weekly Maintenance**: 30 minutes (review PRs)
 - **Time Saved**: 4-8 hours/month (manual updates + security research)

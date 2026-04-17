@@ -48,7 +48,8 @@ if (githubRepositoryEnv?.includes('/')) {
   REPO = githubRepositoryEnv;
 } else {
   try {
-    const remoteUrl = execSync('git config --get remote.origin.url', { // NOSONAR - Administrative script, inputs from controlled sources
+    const remoteUrl = execSync('git config --get remote.origin.url', {
+      // NOSONAR - Administrative script, inputs from controlled sources
       encoding: 'utf-8',
       cwd: ROOT_DIR,
     }).trim();
@@ -63,7 +64,7 @@ if (githubRepositoryEnv?.includes('/')) {
   }
 
   if (!REPO) {
-    REPO = 'dcyfr/dcyfr-labs';
+    REPO = 'dcyfr-labs/dcyfr-labs';
   }
 }
 
@@ -121,7 +122,8 @@ async function fetchPRData(prNumber) {
  */
 function getContributors() {
   try {
-    const output = execSync('git log --format="%an <%ae>" -10', { // NOSONAR - Administrative script, inputs from controlled sources
+    const output = execSync('git log --format="%an <%ae>" -10', {
+      // NOSONAR - Administrative script, inputs from controlled sources
       cwd: ROOT_DIR,
       encoding: 'utf-8',
     }).trim();

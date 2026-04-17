@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 /**
  * Code Playground Component
@@ -10,12 +10,12 @@
  * - Support for predefined templates
  */
 
-import React, { useState, useRef, useEffect } from "react";
-import { getTemplate } from "@/lib/playground-templates";
-import { SPACING, CONTAINER_WIDTHS, TYPOGRAPHY, ANIMATION } from "@/lib/design-tokens";
-import { AlertTriangle, Code, Loader, ExternalLink, Lightbulb } from "lucide-react";
-import { Alert } from "@/components/common";
-import { cn } from "@/lib/utils";
+import React, { useState, useRef, useEffect } from 'react';
+import { getTemplate } from '@/lib/playground-templates';
+import { SPACING, CONTAINER_WIDTHS, TYPOGRAPHY, ANIMATION } from '@/lib/design-tokens';
+import { AlertTriangle, Code, Loader, ExternalLink, Lightbulb } from 'lucide-react';
+import { Alert } from '@/components/common';
+import { cn } from '@/lib/utils';
 
 interface CodePlaygroundProps {
   /** Template ID (e.g., 'react-counter') */
@@ -38,7 +38,7 @@ interface CodePlaygroundProps {
  */
 export function CodePlayground({
   template: templateId,
-  height = "500px",
+  height = '500px',
   title,
   showEditor = true,
   showOpenButton = true,
@@ -59,8 +59,8 @@ export function CodePlayground({
       setIsMobile(window.innerWidth < 768);
     };
     checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   // Lazy load with Intersection Observer
@@ -74,7 +74,7 @@ export function CodePlayground({
           observer.unobserve(containerRef.current!);
         }
       },
-      { rootMargin: "50px" }
+      { rootMargin: '50px' }
     );
 
     observer.observe(containerRef.current);
@@ -101,19 +101,19 @@ export function CodePlayground({
   }
 
   // StackBlitz embed URL
-  const embedUrl = `https://stackblitz.com/github/dcyfr/dcyfr-labs-playgrounds/tree/main/${templateId}?embed=1&view=${
-    isMobile || !showEditor ? "preview" : "editor"
+  const embedUrl = `https://stackblitz.com/github/dcyfr-labs/dcyfr-labs-playgrounds/tree/main/${templateId}?embed=1&view=${
+    isMobile || !showEditor ? 'preview' : 'editor'
   }`;
 
   // Open in StackBlitz URL
-  const openUrl = `https://stackblitz.com/github/dcyfr/dcyfr-labs-playgrounds/tree/main/${templateId}`;
+  const openUrl = `https://stackblitz.com/github/dcyfr-labs/dcyfr-labs-playgrounds/tree/main/${templateId}`;
 
   return (
     <div
       ref={containerRef}
       className={cn(
-        "my-8 rounded-xl overflow-hidden border border-border bg-card shadow-sm",
-        "transition-shadow hover:shadow-md"
+        'my-8 rounded-xl overflow-hidden border border-border bg-card shadow-sm',
+        'transition-shadow hover:shadow-md'
       )}
     >
       {/* Header */}
@@ -121,9 +121,13 @@ export function CodePlayground({
         <div className="flex items-center gap-2">
           <Code size={16} className="text-primary" />
           <div>
-            <h3 className={cn(TYPOGRAPHY.label.small, "font-semibold")}>{title || templateData.name}</h3>
+            <h3 className={cn(TYPOGRAPHY.label.small, 'font-semibold')}>
+              {title || templateData.name}
+            </h3>
             {templateData.description && (
-              <p className={cn(TYPOGRAPHY.label.small, "text-muted-foreground text-xs")}>{templateData.description}</p>
+              <p className={cn(TYPOGRAPHY.label.small, 'text-muted-foreground text-xs')}>
+                {templateData.description}
+              </p>
             )}
           </div>
         </div>
@@ -134,12 +138,12 @@ export function CodePlayground({
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              "inline-flex items-center gap-1",
+              'inline-flex items-center gap-1',
               TYPOGRAPHY.label.small,
-              "font-medium",
-              "text-primary hover:text-primary/80",
+              'font-medium',
+              'text-primary hover:text-primary/80',
               ANIMATION.transition.theme,
-              "px-2 py-1 rounded hover:bg-primary/10"
+              'px-2 py-1 rounded hover:bg-primary/10'
             )}
             title="Open in StackBlitz"
           >
@@ -152,10 +156,10 @@ export function CodePlayground({
       {/* Iframe Container */}
       <div
         className={cn(
-          "relative bg-background",
-          !isIntersecting && "min-h-96 flex items-center justify-center"
+          'relative bg-background',
+          !isIntersecting && 'min-h-96 flex items-center justify-center'
         )}
-        style={{ height: isIntersecting ? height : "auto" }}
+        style={{ height: isIntersecting ? height : 'auto' }}
       >
         {!isIntersecting ? (
           <div className="text-center text-muted-foreground">
@@ -167,15 +171,15 @@ export function CodePlayground({
             ref={iframeRef}
             src={embedUrl}
             className={cn(
-              "w-full border-0",
+              'w-full border-0',
               ANIMATION.transition.theme,
-              isLoaded ? "opacity-100" : "opacity-0"
+              isLoaded ? 'opacity-100' : 'opacity-0'
             )}
             style={{ height: height }}
             title={templateData.name}
             sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
             onLoad={() => setIsLoaded(true)}
-            onError={() => setError("Failed to load playground iframe")}
+            onError={() => setError('Failed to load playground iframe')}
           />
         )}
       </div>
@@ -183,7 +187,13 @@ export function CodePlayground({
       {/* Mobile Notice */}
       {isMobile && (
         <div className="bg-info/10 border-t border-info/20 px-4 py-2">
-          <p className={cn(TYPOGRAPHY.label.small, "text-muted-foreground", "flex items-center gap-2")}>
+          <p
+            className={cn(
+              TYPOGRAPHY.label.small,
+              'text-muted-foreground',
+              'flex items-center gap-2'
+            )}
+          >
             <Lightbulb className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
             <span>Tip: Open in StackBlitz for the full editor experience on desktop</span>
           </p>

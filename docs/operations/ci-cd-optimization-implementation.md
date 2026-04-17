@@ -13,11 +13,13 @@ Successfully completed all Tier 1 (high-ROI) optimizations from the CI/CD analys
 ### 1. ✅ Consolidated Security Workflows (3 → 1)
 
 **Before:**
+
 - `security-audit.yml` - npm audit on PRs + scheduled
 - `automated-security-checks.yml` - npm audit + outdated packages
 - `monthly-security-review.yml` - monthly comprehensive review
 
 **After:**
+
 - **NEW:** `.github/workflows/security.yml` - Unified security checks
   - Runs npm audit + outdated package check in single workflow
   - One `npm ci` instead of two separate installs
@@ -25,6 +27,7 @@ Successfully completed all Tier 1 (high-ROI) optimizations from the CI/CD analys
   - Supports scheduled, PR, push, and manual triggers
 
 **Deleted:**
+
 - ❌ `.github/workflows/security-audit.yml`
 - ❌ `.github/workflows/automated-security-checks.yml`
 
@@ -37,10 +40,12 @@ Successfully completed all Tier 1 (high-ROI) optimizations from the CI/CD analys
 ### 2. ✅ Optimized PII/Privacy Scanning Workflow
 
 **Before:**
+
 - `pii-scan.yml` - PII scanner + gitleaks (2 separate jobs, 2x `npm ci`)
 - `allowlist-validate.yml` - Separate workflow for allowlist validation
 
 **After:**
+
 - **UPDATED:** `.github/workflows/pii-scan.yml`
   - Renamed to "Privacy & PII Scan"
   - Already included allowlist validation (line 22 of original)
@@ -50,6 +55,7 @@ Successfully completed all Tier 1 (high-ROI) optimizations from the CI/CD analys
   - Gitleaks job now reuses `npm ci` for parse script
 
 **Deleted:**
+
 - ❌ `.github/workflows/allowlist-validate.yml` (functionality already in pii-scan.yml)
 
 **Impact:** Eliminates 1 workflow, saves ~2-3 minutes per PR
@@ -59,6 +65,7 @@ Successfully completed all Tier 1 (high-ROI) optimizations from the CI/CD analys
 ### 3. ✅ Added Shared Dependencies Cache to Test Workflow
 
 **Additional improvement (Dec 14):**
+
 - **Updated `bundle` job cache**: Cache now includes both `.next/cache` and `.next` to improve build reuse between runs. The cache key was changed to:
 
 ```
@@ -71,6 +78,7 @@ ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
 **Impact:** Better cache reuse across CI runs should reduce build times and improve cache-hit rates.
 
 **Before:**
+
 - 4 parallel jobs each running `npm ci` independently
   - `quality` - Lint + typecheck
   - `unit` - Unit/integration tests
@@ -79,6 +87,7 @@ ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
 - Total: 4x `npm ci` executions (~3-4 minutes each)
 
 **After:**
+
 - **UPDATED:** `.github/workflows/test.yml`
   - **NEW `setup` job:** Runs `npm ci` once, caches `node_modules`
   - All 4 test jobs now:
@@ -88,6 +97,7 @@ ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-build-v1
   - Cache key includes `github.run_id` for workflow-specific caching
 
 **Technical Details:**
+
 ```yaml
 # Setup job (runs once)
 setup:
@@ -116,11 +126,13 @@ quality/unit/bundle/e2e:
 ### 4. ✅ Removed Duplicate Lint from Design System Workflow
 
 **Before:**
+
 - `.github/workflows/design-system.yml` ran ESLint (lines 38-40)
 - `.github/workflows/test.yml` also ran ESLint in quality job
 - **Result:** Lint ran twice on every PR changing `.tsx/.ts` files
 
 **After:**
+
 - **UPDATED:** `.github/workflows/design-system.yml`
   - Removed `npm run lint` step
   - Kept only design token validation (`node scripts/validate-design-tokens.mjs`)
@@ -133,14 +145,17 @@ quality/unit/bundle/e2e:
 ## Summary of Changes
 
 ### Files Created
+
 1. `.github/workflows/security.yml` - Consolidated security workflow
 
 ### Files Modified
+
 1. `.github/workflows/pii-scan.yml` - Optimized with caching and concurrency
 2. `.github/workflows/test.yml` - Added setup job with shared node_modules cache
 3. `.github/workflows/design-system.yml` - Removed duplicate ESLint step
 
 ### Files Deleted
+
 1. `.github/workflows/security-audit.yml` - Consolidated into security.yml
 2. `.github/workflows/automated-security-checks.yml` - Consolidated into security.yml
 3. `.github/workflows/allowlist-validate.yml` - Already included in pii-scan.yml
@@ -150,6 +165,7 @@ quality/unit/bundle/e2e:
 ## Performance Impact
 
 ### Before Optimization
+
 - **Total workflows:** 23
 - **npm ci executions per PR:** ~9-10x
 - **Typical PR duration:** ~35-50 minutes
@@ -160,6 +176,7 @@ quality/unit/bundle/e2e:
   - Duplicate linting
 
 ### After Optimization
+
 - **Total workflows:** 20 (-3)
 - **npm ci executions per PR:** ~4-5x (-50%)
 - **Expected PR duration:** ~25-35 minutes (-30%)
@@ -170,15 +187,17 @@ quality/unit/bundle/e2e:
   - ✅ No duplicate linting
 
 ### Time Savings Breakdown
-| Optimization | Time Saved | Frequency |
-|--------------|------------|-----------|
-| Security consolidation | 5-8 min | PRs with package.json changes |
-| PII workflow optimization | 2-3 min | Every PR |
-| Shared test dependencies | 3-5 min | Every PR |
-| Removed duplicate lint | 1-2 min | PRs with .tsx/.ts changes |
-| **TOTAL** | **11-18 min** | **Per typical PR** |
+
+| Optimization              | Time Saved    | Frequency                     |
+| ------------------------- | ------------- | ----------------------------- |
+| Security consolidation    | 5-8 min       | PRs with package.json changes |
+| PII workflow optimization | 2-3 min       | Every PR                      |
+| Shared test dependencies  | 3-5 min       | Every PR                      |
+| Removed duplicate lint    | 1-2 min       | PRs with .tsx/.ts changes     |
+| **TOTAL**                 | **11-18 min** | **Per typical PR**            |
 
 **Annual Impact (assuming 20 PRs/month):**
+
 - **220-360 minutes saved per month**
 - **3.5-6 hours saved per month**
 - **42-72 hours saved per year**
@@ -199,6 +218,7 @@ All optimizations validated:
 ## What's Next (Optional Future Optimizations)
 
 ### Tier 2: Good ROI (Not Implemented Yet)
+
 1. **Extend shared cache to other workflows**
    - Apply same pattern to `design-system.yml`, `lighthouse-ci.yml`, etc.
    - Estimated savings: 2-3 minutes per PR
@@ -209,6 +229,7 @@ All optimizations validated:
    - Estimated savings: Maintenance time (not execution time)
 
 ### Tier 3: Marginal Gains (Future Consideration)
+
 1. **Matrix strategy for test jobs**
    - Convert 4 separate jobs to single matrix job
    - Reduces YAML duplication, cleaner config
@@ -245,7 +266,7 @@ Track these metrics over the next 30 days:
    - Should not increase (maintain reliability)
    - Check: Actions tab → Workflow runs
 
-**Dashboard:** `https://github.com/DCYFR/dcyfr-labs/actions`
+**Dashboard:** `https://github.com/dcyfr-labs/dcyfr-labs/actions`
 
 ---
 
@@ -294,12 +315,14 @@ All original functionality preserved in consolidated workflows - no feature loss
 **Priority:** Medium  
 **Status:** ⏳ Pending Implementation
 
-**Issue:**  
+**Issue:**
+
 - Local development updated to Node.js v24.13.0 (security patches)
 - CI/CD workflows still use Node.js v20 (hardcoded)
 - Version drift between local and CI/CD environments
 
-**Security Context:**  
+**Security Context:**
+
 - Node.js v24.13.0 addresses 8 CVEs (3 HIGH, 4 MEDIUM, 1 LOW)
 - Most critical: HTTP/2 DoS and AsyncLocalStorage crashes
 - See `docs/security/private/NODEJS_JAN2026_VULNERABILITIES.md` for details
@@ -320,24 +343,28 @@ Update all GitHub Actions workflows to use `.nvmrc` file instead of hardcoded ve
 ```
 
 **Benefits:**
+
 1. Automatic version sync with local development
 2. Single source of truth (`.nvmrc` file)
 3. Easier to update in future (one file vs. 20+ workflows)
 4. Prevents "works on my machine" issues
 
 **Files to Update:**
+
 - `.github/workflows/test.yml` (5 occurrences)
 - `.github/workflows/test-optimized.yml`
 - `.github/workflows/deploy.yml`
 - All other workflows with `node-version: '20'`
 
 **References:**
+
 - Node.js security release: https://nodejs.org/en/blog/vulnerability/december-2025-security-releases
 - Lessons learned: `docs/security/private/NODEJS_JAN2026_VULNERABILITIES.md`
 
 ---
 
 ### Best Practices Maintained
+
 - ✅ Concurrency groups (cancel stale runs)
 - ✅ Path filters (run only when relevant)
 - ✅ Timeout limits (prevent runaway workflows)
@@ -346,12 +373,14 @@ Update all GitHub Actions workflows to use `.nvmrc` file instead of hardcoded ve
 - ✅ Comprehensive error reporting
 
 ### New Patterns Introduced
+
 - ✅ **Shared dependency caching** (test.yml setup job)
 - ✅ **Workflow consolidation** (security.yml combines 2 workflows)
 - ✅ **Cache/restore pattern** (actions/cache/save + actions/cache/restore)
 - ✅ **Run-specific cache keys** (using github.run_id)
 
 ### Security Considerations
+
 - ✅ No secrets exposed in consolidation
 - ✅ Same security checks as before (npm audit, gitleaks, PII scan)
 - ✅ No reduction in coverage
@@ -362,6 +391,7 @@ Update all GitHub Actions workflows to use `.nvmrc` file instead of hardcoded ve
 ## Conclusion
 
 Successfully implemented all Tier 1 CI/CD optimizations with:
+
 - **30-40% reduction in PR workflow time**
 - **50% reduction in npm ci executions**
 - **3 fewer workflows to maintain**

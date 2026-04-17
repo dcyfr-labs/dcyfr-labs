@@ -55,7 +55,7 @@ describe('transformWebhookGitHubCommits', () => {
         title: 'Test Author committed to main',
         description: 'Fix bug in webhook handler',
         timestamp: '2025-12-23T10:00:00Z',
-        href: 'https://github.com/dcyfr/dcyfr-labs/commit/abc1234',
+        href: 'https://github.com/dcyfr-labs/dcyfr-labs/commit/abc1234',
         meta: {
           tags: ['github', 'main'],
           category: 'development',
@@ -63,7 +63,7 @@ describe('transformWebhookGitHubCommits', () => {
         hash: 'abc1234',
         author: 'Test Author',
         branch: 'main',
-        repository: 'dcyfr/dcyfr-labs',
+        repository: 'dcyfr-labs/dcyfr-labs',
       },
       {
         id: 'github-commit-def5678',
@@ -72,7 +72,7 @@ describe('transformWebhookGitHubCommits', () => {
         title: 'Another Author committed to feature',
         description: 'Add new feature',
         timestamp: '2025-12-23T09:00:00Z',
-        href: 'https://github.com/dcyfr/dcyfr-labs/commit/def5678',
+        href: 'https://github.com/dcyfr-labs/dcyfr-labs/commit/def5678',
         meta: {
           tags: ['github', 'feature'],
           category: 'development',
@@ -80,7 +80,7 @@ describe('transformWebhookGitHubCommits', () => {
         hash: 'def5678',
         author: 'Another Author',
         branch: 'feature',
-        repository: 'dcyfr/dcyfr-labs',
+        repository: 'dcyfr-labs/dcyfr-labs',
       },
     ];
 
@@ -102,7 +102,7 @@ describe('transformWebhookGitHubCommits', () => {
       title: 'Test Author committed to main',
       description: 'Fix bug in webhook handler',
       timestamp: new Date('2025-12-23T10:00:00Z'),
-      href: 'https://github.com/dcyfr/dcyfr-labs/commit/abc1234',
+      href: 'https://github.com/dcyfr-labs/dcyfr-labs/commit/abc1234',
       meta: {
         tags: ['github', 'main'],
         category: 'development',
@@ -120,7 +120,7 @@ describe('transformWebhookGitHubCommits', () => {
         title: 'Older commit',
         description: 'Old change',
         timestamp: '2025-12-23T09:00:00Z',
-        href: 'https://github.com/dcyfr/dcyfr-labs/commit/abc1234',
+        href: 'https://github.com/dcyfr-labs/dcyfr-labs/commit/abc1234',
         meta: {},
       },
       {
@@ -130,7 +130,7 @@ describe('transformWebhookGitHubCommits', () => {
         title: 'Newer commit',
         description: 'New change',
         timestamp: '2025-12-23T10:00:00Z',
-        href: 'https://github.com/dcyfr/dcyfr-labs/commit/def5678',
+        href: 'https://github.com/dcyfr-labs/dcyfr-labs/commit/def5678',
         meta: {},
       },
     ];

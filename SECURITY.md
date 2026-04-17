@@ -11,7 +11,7 @@ If you discover a security vulnerability, please report it responsibly.
 Instead, please report security issues via one of these methods:
 
 1. **GitHub Security Advisories** (Preferred)
-   - Go to the [Security tab](https://github.com/dcyfr/dcyfr-labs/security/advisories)
+   - Go to the [Security tab](https://github.com/dcyfr-labs/dcyfr-labs/security/advisories)
    - Click "Report a vulnerability"
    - Provide detailed information about the vulnerability
 
@@ -199,7 +199,7 @@ _No vulnerabilities have been reported to date._
 
 - **Security Issues:** Use GitHub Security Advisories or contact form
 - **General Questions:** [www.dcyfr.ai/contact](https://www.dcyfr.ai/contact)
-- **Repository:** [github.com/dcyfr/dcyfr-labs](https://github.com/dcyfr/dcyfr-labs)
+- **Repository:** [github.com/dcyfr-labs/dcyfr-labs](https://github.com/dcyfr-labs/dcyfr-labs)
 
 ---
 

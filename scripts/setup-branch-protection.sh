@@ -14,7 +14,7 @@
 
 set -e  # Exit on error
 
-REPO="dcyfr/dcyfr-labs"
+REPO="dcyfr-labs/dcyfr-labs"
 
 # Colors for output
 RED='\033[0;31m'

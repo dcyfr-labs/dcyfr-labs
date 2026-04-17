@@ -545,7 +545,7 @@ expect(result.passed).toBe(true);
 **Report Accessibility Issues:**
 
 - Email: accessibility@dcyfr.ai
-- GitHub Issues: [dcyfr/dcyfr-labs/issues](https://github.com/dcyfr/dcyfr-labs/issues)
+- GitHub Issues: [dcyfr-labs/dcyfr-labs/issues](https://github.com/dcyfr-labs/dcyfr-labs/issues)
 - Expected Response Time: 2 business days
 
 ---

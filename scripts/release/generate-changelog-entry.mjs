@@ -39,7 +39,7 @@ const debug = process.env.DEBUG === 'true';
 
 // GitHub API configuration
 const GH_TOKEN = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
-const REPO = 'dcyfr/dcyfr-labs'; // Placeholder: can be extracted from git remote later.
+const REPO = 'dcyfr-labs/dcyfr-labs'; // Placeholder: can be extracted from git remote later.
 
 /**
  * Debug logging

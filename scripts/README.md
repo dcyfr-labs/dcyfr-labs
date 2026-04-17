@@ -30,11 +30,11 @@ This directory contains utility scripts for development, testing, and maintenanc
 Checks the status of GitHub security code scanning alerts using the GitHub API.
 
 ```bash
-# Check by alert number (defaults to dcyfr/dcyfr-labs)
+# Check by alert number (defaults to dcyfr-labs/dcyfr-labs)
 node scripts/check-security-alert.mjs 2
 
 # Check by full URL
-node scripts/check-security-alert.mjs https://github.com/dcyfr/dcyfr-labs/security/code-scanning/2
+node scripts/check-security-alert.mjs https://github.com/dcyfr-labs/dcyfr-labs/security/code-scanning/2
 ```
 
 **Features:**

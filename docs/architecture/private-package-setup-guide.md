@@ -1,4 +1,5 @@
 <!-- TLP:CLEAR -->
+
 # Private Package Setup Guide
 
 ## Quick Start (5 Minutes)
@@ -95,7 +96,7 @@ npm publish
 
 **Vercel:**
 
-1. Go to: https://vercel.com/dcyfr/dcyfr-labs/settings/environment-variables
+1. Go to: https://vercel.com/dcyfr-labs/dcyfr-labs/settings/environment-variables
 2. Add:
    - Name: `GITHUB_PACKAGES_TOKEN`
    - Value: `ghp_your_production_token`

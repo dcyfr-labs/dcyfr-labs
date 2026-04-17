@@ -1,4 +1,5 @@
 <!-- TLP:CLEAR -->
+
 # GitHub Actions Setup for Prose Validation
 
 ## Overview
@@ -16,7 +17,7 @@ The workflow requires LanguageTool Pro API credentials to be configured as repos
 ### 1. Navigate to Repository Settings
 
 ```
-GitHub → dcyfr/dcyfr-labs → Settings → Secrets and variables → Actions
+GitHub → dcyfr-labs/dcyfr-labs → Settings → Secrets and variables → Actions
 ```
 
 ### 2. Add the following secrets:

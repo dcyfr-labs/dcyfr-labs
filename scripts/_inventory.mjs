@@ -394,7 +394,7 @@ function reportWorkflows() {
     `**Total:** ${files.length} workflow files`,
     `**Generated:** ${new Date().toISOString().slice(0, 10)}`,
     '',
-    '**Note:** `required_by_branch_protection` field is not populated by this script — it requires `gh api repos/dcyfr/dcyfr-labs/branches/main/protection` and authenticated access. Check manually before deletion.',
+    'Note: `required_by_branch_protection` field is not populated by this script — it requires `gh api repos/dcyfr-labs/dcyfr-labs/branches/main/protection` and authenticated access. Check manually before deletion.',
     '',
     tableHead(['file', 'triggers', 'overlapping_with_same_prefix', 'last_touched']),
     ...rows.map((r) => '| ' + r.map(esc).join(' | ') + ' |'),
@@ -747,7 +747,7 @@ function reportExternalRefs() {
     `**Findings:** ${findings.length}`,
     `**Generated:** ${new Date().toISOString().slice(0, 10)}`,
     '',
-    '**Note:** Branch protection required-checks need `gh api repos/dcyfr/dcyfr-labs/branches/main/protection` (not run by this script). Check manually before any workflow consolidation that touches required-status names.',
+    'Note: Branch protection required-checks need `gh api repos/dcyfr-labs/dcyfr-labs/branches/main/protection` (not run by this script). Check manually before any workflow consolidation that touches required-status names.',
     '',
     tableHead(['source', 'kind', 'target', 'detail']),
     ...findings.map(

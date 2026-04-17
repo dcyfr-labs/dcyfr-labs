@@ -171,7 +171,7 @@ export default async function TermsPage() {
               <li className={TYPOGRAPHY.body}>
                 <strong>Open Source:</strong> Our website code is{' '}
                 <a
-                  href="https://github.com/dcyfr/dcyfr-labs"
+                  href="https://github.com/dcyfr-labs/dcyfr-labs"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"

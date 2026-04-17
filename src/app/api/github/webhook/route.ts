@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createHmac, timingSafeEqual } from "node:crypto";
-import { inngest } from "@/inngest/client";
+import { NextRequest, NextResponse } from 'next/server';
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import { inngest } from '@/inngest/client';
 
 // GitHub webhook signature header
-const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET || "";
-const GITHUB_WEBHOOK_REPO = "dcyfr/dcyfr-labs";
+const GITHUB_WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET || '';
+const GITHUB_WEBHOOK_REPO = 'dcyfr-labs/dcyfr-labs';
 
 /**
  * Verify GitHub webhook signature using timing-safe comparison.
@@ -12,19 +12,17 @@ const GITHUB_WEBHOOK_REPO = "dcyfr/dcyfr-labs";
  */
 function verifyGitHubSignature(payload: string, signature: string): boolean {
   if (!GITHUB_WEBHOOK_SECRET) {
-    console.warn("[GitHub Webhook] GITHUB_WEBHOOK_SECRET not configured");
+    console.warn('[GitHub Webhook] GITHUB_WEBHOOK_SECRET not configured');
     return false;
   }
 
-  const hash = createHmac("sha256", GITHUB_WEBHOOK_SECRET)
-    .update(payload)
-    .digest("hex");
+  const hash = createHmac('sha256', GITHUB_WEBHOOK_SECRET).update(payload).digest('hex');
   const expected = `sha256=${hash}`;
 
   // Use timing-safe comparison to prevent timing side-channel attacks on the HMAC.
   // String `===` short-circuits on first mismatched byte, leaking secret bytes.
-  const expectedBuf = Buffer.from(expected, "utf8");
-  const signatureBuf = Buffer.from(signature, "utf8");
+  const expectedBuf = Buffer.from(expected, 'utf8');
+  const signatureBuf = Buffer.from(signature, 'utf8');
   if (expectedBuf.length !== signatureBuf.length) return false;
   return timingSafeEqual(expectedBuf, signatureBuf);
 }
@@ -48,9 +46,9 @@ function extractCommits(body: any): CommitData[] {
 
   return body.commits.map((commit: any) => ({
     hash: commit.id.slice(0, 7), // Short SHA
-    message: commit.message.split("\n")[0], // First line only
-    author: commit.author?.name || "Unknown",
-    email: commit.author?.email || "",
+    message: commit.message.split('\n')[0], // First line only
+    author: commit.author?.name || 'Unknown',
+    email: commit.author?.email || '',
     url: commit.url,
     timestamp: commit.timestamp,
   }));
@@ -60,36 +58,30 @@ export async function POST(request: NextRequest) {
   try {
     // Read raw body for signature verification
     const rawBody = await request.text();
-    const signature = request.headers.get("x-hub-signature-256");
+    const signature = request.headers.get('x-hub-signature-256');
 
     if (!signature) {
-      return NextResponse.json(
-        { error: "Missing signature header" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Missing signature header' }, { status: 401 });
     }
 
     // Verify signature
     if (!verifyGitHubSignature(rawBody, signature)) {
-      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
     // Parse body
     const body = JSON.parse(rawBody);
 
     // Only process push events
-    const eventType = request.headers.get("x-github-event");
-    if (eventType !== "push") {
-      return NextResponse.json(
-        { message: "Event type not supported", eventType },
-        { status: 200 }
-      );
+    const eventType = request.headers.get('x-github-event');
+    if (eventType !== 'push') {
+      return NextResponse.json({ message: 'Event type not supported', eventType }, { status: 200 });
     }
 
     // Only process our repository
     if (body.repository?.full_name !== GITHUB_WEBHOOK_REPO) {
       return NextResponse.json(
-        { message: "Repository not configured for this webhook" },
+        { message: 'Repository not configured for this webhook' },
         { status: 200 }
       );
     }
@@ -97,18 +89,15 @@ export async function POST(request: NextRequest) {
     // Extract commits
     const commits = extractCommits(body);
     if (commits.length === 0) {
-      return NextResponse.json(
-        { message: "No commits in payload" },
-        { status: 200 }
-      );
+      return NextResponse.json({ message: 'No commits in payload' }, { status: 200 });
     }
 
     // Send to Inngest for processing
-    const branchName = body.ref?.split("/").pop() || "unknown";
+    const branchName = body.ref?.split('/').pop() || 'unknown';
 
     for (const commit of commits) {
       await inngest.send({
-        name: "github/commit.pushed",
+        name: 'github/commit.pushed',
         data: {
           hash: commit.hash,
           message: commit.message,
@@ -131,10 +120,10 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("[GitHub Webhook] Error:", error);
+    console.error('[GitHub Webhook] Error:', error);
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
@@ -147,8 +136,8 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   return NextResponse.json({
-    status: "ok",
-    webhook: "github",
+    status: 'ok',
+    webhook: 'github',
     repository: GITHUB_WEBHOOK_REPO,
   });
 }
