@@ -1,0 +1,103 @@
+name: Red-Team Security Tests
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: 'Target deployment URL (overrides auto-detected URL)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  red-team:
+    name: Red-Team Security Tests
+    # Run on successful preview/production deployments, or manual trigger
+    if: |
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.deployment_status.state == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Resolve deployment URL
+        id: url
+        run: |
+          if [[ -n "${{ inputs.deployment_url }}" ]]; then
+            echo "url=${{ inputs.deployment_url }}" >> $GITHUB_OUTPUT
+          elif [[ -n "${{ github.event.deployment_status.target_url }}" ]]; then
+            echo "url=${{ github.event.deployment_status.target_url }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://www.dcyfr.ai" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Wait for deployment readiness
+        run: |
+          URL="${{ steps.url.outputs.url }}"
+          echo "Waiting for $URL to be ready..."
+          for i in $(seq 1 12); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/health" || echo "000")
+            if [[ "$STATUS" == "200" ]]; then
+              echo "Deployment ready after ${i}x5s"
+              exit 0
+            fi
+            echo "Attempt $i: HTTP $STATUS — retrying in 5s..."
+            sleep 5
+          done
+          echo "Deployment not ready after 60s — proceeding anyway"
+
+      - name: Run red-team security tests
+        id: tests
+        env:
+          PREVIEW_DEPLOYMENT_URL: ${{ steps.url.outputs.url }}
+          VERCEL_BYPASS_TOKEN: ${{ secrets.VERCEL_BYPASS_TOKEN }}
+          AXIOM_API_TOKEN: ${{ secrets.AXIOM_API_TOKEN }}
+          NODE_ENV: test
+        run: |
+          npm run test:red-team -- --reporter=json --outputFile=red-team-results.json || true
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Report results
+        if: always()
+        env:
+          AXIOM_API_TOKEN: ${{ secrets.AXIOM_API_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SECURITY_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOYMENT_URL: ${{ steps.url.outputs.url }}
+          DEPLOYMENT_SHA: ${{ github.sha }}
+        run: |
+          node scripts/report-red-team-results.mjs \
+            --results=red-team-results.json \
+            --axiom \
+            --slack \
+            --comment
+
+      - name: Upload results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: red-team-results-${{ github.sha }}
+          path: red-team-results.json
+          retention-days: 30
+
+      - name: Fail if tests failed
+        if: steps.tests.outputs.exit_code != '0'
+        run: |
+          echo "::error::Red-team security tests failed. Check the results artifact and Axiom dashboard."
+          exit 1

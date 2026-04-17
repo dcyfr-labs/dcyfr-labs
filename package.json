@@ -68,6 +68,7 @@
     "test:visual:baseline": "playwright test e2e/visual --update-snapshots",
     "test:visual:update": "playwright test e2e/visual --update-snapshots",
     "test:ci": "vitest run --coverage && playwright test",
+    "test:red-team": "vitest run --config vitest.red-team.config.ts",
     "test:delegation-events": "node scripts/test-delegation-events.mjs",
     "memory:load-test": "node scripts/memory-load-test.mjs",
     "memory:load-test:quick": "node scripts/memory-load-test.mjs --concurrent=5 --memories=10 --searches=5",
