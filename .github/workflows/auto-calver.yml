@@ -123,6 +123,17 @@ jobs:
       - name: Create version tag
         if: steps.check.outputs.needs_update == 'true'
         run: |
-          git tag -a "v${{ steps.calver.outputs.version }}" -m "Release version ${{ steps.calver.outputs.version }}"
-          git push origin "v${{ steps.calver.outputs.version }}"
-          echo "✅ Tag v${{ steps.calver.outputs.version }} created"
+          TAG="v${{ steps.calver.outputs.version }}"
+
+          # Idempotency: if a partial earlier run already created the tag
+          # (e.g. push succeeded but a later step failed), skip rather than
+          # fatally re-creating it. CalVer tags are per-day, so this is safe.
+          git fetch --tags origin
+          if git rev-parse -q --verify "refs/tags/$TAG" > /dev/null; then
+            echo "ℹ️  Tag $TAG already exists — skipping tag creation."
+            exit 0
+          fi
+
+          git tag -a "$TAG" -m "Release version ${{ steps.calver.outputs.version }}"
+          git push origin "$TAG"
+          echo "✅ Tag $TAG created"
