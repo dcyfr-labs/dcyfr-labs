@@ -97,6 +97,18 @@ Do not delegate for small tasks. Do not delegate understanding — brief the sub
 
 ---
 
+## Design system
+
+This app consumes the `@dcyfr-labs` shadcn registry hosted at [registry.dcyfr.ai](https://registry.dcyfr.ai). The mapping lives in `components.json` under `registries`.
+
+**Installing a UI primitive:** prefer `npx shadcn@latest add @dcyfr-labs/<name>`. Only install from the default shadcn registry when the primitive is not yet published to `@dcyfr-labs`.
+
+**Authoring a new brand-aligned variant:** do not author it inside this repo. Contribute it upstream to `dcyfr-labs/dcyfr-labs-registry/` under the `dcyfr-labs-registry` OpenSpec change. Cross-repo work follows the scope-boundaries rule above — open a session against the registry repo.
+
+**Brand surface for agents and tools:** `docs/brand/` is the public-safe distillation of the TLP:AMBER source at `nexus/context/user/brand-voice.md`. Claude Design and Claude Code handoff bundles read from `docs/brand/`, not from the private source. Keep the two in sync when the private source changes — but never paste TLP:AMBER content into `docs/brand/`.
+
+---
+
 ## Documentation placement
 
 **Public docs** go under `docs/<topic>/` in one of the eight canonical topics (see [`docs/README.md`](./docs/README.md)).
@@ -139,6 +151,7 @@ The cost of a brief pause is low. The cost of an unwanted destructive action is 
 
 - [`.well-known/automation.yaml`](./.well-known/automation.yaml) — machine-readable contract
 - [`docs/automation-glossary.md`](./docs/automation-glossary.md) — bot/assistant/agent definitions
+- [`docs/brand/`](./docs/brand/) — public-safe brand surface (voice, tokens, components)
 - [`CLAUDE.md`](./CLAUDE.md) — Claude inline task routing (assistant surface, not governance)
 - [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) — Copilot quick reference (assistant surface)
 - [`docs/_archived/AGENTS-2026-04.md`](./docs/_archived/AGENTS-2026-04.md) — previous 1788-line version (archived for one quarter)

@@ -18,5 +18,7 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "registries": {}
+  "registries": {
+    "@dcyfr-labs": "https://registry.dcyfr.ai/r/{name}.json"
+  }
 }

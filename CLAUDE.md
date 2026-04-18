@@ -8,20 +8,22 @@
 
 ## What is this repo
 
-Personal site + blog + portfolio for Drew at [dcyfr.ai](https://www.dcyfr.ai). Next.js 16 (App Router), React 19, TypeScript, Tailwind v4, shadcn/ui, MDX. Deploys to Vercel. CalVer release tags.
+Personal site + blog + portfolio for Drew at [dcyfr.ai](https://www.dcyfr.ai). Next.js 16 (App Router), React 19, TypeScript, Tailwind v4, shadcn/ui via the `@dcyfr-labs` registry ([registry.dcyfr.ai](https://registry.dcyfr.ai)), MDX. Deploys to Vercel. CalVer release tags.
 
 ## What you're likely being asked to do
 
-| Task                     | Where to look                                         |
-| ------------------------ | ----------------------------------------------------- |
-| Add/edit a blog post     | `content/blog/*.mdx`                                  |
-| Add/edit a project entry | `content/projects/*.mdx`                              |
-| Change a page layout     | `src/app/**/page.tsx`, `src/components/layouts/`      |
-| Tweak a UI primitive     | `src/components/ui/` (shadcn)                         |
-| Adjust typography/color  | `src/lib/design-tokens.ts` (never hardcode)           |
-| Fix an API route         | `src/app/api/**/route.ts`                             |
-| Update a test            | `tests/` (Vitest) or `e2e/` (Playwright)              |
-| Trace a CI failure       | `.github/workflows/` — each has an `# actor:` comment |
+| Task                                         | Where to look                                                                |
+| -------------------------------------------- | ---------------------------------------------------------------------------- |
+| Add/edit a blog post                         | `content/blog/*.mdx`                                                         |
+| Add/edit a project entry                     | `content/projects/*.mdx`                                                     |
+| Change a page layout                         | `src/app/**/page.tsx`, `src/components/layouts/`                             |
+| Tweak a UI primitive                         | `src/components/ui/` (shadcn); brand variants live in `@dcyfr-labs` registry |
+| Add a brand-aligned UI primitive             | `npx shadcn@latest add @dcyfr-labs/<name>` — prefer this over raw shadcn     |
+| Adjust typography/color                      | `src/lib/design-tokens.ts` (never hardcode)                                  |
+| Check brand voice / tokens / component rules | `docs/brand/` — public-safe brand surface                                    |
+| Fix an API route                             | `src/app/api/**/route.ts`                                                    |
+| Update a test                                | `tests/` (Vitest) or `e2e/` (Playwright)                                     |
+| Trace a CI failure                           | `.github/workflows/` — each has an `# actor:` comment                        |
 
 ## Routing rules
 
@@ -29,6 +31,7 @@ Personal site + blog + portfolio for Drew at [dcyfr.ai](https://www.dcyfr.ai). N
 - **Design token enforcement** — ESLint (`eslint-plugin-design-tokens`) rejects raw colors, spacing values, or font sizes. If the lint error points at a hardcoded value, look it up in `src/lib/design-tokens.ts` and use the token.
 - **New dependency** — before `npm install <pkg>`, check whether an existing dep already covers the use case. The repo has a `depcheck` regression gate in CI, and new deps need to justify their weight.
 - **New route** — add the file under `src/app/<route>/page.tsx`. Add a sitemap entry in `src/app/sitemap.ts` and an analytics event if applicable. See existing pages for the pattern.
+- **Installing a UI primitive** — prefer `npx shadcn@latest add @dcyfr-labs/<name>` (brand-aligned variants over `registry.dcyfr.ai`). Only fall back to raw shadcn when the primitive is not yet published to `@dcyfr-labs`. If you need a brand-aligned wrapper that doesn't exist, open a change under `openspec/changes/dcyfr-labs-registry/` — do not author one inside this app.
 
 ## Don'ts
 
@@ -67,3 +70,5 @@ Stop and ask when:
 - [`README.md`](./README.md) — human-audience project overview
 - [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) — Copilot inline quick reference
 - [`docs/automation-glossary.md`](./docs/automation-glossary.md) — definitions for bot/assistant/agent
+- [`docs/brand/`](./docs/brand/) — public-safe brand voice, tokens, and component rules (also ingested by Claude Design)
+- `dcyfr-labs/dcyfr-labs-registry/` (sibling repo) — `@dcyfr-labs` shadcn registry source

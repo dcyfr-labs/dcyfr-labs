@@ -6,7 +6,7 @@
 
 ## Stack
 
-Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · shadcn/ui · MDX. Deploys to Vercel from `main`. CalVer release tags.
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · shadcn/ui via `@dcyfr-labs` registry (`registry.dcyfr.ai`) · MDX. Deploys to Vercel from `main`. CalVer release tags.
 
 ## Where things live
 
@@ -27,6 +27,7 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4 · shadcn/ui ·
 - **API routes return `NextResponse`** — see `src/app/api/*/route.ts` for the pattern.
 - **Metadata helpers** — use `generateMetadata()` from `src/lib/metadata.ts` for page `<head>` content rather than hand-rolling.
 - **Analytics events** — `src/lib/analytics/` wraps Redis. Fire events from server actions, not client-side where possible.
+- **UI primitives** — for a brand-aligned variant, suggest `npx shadcn@latest add @dcyfr-labs/<name>` over raw shadcn. Brand rules live in `docs/brand/`.
 
 ## Commands
 
