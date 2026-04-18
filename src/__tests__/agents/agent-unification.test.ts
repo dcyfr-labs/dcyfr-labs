@@ -82,7 +82,7 @@ describe('Topline file de-duplication', () => {
     return text
       .replace(/\[[^\]]*?\]\([^)]*\)/g, '') // markdown links
       .replace(/`[^`\n]+`/g, '') // inline code spans
-      .replace(/^\s*[-|:]{3,}.*$/gm, '') // table separators
+      .replace(/^[\s|:\-]*[|:\-][\s|:\-]*$/gm, '') // table separators (incl. `| --- | --- |` style with spaces)
       .replace(/^\s*```[\s\S]*?```\s*$/gm, '') // fenced code blocks
       .replace(/<!--[\s\S]*?-->/g, ''); // html comments (incl. audience tag)
   }
