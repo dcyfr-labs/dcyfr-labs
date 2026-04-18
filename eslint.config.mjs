@@ -2,8 +2,8 @@ import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
 import nextPlugin from '@next/eslint-plugin-next';
 
-// Load custom rules from shared tokens package
-const localRules = await import('@dcyfr-labs/tokens/eslint-rules');
+// Load custom local rules
+const localRules = await import('./eslint-local-rules/index.js');
 
 export default [
   {
