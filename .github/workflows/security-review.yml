@@ -27,6 +27,11 @@ jobs:
     name: Security Review (Claude Code)
     runs-on: ubuntu-latest
 
+    # Skip on Dependabot PRs: Dependabot uses a separate secret scope, so
+    # CLAUDE_API_KEY resolves to empty and the action fails. CodeQL, Semgrep,
+    # and npm audit still run on dep bumps, so coverage remains.
+    if: github.actor != 'dependabot[bot]'
+
     # Note: The action itself validates the API key and exits gracefully if missing.
     # (Job-level 'if' cannot access the secrets context — that check lives inside the action.)
 
