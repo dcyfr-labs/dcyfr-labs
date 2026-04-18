@@ -38,10 +38,15 @@ permissions:
 jobs:
   detect-failure:
     name: Detect Deployment Failure
+    # Scoped to production (main) deployments only. Preview deploys for
+    # bot PRs (Dependabot, etc.) generate noise and often fail for reasons
+    # unrelated to app health. Use workflow_dispatch for manual preview
+    # remediation.
     if: |
       github.event_name == 'workflow_dispatch' ||
-      (github.event.deployment_status.state == 'failure' ||
-       github.event.deployment_status.state == 'error')
+      ((github.event.deployment_status.state == 'failure' ||
+        github.event.deployment_status.state == 'error') &&
+       github.event.deployment.environment == 'Production')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
