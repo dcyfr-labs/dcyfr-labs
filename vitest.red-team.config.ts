@@ -16,7 +16,5 @@ export default defineConfig({
     reporters: ['default', 'json'],
     outputFile: 'red-team-results.json',
     env: { NODE_ENV: 'test' },
-    pool: 'threads',
-    poolOptions: { threads: { minThreads: 1, maxThreads: 4 } },
   },
 });
