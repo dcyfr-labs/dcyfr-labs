@@ -441,9 +441,9 @@ jobs:
           FAILED=0
           SKIPPED=0
 
-          [ "${{ needs.repository-scan.result }}" == "success" ] && ((PASSED++)) || [ "${{ needs.repository-scan.result }}" != "skipped" ] && ((FAILED++)) || ((SKIPPED++))
-          [ "${{ needs.gitleaks-scan.result }}" == "success" ] && ((PASSED++)) || [ "${{ needs.gitleaks-scan.result }}" != "skipped" ] && ((FAILED++)) || ((SKIPPED++))
-          [ "${{ needs.reports-scan.result }}" == "success" ] && ((PASSED++)) || [ "${{ needs.reports-scan.result }}" != "skipped" ] && ((FAILED++)) || ((SKIPPED++))
+          if [ "${{ needs.repository-scan.result }}" == "success" ]; then PASSED=$((PASSED+1)); elif [ "${{ needs.repository-scan.result }}" != "skipped" ]; then FAILED=$((FAILED+1)); else SKIPPED=$((SKIPPED+1)); fi
+          if [ "${{ needs.gitleaks-scan.result }}" == "success" ]; then PASSED=$((PASSED+1)); elif [ "${{ needs.gitleaks-scan.result }}" != "skipped" ]; then FAILED=$((FAILED+1)); else SKIPPED=$((SKIPPED+1)); fi
+          if [ "${{ needs.reports-scan.result }}" == "success" ]; then PASSED=$((PASSED+1)); elif [ "${{ needs.reports-scan.result }}" != "skipped" ]; then FAILED=$((FAILED+1)); else SKIPPED=$((SKIPPED+1)); fi
 
           echo "**Results:** $PASSED passed, $FAILED failed, $SKIPPED skipped" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

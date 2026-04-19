@@ -96,7 +96,7 @@ const LOCAL_PATTERNS = [
     confidence: 0.95,
   },
   {
-    pattern: /<script[^>]*>[\s\S]*<\/script>/i,
+    pattern: /<script[^>]*>[\s\S]*<\/script\s*>/i,
     category: 'xss-attempt',
     severity: 'high' as const,
     confidence: 0.9,

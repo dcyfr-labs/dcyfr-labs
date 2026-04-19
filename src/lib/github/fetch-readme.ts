@@ -48,11 +48,17 @@ async function fetchWithTimeout(url: string, headers: Record<string, string>): P
  *  - The request fails (network / rate limit)
  */
 export async function fetchRepoReadme(repoFullName: string): Promise<string> {
+  // Validate repo name format before using it in a URL (CWE-918 / file-access-to-http).
+  // Accepts only "owner/repo" with alphanumeric characters, dots, hyphens, and underscores.
+  if (!/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(repoFullName)) {
+    return '';
+  }
+
   // Fresh cache hit
   const cached = readReadmeCache(repoFullName);
   if (cached) return cached.content;
 
-  const url = `${GITHUB_API_CONFIG.baseUrl}/repos/${repoFullName}/readme`;
+  const url = `${GITHUB_API_CONFIG.baseUrl}/repos/${encodeURIComponent(repoFullName.split('/')[0])}/${encodeURIComponent(repoFullName.split('/')[1])}/readme`;
   const headers = buildHeaders();
 
   let res: Response;

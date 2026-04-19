@@ -135,6 +135,7 @@ const tableHead = (cols) => `| ${cols.join(' | ')} |\n| ${cols.map(() => '---').
 
 const esc = (s) =>
   String(s ?? '')
+    .replace(/\\/g, '\\\\') // escape backslashes first so subsequent replacements don't double-escape
     .replace(/\|/g, '\\|')
     .replace(/\n/g, ' ');
 
@@ -208,7 +209,10 @@ function reportScripts() {
     const lastTouched = gitLastDate('package.json'); // package.json is monolithic; per-script granularity not possible
     rows.push([
       name,
-      '`' + def.slice(0, 80).replace(/`/g, '\\`') + (def.length > 80 ? '…' : '') + '`',
+      '`' +
+        def.slice(0, 80).replace(/\\/g, '\\\\').replace(/`/g, '\\`') +
+        (def.length > 80 ? '…' : '') +
+        '`',
       refs.join(', ') || '—',
       status,
     ]);
@@ -256,10 +260,10 @@ function reportRoutes() {
     // Derive route path: src/app/foo/page.tsx → /foo  ; src/app/api/foo/route.ts → /api/foo
     const routePath =
       '/' +
-      dirname(rel)
-        .replace(/^src\/app\/?/, '')
-        .replace(/\/?\(.*?\)/g, '') // strip route groups (group)
-        .replace(/^$/, '');
+        dirname(rel)
+          .replace(/^src\/app\/?/, '')
+          .replace(/\/?\(.*?\)/g, '') || // strip route groups (group)
+      '';
     const cleanPath = routePath === '/' ? '/' : routePath;
 
     const dirRel = dirname(rel);

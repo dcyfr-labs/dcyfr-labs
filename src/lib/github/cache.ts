@@ -7,6 +7,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { CACHE_CONFIG } from '@/config/repos-config';
 import type { RepoCacheEntry, ReadmeCacheEntry } from './types';
 
@@ -33,7 +34,13 @@ function ensureCacheDir(): void {
 function cacheFilePath(key: string): string {
   // Sanitise key so it's safe as a filename
   const safe = key.replace(/[^a-zA-Z0-9_-]/g, '_');
-  return path.join(cacheDir(), `${safe}.json`);
+  const dir = cacheDir();
+  const resolved = path.join(dir, `${safe}.json`);
+  // Confirm the resolved path stays within the cache directory (path-confinement).
+  if (!resolved.startsWith(dir + path.sep) && !resolved.startsWith(dir + '/')) {
+    throw new Error(`Cache path escape attempt: ${resolved}`);
+  }
+  return resolved;
 }
 
 // ---------------------------------------------------------------------------
@@ -43,7 +50,8 @@ function cacheFilePath(key: string): string {
 function writeCache<T extends { fetchedAt: string }>(key: string, data: T): void {
   ensureCacheDir();
   const file = cacheFilePath(key);
-  const tmp = `${file}.tmp`;
+  // Use a random suffix so the temp file is not predictable (CWE-377).
+  const tmp = `${file}.${crypto.randomBytes(6).toString('hex')}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf-8');
   fs.renameSync(tmp, file);
 }

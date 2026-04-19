@@ -226,7 +226,7 @@ describe('Security Fixes: CodeQL Alerts Resolution', () => {
 
         // Step 1: Remove dangerous tags
         let sanitized = dangerousHTML
-          .replace(/<(script|style)[^>]*>.*?<\/\1>/gi, '')
+          .replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, '') // [\s\S]*? matches across newlines
           .replace(/<[^>]+>/g, '')
           .replace(/\s+/g, ' ')
           .trim();
