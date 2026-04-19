@@ -316,7 +316,7 @@ export default async function Home() {
               return (
                 <Link
                   key={post.slug}
-                  href={`/blog/${post.slug}`}
+                  href={`/blog/${encodeURIComponent(post.slug)}`}
                   className={cn(
                     'group flex items-center justify-between gap-4 py-4',
                     '-mx-2 px-2 rounded-lg',

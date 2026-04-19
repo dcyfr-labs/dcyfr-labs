@@ -492,7 +492,11 @@ export function createCollectionSchema(options: CollectionSchemaOptions) {
 export function getJsonLdScriptProps(schema: object, nonce?: string) {
   const props: Record<string, unknown> = {
     type: 'application/ld+json',
-    dangerouslySetInnerHTML: { __html: JSON.stringify(schema) },
+    // Escape '</script>' to prevent a stored value inside the schema object
+    // from breaking out of the script tag (CWE-79).
+    dangerouslySetInnerHTML: {
+      __html: JSON.stringify(schema).replace(/<\/script>/gi, '<\\/script>'),
+    },
     suppressHydrationWarning: true,
   };
 

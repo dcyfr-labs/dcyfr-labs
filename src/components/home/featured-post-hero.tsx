@@ -91,7 +91,7 @@ export function FeaturedPostHero({ post, loading = false }: FeaturedPostHeroProp
 
   return (
     <Link
-      href={`/blog/${post.slug}`}
+      href={`/blog/${encodeURIComponent(post.slug)}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setMousePosition({ x: 0.5, y: 0.5 })}
       className={cn(

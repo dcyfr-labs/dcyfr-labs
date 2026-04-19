@@ -60,7 +60,11 @@ export function FAQSection({ items, defaultOpen = false }: FAQSectionProps) {
       {/* FAQ Schema for AI optimization */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{
+          // Escape '</script>' so a stored value in the schema cannot break
+          // out of this script tag (CWE-79).
+          __html: JSON.stringify(faqSchema).replace(/<\/script>/gi, '<\\/script>'),
+        }}
         suppressHydrationWarning
       />
 

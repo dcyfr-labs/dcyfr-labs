@@ -154,7 +154,11 @@ export function FAQSchema({
       <Script
         id="faq-schema"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+        dangerouslySetInnerHTML={{
+          // Escape '</script>' so stored schema values cannot break out of
+          // this script tag (CWE-79).
+          __html: JSON.stringify(schemaData).replace(/<\/script>/gi, '<\\/script>'),
+        }}
       />
 
       <div className={cn('faq-schema-container', `my-${SPACING_SCALE.lg}`, className)}>

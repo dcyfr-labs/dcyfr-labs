@@ -124,7 +124,7 @@ function ArticleCard({ article }: { article: InoreaderArticle }) {
   // FIX: CWE-116 - Use 'he' library for safe HTML entity decoding
   // This prevents double-decoding attacks by properly handling entity order
   let plainTextSummary = article.summary.content
-    .replace(/<(script|style)[^>]*>.*?<\/\1>/gi, '') // Pass 1: Remove dangerous tags
+    .replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, '') // Pass 1: Remove dangerous tags ([\s\S]*? matches across newlines)
     .replace(/<[^>]+>/g, '') // Pass 2: Remove all HTML tags
     .replace(/\s+/g, ' ') // Pass 3: Normalize whitespace
     .trim();
