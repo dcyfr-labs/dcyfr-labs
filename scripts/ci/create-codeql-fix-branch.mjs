@@ -37,14 +37,7 @@ function generateBranchName() {
     .substring(0, 20);
 
   const branchName = `security/codeql-${ALERT_NUMBER}-${ruleShort}`;
-  return branchName
-    .split(/-+/)
-    .filter(Boolean)
-    .join('-')
-    .replace('security/codeql', 'security/codeql');
-}
-
-function branchExists(branchName) {
+  return branchName.split(/-+/).filter(Boolean).join('-');
   try {
     execaSync('git', ['rev-parse', '--verify', `refs/heads/${branchName}`], {
       stdio: 'ignore',

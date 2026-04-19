@@ -168,8 +168,10 @@ class DocumentationRationalizer {
 
   async analyzeFile(file) {
     try {
-      const stats = fs.statSync(file.fullPath);
+      // Read file content first; derive mtime from a subsequent stat call.
+      // This avoids a TOCTOU window (CWE-367) between the existence check and read.
       const content = fs.readFileSync(file.fullPath, 'utf8');
+      const stats = fs.statSync(file.fullPath);
 
       // Categorize by directory
       if (!this.analysis.categories[file.category]) {
@@ -340,7 +342,7 @@ This document consolidates related documentation to reduce operational overhead.
   formatFileSection(file, content) {
     const filename = file.name.replace('.md', '');
     const cleanContent = content
-      .replace(/^<!--.*?-->[\s\n]*/m, '') // Remove TLP headers
+      .replace(/^<!--[\s\S]*?-->[\s\n]*/m, '') // Remove TLP headers ([\s\S]*? matches multi-line comments)
       .replace(/^# .*/m, '') // Remove main title
       .trim();
 

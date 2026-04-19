@@ -84,7 +84,8 @@ describe('Topline file de-duplication', () => {
       .replace(/`[^`\n]+`/g, '') // inline code spans
       .replace(/^[\s|:\-]*[|:\-][\s|:\-]*$/gm, '') // table separators (incl. `| --- | --- |` style with spaces)
       .replace(/^\s*```[\s\S]*?```\s*$/gm, '') // fenced code blocks
-      .replace(/<!--[\s\S]*?-->/g, ''); // html comments (incl. audience tag)
+      .replace(/<!--[\s\S]*?-->/g, '') // html comments (incl. audience tag)
+      .replace(/<!--/g, ''); // defensive: remove any remaining comment-opens after the above pass
   }
 
   const contents = TOPLINE_FILES.map(({ file }) => ({

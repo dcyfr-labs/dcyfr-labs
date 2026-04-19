@@ -1,0 +1,313 @@
+# actor: agent
+name: Workflow Failure Issue Monitor
+
+on:
+  workflow_run:
+    workflows:
+      - Accessibility Validation
+      - Auto CalVer Update
+      - Automated Release
+      - Automated Test Metrics Collection
+      - Cache Refresh
+      - Claude Code Security Review
+      - CodeQL Analysis
+      - Deploy
+      - Issue Triage Automation
+      - Lighthouse CI
+      - Monthly Cleanup
+      - Performance Monitoring
+      - Post-Deploy Cache Invalidation
+      - Post-Deploy Cache Refresh
+      - PR Automation
+      - Privacy & Security Scan Suite
+      - Prompt Security Scan
+      - Prose Validation
+      - Red-Team Security Tests
+      - Security Suite
+      - Sitemap Validation
+      - SonarCloud Analysis
+      - Stale Issues & PRs
+      - Sync Preview Branch
+      - Test
+      - Test (Preview - Fast Track)
+      - Universal PR Auto-Merge
+      - Validate Feeds
+      - Validation Suite
+      - Vercel Deployment Auto-Remediation
+      - Vercel Deployment Checks
+      - Verified Commit Validation
+      - Weekly Test Health
+      - repo-budget-guardrails
+    types: [completed]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+jobs:
+  render-failure-as-issue:
+    name: Render workflow failure as issue
+    if: >-
+      github.event_name == 'workflow_run' &&
+      contains(fromJSON('["failure", "timed_out", "cancelled", "action_required", "startup_failure"]'), github.event.workflow_run.conclusion)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update workflow failure issue
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const run = context.payload.workflow_run;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const branch = run.head_branch || 'unknown-branch';
+            const marker = `<!-- workflow-failure:${run.workflow_id}:${branch} -->`;
+            const title = `[Workflow Failure] ${run.name} (${branch})`;
+            const runUrl = run.html_url;
+            const sha = run.head_sha;
+            const actor = run.triggering_actor?.login || run.actor?.login || 'unknown';
+            const conclusion = run.conclusion || 'unknown';
+
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const existing = openIssues.find((issue) =>
+              issue.title === title || (issue.body || '').includes(marker)
+            );
+
+            const details = [
+              'A monitored workflow run completed with a non-success conclusion.',
+              '',
+              `- **Workflow:** ${run.name}`,
+              `- **Conclusion:** ${conclusion}`,
+              `- **Branch:** ${branch}`,
+              `- **Commit:** ${sha}`,
+              `- **Actor:** @${actor}`,
+              `- **Event:** ${run.event}`,
+              `- **Run:** ${runUrl}`,
+              '',
+              '_This issue is managed automatically by `workflow-failure-issue-monitor.yml`._',
+            ].join('\n');
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body: [
+                  `New failure occurrence at ${new Date().toISOString()}:`,
+                  '',
+                  details,
+                ].join('\n'),
+              });
+
+              core.info(`Updated existing issue #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body: `${marker}\n\n${details}`,
+              });
+
+              core.info(`Created issue #${created.data.number}`);
+            }
+
+  close-resolved-failure-issue:
+    name: Close workflow failure issue on recovery
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close open issue when workflow returns to success
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const run = context.payload.workflow_run;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const branch = run.head_branch || 'unknown-branch';
+            const marker = `<!-- workflow-failure:${run.workflow_id}:${branch} -->`;
+
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const existing = openIssues.find((issue) =>
+              (issue.body || '').includes(marker)
+            );
+
+            if (!existing) {
+              core.info('No open failure issue found for this workflow/branch.');
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: existing.number,
+              body: [
+                `Workflow recovered at ${new Date().toISOString()}.`,
+                '',
+                `- **Workflow:** ${run.name}`,
+                `- **Branch:** ${branch}`,
+                `- **Run:** ${run.html_url}`,
+                '',
+                'Closing this automated failure issue.',
+              ].join('\n'),
+            });
+
+            await github.rest.issues.update({
+              owner,
+              repo,
+              issue_number: existing.number,
+              state: 'closed',
+            });
+
+            core.info(`Closed issue #${existing.number}`);
+
+  audit-coverage:
+    name: Audit monitor coverage
+    if: github.event_name != 'workflow_run'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue if workflows are not covered by the monitor
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const monitorName = 'Workflow Failure Issue Monitor';
+            const coverageMarker = '<!-- workflow-failure-coverage-gap -->';
+            const coverageIssueTitle = '[Workflow Coverage Gap] Failure monitor is missing workflows';
+
+            const monitored = new Set([
+              'Accessibility Validation',
+              'Auto CalVer Update',
+              'Automated Release',
+              'Automated Test Metrics Collection',
+              'Cache Refresh',
+              'Claude Code Security Review',
+              'CodeQL Analysis',
+              'Deploy',
+              'Issue Triage Automation',
+              'Lighthouse CI',
+              'Monthly Cleanup',
+              'Performance Monitoring',
+              'Post-Deploy Cache Invalidation',
+              'Post-Deploy Cache Refresh',
+              'PR Automation',
+              'Privacy & Security Scan Suite',
+              'Prompt Security Scan',
+              'Prose Validation',
+              'Red-Team Security Tests',
+              'Security Suite',
+              'Sitemap Validation',
+              'SonarCloud Analysis',
+              'Stale Issues & PRs',
+              'Sync Preview Branch',
+              'Test',
+              'Test (Preview - Fast Track)',
+              'Universal PR Auto-Merge',
+              'Validate Feeds',
+              'Validation Suite',
+              'Vercel Deployment Auto-Remediation',
+              'Vercel Deployment Checks',
+              'Verified Commit Validation',
+              'Weekly Test Health',
+              'repo-budget-guardrails',
+            ]);
+
+            const workflows = await github.paginate(github.rest.actions.listRepoWorkflows, {
+              owner,
+              repo,
+              per_page: 100,
+            });
+
+            const activeWorkflowNames = workflows
+              .filter((w) => w.state === 'active')
+              .map((w) => w.name)
+              .filter((name) => name !== monitorName);
+
+            const missing = activeWorkflowNames.filter((name) => !monitored.has(name)).sort();
+
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const existingCoverageIssue = openIssues.find((issue) =>
+              issue.title === coverageIssueTitle || (issue.body || '').includes(coverageMarker)
+            );
+
+            if (missing.length === 0) {
+              core.info('All active workflows are covered by the monitor.');
+
+              if (existingCoverageIssue) {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: existingCoverageIssue.number,
+                  body: 'Coverage audit passed. Closing this issue because all active workflows are now monitored.',
+                });
+
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: existingCoverageIssue.number,
+                  state: 'closed',
+                });
+              }
+
+              return;
+            }
+
+            const body = [
+              coverageMarker,
+              '',
+              'The workflow failure monitor does not currently include all active workflows.',
+              '',
+              '### Missing workflow coverage',
+              ...missing.map((name) => `- ${name}`),
+              '',
+              'Please add these names to:',
+              '- `.github/workflows/workflow-failure-issue-monitor.yml` → `on.workflow_run.workflows`',
+              '- `audit-coverage` monitored set in the same file',
+              '',
+              `_Detected at ${new Date().toISOString()}._',
+            ].join('\n');
+
+            if (existingCoverageIssue) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existingCoverageIssue.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title: coverageIssueTitle,
+                body,
+              });
+            }

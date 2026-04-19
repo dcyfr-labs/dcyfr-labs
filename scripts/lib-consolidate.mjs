@@ -126,15 +126,17 @@ class LibConsolidator {
         if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== '__tests__') {
           files.push(...(await this.getAllLibFiles(fullPath, relativePath)));
         } else if (entry.isFile() && (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx'))) {
-          const stats = fs.statSync(fullPath);
           const content = fs.readFileSync(fullPath, 'utf8');
+          // Derive size from the already-read buffer — avoids TOCTOU between
+          // statSync and readFileSync (CWE-367).
+          const size = Buffer.byteLength(content, 'utf8');
 
           files.push({
             name: entry.name,
             path: relativePath,
             fullPath,
             directory: path.dirname(relativePath) || 'lib',
-            size: stats.size,
+            size,
             lines: content.split('\n').length,
             content: content.substring(0, 500), // First 500 chars for analysis
           });
