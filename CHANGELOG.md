@@ -10,6 +10,85 @@
 
 ### Changed
 
+- Testing - add comprehensive tests for table-utils, api-cost-calculator, redis-client, api-usage-tracker
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **agents** - Documentation - stock vs brand-variant sibling adoption rule
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- fix/issue triage cross repo token (#462)
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- deprecate stale prompt security workflow to prevent false scheduled failures
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.18
+- **release** - version 2026.04.18
+- **auto-calver** - make tag creation idempotent (#424)
+- **vercel-remediation** - scope to Production deployments only (#423)
+- chore(deps)(deps): bump protobufjs, @opentelemetry/exporter-trace-otlp-proto, @opentelemetry/auto-instrumentations-node and @opentelemetry/exporter-trace-otlp-http (#419)
+- **release** - version 2026.04.18
+- **security-review** - skip Claude Code on Dependabot PRs (#422)
+- **release** - version 2026.04.18
+- Revert "Refactor code structure for improved readability and maintainability"
+- **release** - version 2026.04.18
+- Refactor code structure for improved readability and maintainability
+- **ci** - prune 22 redundant and deprecated workflows
+- chore(deps)(deps): bump langsmith from 0.5.18 to 0.5.20 (#413)
+- chore(deps)(deps): bump react-is from 19.2.4 to 19.2.5 (#410)
+- chore(deps)(deps): bump dotenv from 17.4.1 to 17.4.2 (#409)
+- chore(deps-dev)(deps-dev): bump @types/node (#404)
+- chore(deps)(deps): bump lucide-react in the ui-framework group (#405)
+- chore(deps)(deps): bump inngest in the background-jobs group (#406)
+- chore(deps)(deps): bump the email group with 2 updates (#407)
+- chore(deps-dev)(deps-dev): bump ts-morph from 27.0.2 to 28.0.0 (#408)
+- chore(deps)(deps): bump follow-redirects from 1.15.11 to 1.16.0 (#412)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.82.0 to 0.89.0 (#415)
+- chore(deps)(deps): bump the nextjs-core group across 1 directory with 3 updates (#416)
+- chore(deps)(deps): bump dompurify from 3.3.3 to 3.4.0 (#417)
+- chore(deps-dev)(deps-dev): bump the dev-tools group across 1 directory with 13 updates (#418)
+- chore(deps)(deps): bump hono from 4.12.12 to 4.12.14 (#414)
+- **repo** - update repository URLs to dcyfr-labs org
+- fix TLP compliance + depcheck ratchet for _private/ and peer-chain restore
+
+### Fixed
+
+- **ci** - use x-cron-secret header in cache-refresh workflow
+- **ci** - exclude cancelled conclusions from workflow failure monitor
+- **security** - pin GitHub Action to SHA + fix CORS wildcard in OPTIONS handler
+- prevent issue-triage workflow failure loops on inaccessible script repo (#457)
+- add missing workflows to failure monitor coverage (#453) (#454)
+- resolve sitemap validation and SonarCloud quality gate failures (#435)
+- **security** - remediate 25 CodeQL/Semgrep alerts (closes #421)
+- **tests** - topline dedup regex misses ` | ` table separators (#426)
+- **red-team** - drop pool/poolOptions config — incompatible with vitest 4.x (#425)
+- update repository references from dcyfr/dcyfr-labs to dcyfr-labs/dcyfr-labs across documentation, scripts, and codebase
+- **validator** - verify withBotId import subpath actually resolves
+
+### Security
+
+- remediate GHSA-rp42-5vxx-qpwr DoS via basic-ftp@5.3.0 override (#452)
+
+---
+
+**Full Changelog**: [2026.4.19...2026.04.19](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.4.19...v2026.04.19)
+
+## [2026.04.19] - 2026-04-19
+
+### Added
+
+- **ui** - install Wave 1 primitives + migrate ReviewForm to @dcyfr-labs
+- **ui** - install @dcyfr-labs/{dcyfr-card,dcyfr-badge,dcyfr-dialog}
+- **chrome** - reference shell — SiteNav, SiteFooter, PageShell, ThemeSwitcher
+- **design-system** - consume @dcyfr-labs registry + publish brand surface
+- **security** - add red-team CI/CD pipeline and test runner (Phase 4)
+
+### Changed
+
 - **release** - version 2026.04.19
 - **release** - version 2026.04.19
 - **release** - version 2026.04.19
