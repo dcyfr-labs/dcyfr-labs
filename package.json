@@ -424,7 +424,8 @@
     "langsmith": ">=0.4.6",
     "undici": ">=6.23.0",
     "@qdrant/js-client-rest": ">=1.16.0",
-    "@axiomhq/js": "^1.6.0"
+    "@axiomhq/js": "^1.6.0",
+    "basic-ftp": "^5.3.0"
   },
   "optionalDependencies": {
     "@anthropic-ai/sdk": "0.89.0"
