@@ -61,7 +61,7 @@ jobs:
     name: Render workflow failure as issue
     if: >-
       github.event_name == 'workflow_run' &&
-      contains(fromJSON('["failure", "timed_out", "cancelled", "action_required", "startup_failure"]'), github.event.workflow_run.conclusion)
+      contains(fromJSON('["failure", "timed_out", "action_required", "startup_failure"]'), github.event.workflow_run.conclusion)
     runs-on: ubuntu-latest
     steps:
       - name: Create or update workflow failure issue
