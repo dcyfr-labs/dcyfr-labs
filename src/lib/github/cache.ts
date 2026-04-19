@@ -34,9 +34,10 @@ function ensureCacheDir(): void {
 function cacheFilePath(key: string): string {
   // Sanitise key so it's safe as a filename
   const safe = key.replace(/[^a-zA-Z0-9_-]/g, '_');
-  const resolved = path.join(cacheDir(), `${safe}.json`);
+  const dir = cacheDir();
+  const resolved = path.join(dir, `${safe}.json`);
   // Confirm the resolved path stays within the cache directory (path-confinement).
-  if (!resolved.startsWith(cacheDir() + path.sep) && !resolved.startsWith(cacheDir() + '/')) {
+  if (!resolved.startsWith(dir + path.sep) && !resolved.startsWith(dir + '/')) {
     throw new Error(`Cache path escape attempt: ${resolved}`);
   }
   return resolved;

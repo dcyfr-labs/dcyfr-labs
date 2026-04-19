@@ -293,7 +293,7 @@ jobs:
               '- `.github/workflows/workflow-failure-issue-monitor.yml` → `on.workflow_run.workflows`',
               '- `audit-coverage` monitored set in the same file',
               '',
-              `_Detected at ${new Date().toISOString()}._',
+              `_Detected at ${new Date().toISOString()}._`,
             ].join('\n');
 
             if (existingCoverageIssue) {
