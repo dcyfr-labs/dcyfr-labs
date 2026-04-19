@@ -4,14 +4,22 @@ name: Workflow Failure Issue Monitor
 on:
   workflow_run:
     workflows:
+      - .github/workflows/accessibility.yml
+      - .github/workflows/universal-pr-auto-merge.yml
+      - .github/workflows/vercel-deployment-remediation.yml
       - Accessibility Validation
+      - Allowlist Validation
       - Auto CalVer Update
       - Automated Release
       - Automated Test Metrics Collection
       - Cache Refresh
       - Claude Code Security Review
+      - CodeQL
       - CodeQL Analysis
+      - Copilot cloud agent
+      - Copilot code review
       - Deploy
+      - Dependabot Updates
       - Issue Triage Automation
       - Lighthouse CI
       - Monthly Cleanup
@@ -21,6 +29,7 @@ on:
       - PR Automation
       - Privacy & Security Scan Suite
       - Prompt Security Scan
+      - Prompt Security Scan (Deprecated)
       - Prose Validation
       - Red-Team Security Tests
       - Security Suite
@@ -30,7 +39,6 @@ on:
       - Sync Preview Branch
       - Test
       - Test (Preview - Fast Track)
-      - Universal PR Auto-Merge
       - Validate Feeds
       - Validation Suite
       - Vercel Deployment Auto-Remediation
@@ -199,14 +207,22 @@ jobs:
             const coverageIssueTitle = '[Workflow Coverage Gap] Failure monitor is missing workflows';
 
             const monitored = new Set([
+              '.github/workflows/accessibility.yml',
+              '.github/workflows/universal-pr-auto-merge.yml',
+              '.github/workflows/vercel-deployment-remediation.yml',
               'Accessibility Validation',
+              'Allowlist Validation',
               'Auto CalVer Update',
               'Automated Release',
               'Automated Test Metrics Collection',
               'Cache Refresh',
               'Claude Code Security Review',
+              'CodeQL',
               'CodeQL Analysis',
+              'Copilot cloud agent',
+              'Copilot code review',
               'Deploy',
+              'Dependabot Updates',
               'Issue Triage Automation',
               'Lighthouse CI',
               'Monthly Cleanup',
@@ -216,6 +232,7 @@ jobs:
               'PR Automation',
               'Privacy & Security Scan Suite',
               'Prompt Security Scan',
+              'Prompt Security Scan (Deprecated)',
               'Prose Validation',
               'Red-Team Security Tests',
               'Security Suite',
@@ -225,7 +242,6 @@ jobs:
               'Sync Preview Branch',
               'Test',
               'Test (Preview - Fast Track)',
-              'Universal PR Auto-Merge',
               'Validate Feeds',
               'Validation Suite',
               'Vercel Deployment Auto-Remediation',
