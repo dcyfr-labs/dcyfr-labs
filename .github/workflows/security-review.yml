@@ -43,7 +43,7 @@ jobs:
           fetch-depth: 2
 
       - name: Claude Code Security Review
-        uses: anthropics/claude-code-security-review@main
+        uses: anthropics/claude-code-security-review@0c6a49f1fa56a1d472575da86a94dbc1edb78eda  # main @ 2026-04-19
         with:
           claude-api-key: ${{ secrets.CLAUDE_API_KEY }}
 
@@ -87,4 +87,3 @@ jobs:
           # Tech-stack-specific scan guidance to improve precision.
           custom-security-scan-instructions: >
             .github/security/custom-scan-instructions.md
-

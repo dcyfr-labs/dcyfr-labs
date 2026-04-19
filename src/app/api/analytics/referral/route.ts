@@ -241,14 +241,22 @@ export async function GET(request: NextRequest) {
 // OPTIONS - CORS Preflight
 // ============================================================================
 
-export async function OPTIONS() {
+export async function OPTIONS(request: NextRequest) {
+  // Restrict CORS preflight to the configured site origin — consistent with
+  // the origin validation applied in POST. Wildcard would allow preflight
+  // while the actual request handler rejects it, which is misleading.
+  const allowedOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+  const requestOrigin = request.headers.get('origin') ?? '';
+  const originValidation = validateOrigin(request, allowedOrigin);
+
   return NextResponse.json(
     {},
     {
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': originValidation.valid ? requestOrigin : allowedOrigin,
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
+        Vary: 'Origin',
       },
     }
   );
