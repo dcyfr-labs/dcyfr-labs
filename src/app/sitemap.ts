@@ -44,6 +44,10 @@ const pageConfig = {
   '/sponsors': { changeFrequency: 'monthly' as const, priority: 0.5 },
   '/sponsors/thank-you': { changeFrequency: 'yearly' as const, priority: 0.3 },
   '/feeds': { changeFrequency: 'monthly' as const, priority: 0.8 },
+  '/ai': { changeFrequency: 'monthly' as const, priority: 0.7 },
+  '/open-source': { changeFrequency: 'monthly' as const, priority: 0.7 },
+  '/plugins': { changeFrequency: 'monthly' as const, priority: 0.6 },
+  '/plugins/security': { changeFrequency: 'monthly' as const, priority: 0.5 },
 } as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

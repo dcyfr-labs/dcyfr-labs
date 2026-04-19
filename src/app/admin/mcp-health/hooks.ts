@@ -32,16 +32,16 @@ function generateMockHistory(servers: McpServerStatus[]): Record<string, McpServ
     for (let i = 0; i < 28; i++) {
       const timestamp = new Date(now - i * 6 * 60 * 60 * 1000).toISOString();
       // Simulate occasional issues (5% chance of degraded, 2% chance of down)
-      const rand = Math.random();
+      const rand = Math.random(); // NOSONAR — mock/simulation data only, not security-sensitive
       let status: 'ok' | 'degraded' | 'down' = 'ok';
-      let responseTime = Math.floor(Math.random() * 200) + 50;
+      let responseTime = Math.floor(Math.random() * 200) + 50; // NOSONAR — mock data
 
       if (rand < 0.02) {
         status = 'down';
         responseTime = 0;
       } else if (rand < 0.07) {
         status = 'degraded';
-        responseTime = Math.floor(Math.random() * 3000) + 5000;
+        responseTime = Math.floor(Math.random() * 3000) + 5000; // NOSONAR — mock data
       }
 
       history[server.name].push({

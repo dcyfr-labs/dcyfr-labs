@@ -1,9 +1,9 @@
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import yaml from "js-yaml";
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import yaml from 'js-yaml';
 
-const DOCS_DIR = path.join(process.cwd(), "docs");
+const DOCS_DIR = path.join(process.cwd(), 'docs');
 
 export interface DocMeta {
   title?: string;
@@ -37,22 +37,22 @@ export interface DocCategory {
 let docsCache: DocFile[] | null = null;
 let docsCacheTime: number = 0;
 // In development, cache for 1 minute; in production, cache for 1 hour
-const CACHE_TTL = process.env.NODE_ENV === "production" ? 3600_000 : 60_000;
+const CACHE_TTL = process.env.NODE_ENV === 'production' ? 3600_000 : 60_000;
 
 /** Return true if a relative path points to private content that should be skipped */
 function isPrivatePath(relativePath: string): boolean {
   return (
-    relativePath.includes("/.private/") ||
-    relativePath.startsWith(".private/") ||
-    relativePath.includes("/private/") ||
-    relativePath.startsWith("private/")
+    relativePath.includes('/.private/') ||
+    relativePath.startsWith('.private/') ||
+    relativePath.includes('/private/') ||
+    relativePath.startsWith('private/')
   );
 }
 
 /** Parse one .md file entry and push a DocFile onto docs, or return null on failure */
 function parseDocFile(fullPath: string, relativePath: string, entryName: string): DocFile | null {
   try {
-    const fileContent = fs.readFileSync(fullPath, "utf8");
+    const fileContent = fs.readFileSync(fullPath, 'utf8');
     const { data: frontmatter, content } = matter(fileContent, {
       engines: {
         yaml: (s: string) => yaml.load(s, { schema: yaml.DEFAULT_SCHEMA }) as object,
@@ -60,12 +60,13 @@ function parseDocFile(fullPath: string, relativePath: string, entryName: string)
     });
     const stats = fs.statSync(fullPath);
     const pathParts = relativePath.split(path.sep);
-    const category = pathParts[0] || "general";
+    const category = pathParts[0] || 'general';
     const subcategory = pathParts.length > 2 ? pathParts[1] : undefined;
     const slug = relativePath
-      .replace(/\.md$/, "")
-      .replace(/\\/g, "/")
-      .replace(/^\/+|\/+$/g, "");
+      .replace(/\.md$/, '')
+      .replace(/\\/g, '/')
+      .replace(/^\/+/, '') // NOSONAR - anchored start, no backtracking risk
+      .replace(/\/+$/, ''); // NOSONAR - anchored end, no backtracking risk
 
     return {
       id: slug,
@@ -73,7 +74,7 @@ function parseDocFile(fullPath: string, relativePath: string, entryName: string)
       filePath: fullPath,
       relativePath,
       meta: {
-        title: frontmatter.title || entryName.replace(/\.md$/, ""),
+        title: frontmatter.title || entryName.replace(/\.md$/, ''),
         description: frontmatter.description,
         category: frontmatter.category || category,
         tags: frontmatter.tags || [],
@@ -104,7 +105,7 @@ export function getAllDocs(): DocFile[] {
 
   const docs: DocFile[] = [];
 
-  function readDocsRecursive(dir: string, basePath: string = ""): void {
+  function readDocsRecursive(dir: string, basePath: string = ''): void {
     if (!fs.existsSync(dir)) return;
 
     const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -113,15 +114,11 @@ export function getAllDocs(): DocFile[] {
       const fullPath = path.join(dir, entry.name);
       const relativePath = path.join(basePath, entry.name);
 
-      if (entry.isFile() && entry.name.endsWith(".md")) {
+      if (entry.isFile() && entry.name.endsWith('.md')) {
         if (isPrivatePath(relativePath)) return;
         const doc = parseDocFile(fullPath, relativePath, entry.name);
         if (doc) docs.push(doc);
-      } else if (
-        entry.isDirectory() &&
-        !entry.name.startsWith(".") &&
-        entry.name !== "private"
-      ) {
+      } else if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'private') {
         readDocsRecursive(fullPath, relativePath);
       }
     }
@@ -137,7 +134,7 @@ export function getAllDocs(): DocFile[] {
     if (a.meta.order !== b.meta.order) {
       return (a.meta.order || 999) - (b.meta.order || 999);
     }
-    return (a.meta.title || "").localeCompare(b.meta.title || "");
+    return (a.meta.title || '').localeCompare(b.meta.title || '');
   });
 
   // Cache the results
@@ -160,9 +157,7 @@ export function getDocBySlug(slug: string): DocFile | null {
 
   // If no exact match, try folder-level documents in priority order
   // 1. Try INDEX.md (or index.md) in the folder
-  const indexDoc = docs.find(
-    (doc) => doc.slug === `${slug}/index` || doc.slug === `${slug}/INDEX`
-  );
+  const indexDoc = docs.find((doc) => doc.slug === `${slug}/index` || doc.slug === `${slug}/INDEX`);
   if (indexDoc) {
     return indexDoc;
   }
@@ -191,37 +186,33 @@ export function getFolderContents(folderPath: string): {
 
   // Find all documents in this folder
   const folderDocs = docs.filter((doc) => {
-    if (folderPath === "") {
+    if (folderPath === '') {
       // Root level - only docs with no path separator
-      return !doc.slug.includes("/");
+      return !doc.slug.includes('/');
     }
     return (
       doc.slug.startsWith(`${folderPath}/`) &&
-      doc.slug.split("/").length === folderPath.split("/").length + 1
+      doc.slug.split('/').length === folderPath.split('/').length + 1
     );
   });
 
   // Find INDEX and README documents
   const indexDoc =
-    docs.find(
-      (doc) =>
-        doc.slug === `${folderPath}/index` || doc.slug === `${folderPath}/INDEX`
-    ) || null;
+    docs.find((doc) => doc.slug === `${folderPath}/index` || doc.slug === `${folderPath}/INDEX`) ||
+    null;
 
   const readmeDoc =
     docs.find(
-      (doc) =>
-        doc.slug === `${folderPath}/README` ||
-        doc.slug === `${folderPath}/readme`
+      (doc) => doc.slug === `${folderPath}/README` || doc.slug === `${folderPath}/readme`
     ) || null;
 
   // Filter out INDEX and README from regular files
   const files = folderDocs.filter(
     (doc) =>
-      !doc.slug.endsWith("/index") &&
-      !doc.slug.endsWith("/INDEX") &&
-      !doc.slug.endsWith("/README") &&
-      !doc.slug.endsWith("/readme")
+      !doc.slug.endsWith('/index') &&
+      !doc.slug.endsWith('/INDEX') &&
+      !doc.slug.endsWith('/README') &&
+      !doc.slug.endsWith('/readme')
   );
 
   // Find subfolders
@@ -231,11 +222,11 @@ export function getFolderContents(folderPath: string): {
         .filter(
           (doc) =>
             doc.slug.startsWith(`${folderPath}/`) &&
-            doc.slug.split("/").length > folderPath.split("/").length + 1
+            doc.slug.split('/').length > folderPath.split('/').length + 1
         )
         .map((doc) => {
-          const parts = doc.slug.split("/");
-          const folderParts = folderPath ? folderPath.split("/") : [];
+          const parts = doc.slug.split('/');
+          const folderParts = folderPath ? folderPath.split('/') : [];
           return parts[folderParts.length];
         })
     ),
@@ -269,10 +260,10 @@ export function searchDocs(query: string): DocFile[] {
   const searchTerm = query.toLowerCase();
 
   return docs.filter((doc) => {
-    const title = (doc.meta.title || "").toLowerCase();
-    const description = (doc.meta.description || "").toLowerCase();
+    const title = (doc.meta.title || '').toLowerCase();
+    const description = (doc.meta.description || '').toLowerCase();
     const content = doc.content.toLowerCase();
-    const tags = doc.meta.tags?.join(" ").toLowerCase() || "";
+    const tags = doc.meta.tags?.join(' ').toLowerCase() || '';
 
     return (
       title.includes(searchTerm) ||
@@ -301,14 +292,14 @@ export function extractTableOfContents(content: string): Array<{
     const title = match[2].trim();
     let baseId = title
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-") // Replace multiple dashes with single dash
-      .replace(/^-|-$/g, ""); // Remove leading/trailing dashes
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-') // Replace multiple dashes with single dash
+      .replace(/^-|-$/g, ''); // Remove leading/trailing dashes
 
     // Ensure ID is not empty
     if (!baseId) {
-      baseId = "heading";
+      baseId = 'heading';
     }
 
     // Make ID unique by adding suffix if needed

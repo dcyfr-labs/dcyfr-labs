@@ -19,7 +19,7 @@ function cacheDir(): string {
   // On Vercel the project root is read-only at runtime; /tmp is writable.
   // Using a namespaced subdirectory avoids collisions with other services.
   if (process.env.VERCEL) {
-    return '/tmp/dcyfr-github-repos';
+    return '/tmp/dcyfr-github-repos'; // Vercel runtime: /tmp is the only writable dir; namespaced to avoid collisions // NOSONAR
   }
   return path.join(process.cwd(), CACHE_CONFIG.cacheDir);
 }

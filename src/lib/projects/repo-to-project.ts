@@ -43,7 +43,7 @@ function calcReadingTime(body: string): Project['readingTime'] {
   const WORDS_PER_MINUTE = 225;
   const words = body
     .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/<[^>]*>/g, ' ')
+    .replace(/<[^>]*>/g, ' ') // Strip HTML tags (bounded negated char class, no backtracking risk) // NOSONAR
     .split(/\s+/)
     .filter(Boolean).length;
   const minutes = Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));

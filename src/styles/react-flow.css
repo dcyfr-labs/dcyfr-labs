@@ -45,4 +45,4 @@
 
 /* Prevent scroll blocking on locked diagrams
    When a React Flow diagram is locked (panOnScroll=false, zoomOnScroll=false),
-   JavaScript prevents wheel events from being captured so page scrolling works
+   JavaScript prevents wheel events from being captured so page scrolling works */

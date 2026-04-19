@@ -24,7 +24,7 @@ function extractPlainText(content: string): string {
   // Remove JSX/MDX components
   const withoutJsx = withoutFrontmatter
     .replace(/<[^>]+>/g, ' ') // Remove HTML/JSX tags
-    .replace(/\{[^}]+\}/g, ' ') // Remove JSX expressions
+    .replace(/\{[^}]+\}/g, ' ') // Remove JSX expressions (bounded quantifier, no backtracking) // NOSONAR
     .replace(/import .* from .*/g, '') // Remove imports
     .replace(/export .*/g, ''); // Remove exports
 
@@ -32,7 +32,7 @@ function extractPlainText(content: string): string {
   const plainText = withoutJsx
     .replace(/```[\s\S]*?```/g, ' ') // Remove code blocks
     .replace(/`[^`]+`/g, ' ') // Remove inline code
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to text (bounded negated char classes) // NOSONAR
     .replace(/[#*_~]/g, '') // Remove markdown symbols
     .replace(/\n+/g, ' ') // Convert newlines to spaces
     .replace(/\s+/g, ' ') // Collapse whitespace
