@@ -35,12 +35,12 @@ on:
       dry_run:
         description: 'Log results only — do not apply labels or post comments'
         required: false
-        default: 'true'
+        default: true
         type: boolean
       batch:
         description: 'Triage all open issues (overrides issue_number)'
         required: false
-        default: 'false'
+        default: false
         type: boolean
       limit:
         description: 'Max issues to process in batch mode'
@@ -50,7 +50,7 @@ on:
       no_comment:
         description: 'Skip posting triage comments on issues'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 permissions:
@@ -72,6 +72,9 @@ env:
 jobs:
   issue-triage:
     name: Automated Issue Triage (dcyfr-labs)
+    if: >-
+      github.event_name != 'issues' ||
+      (github.event.issue.user.login != 'github-actions[bot]' && github.event.issue.user.login != 'dependabot[bot]')
     runs-on: ubuntu-latest
 
     steps:
@@ -134,16 +137,35 @@ jobs:
       # ── 2. Checkout dcyfr-workspace for automation scripts ───────────────
       # The triage scripts live in dcyfr-workspace, not dcyfr-labs.
       # Issue data is fetched via GitHub API using --owner / --repo flags.
+      - name: Check access to automation scripts repository
+        id: script_repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          STATUS=$(curl -sS -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/dcyfr/dcyfr-workspace)
+
+          if [[ "${STATUS}" == "200" ]]; then
+            echo "accessible=true" >> "$GITHUB_OUTPUT"
+            echo "✅ dcyfr/dcyfr-workspace is accessible"
+          else
+            echo "accessible=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Skipping triage: cannot access dcyfr/dcyfr-workspace (HTTP ${STATUS})."
+          fi
+
       - name: Checkout dcyfr-workspace (automation scripts)
+        if: steps.script_repo.outputs.accessible == 'true'
         uses: actions/checkout@v4
         with:
           repository: dcyfr/dcyfr-workspace
-          # Public repo: no token required.
-          # If repo is private, add: token: ${{ secrets.DCYFR_AUTOMATION_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 1
 
       # ── 3. Set up Node.js ────────────────────────────────────────────────
       - name: Set up Node.js ${{ env.NODE_VERSION }}
+        if: steps.script_repo.outputs.accessible == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -151,10 +173,12 @@ jobs:
 
       # ── 4. Install dependencies ──────────────────────────────────────────
       - name: Install dependencies
+        if: steps.script_repo.outputs.accessible == 'true'
         run: npm ci --legacy-peer-deps
 
       # ── 5. Run issue triage script ───────────────────────────────────────
       - name: Run issue triage automation
+        if: steps.script_repo.outputs.accessible == 'true'
         id: triage
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -207,6 +231,14 @@ jobs:
             exit "${EXIT_CODE}"
           fi
 
+      - name: Mark triage skipped when scripts repo is inaccessible
+        if: steps.script_repo.outputs.accessible != 'true'
+        id: triage_skipped
+        run: |
+          echo "exit-code=0" >> "$GITHUB_OUTPUT"
+          echo "triage-status=skipped" >> "$GITHUB_OUTPUT"
+          echo "ℹ️  Triage skipped: dcyfr/dcyfr-workspace not accessible with current token"
+
       # ── 6. Write GitHub Step Summary ─────────────────────────────────────
       - name: Write step summary
         if: always()
@@ -218,6 +250,14 @@ jobs:
           EXIT_CODE="${{ steps.triage.outputs.exit-code }}"
           STATUS="${{ steps.triage.outputs.triage-status }}"
           EVENT_NAME="${{ github.event_name }}"
+
+          if [[ -z "${EXIT_CODE}" ]]; then
+            EXIT_CODE="${{ steps.triage_skipped.outputs.exit-code }}"
+          fi
+
+          if [[ -z "${STATUS}" ]]; then
+            STATUS="${{ steps.triage_skipped.outputs.triage-status }}"
+          fi
 
           {
             if [[ "${BATCH_MODE}" == "true" ]]; then
@@ -243,6 +283,9 @@ jobs:
             if [[ "${DRY_RUN}" == "true" ]]; then
               echo "> **Dry-run mode active** — triage results logged, no labels or comments applied."
               echo "> Flip \`DEFAULT_DRY_RUN: 'false'\` after label accuracy is confirmed ≥90%."
+            fi
+            if [[ "${STATUS}" == "skipped" ]]; then
+              echo "> **Skipped** — cross-repo scripts repository is not accessible to this workflow token."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
