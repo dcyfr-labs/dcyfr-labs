@@ -64,7 +64,7 @@ jobs:
 
       - name: Run contrast validation
         id: contrast
-        run: npm run validate:contrast
+        run: npm run validate:color-contrast
         continue-on-error: true
 
       - name: Post PR Comment (Violations Found)
