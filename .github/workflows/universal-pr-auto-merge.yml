@@ -88,13 +88,21 @@ jobs:
           echo "PR is open - continuing evaluation"
 
       - name: Check auto-merge criteria
-        if: steps.state.outputs.skip != 'true'
+        if: steps.context.outputs.skip != 'true' && steps.state.outputs.skip != 'true'
         id: criteria
         env:
           PR_NUMBER: ${{ steps.context.outputs.pr_number }}
           FORCE: ${{ inputs.force }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [[ -z "$PR_NUMBER" ]]; then
+            echo "No PR context available for this event; skipping evaluation"
+            echo "should_merge=false" >> $GITHUB_OUTPUT
+            echo "reason=No PR context available" >> $GITHUB_OUTPUT
+            echo "merge_method=squash" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           # Fetch PR details
           PR_DATA=$(gh pr view "$PR_NUMBER" --json \
             title,labels,author,isDraft,mergeable,mergeStateStatus,\
@@ -304,7 +312,7 @@ jobs:
   notify-skip:
     name: Notify Skip Decision
     needs: evaluate
-    if: needs.evaluate.outputs.should_merge == 'false'
+    if: needs.evaluate.outputs.should_merge == 'false' && needs.evaluate.outputs.pr_number != ''
     runs-on: ubuntu-latest
     timeout-minutes: 2
 
