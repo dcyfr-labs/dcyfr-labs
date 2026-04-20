@@ -341,6 +341,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
+    "@vercel/toolbar": "^0.1.22",
     "@lhci/cli": "^0.15.1",
     "@next/bundle-analyzer": "^16.2.4",
     "@next/eslint-plugin-next": "^16.2.4",
