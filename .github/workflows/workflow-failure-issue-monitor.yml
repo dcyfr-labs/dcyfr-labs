@@ -247,6 +247,7 @@ jobs:
               'Vercel Deployment Auto-Remediation',
               'Vercel Deployment Checks',
               'Verified Commit Validation',
+              'Universal PR Auto-Merge',
               'Weekly Test Health',
               'repo-budget-guardrails',
             ]);
