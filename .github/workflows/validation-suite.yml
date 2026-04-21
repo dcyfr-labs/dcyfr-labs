@@ -307,9 +307,9 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
 
-          # Check format: YYYY.MM.DD or YYYY.MM.DD.N
-          if [[ ! "$VERSION" =~ ^[0-9]{4}\.[0-9]{2}\.[0-9]{2}(\.[0-9]+)?$ ]]; then
-            echo "::error::Version $VERSION does not match CalVer format (YYYY.MM.DD or YYYY.MM.DD.N)"
+          # Check format: YYYY.M.D (or zero-padded YYYY.MM.DD), with optional .N suffix
+          if [[ ! "$VERSION" =~ ^[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}(\.[0-9]+)?$ ]]; then
+            echo "::error::Version $VERSION does not match CalVer format (YYYY.M.D, YYYY.MM.DD, or optional .N suffix)"
             exit 1
           fi
 
