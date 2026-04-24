@@ -1,3 +1,103 @@
+## [2026.04.24] - 2026-04-24
+
+### Added
+
+- **ui** - install Wave 1 primitives + migrate ReviewForm to @dcyfr-labs
+- **ui** - install @dcyfr-labs/{dcyfr-card,dcyfr-badge,dcyfr-dialog}
+- **chrome** - reference shell — SiteNav, SiteFooter, PageShell, ThemeSwitcher
+- **design-system** - consume @dcyfr-labs registry + publish brand surface
+- **security** - add red-team CI/CD pipeline and test runner (Phase 4)
+
+### Changed
+
+- **release** - version 2026.04.21
+- **release** - version 2026.04.21
+- **release** - version 2026.04.21
+- chore(deps)(deps): bump typescript in the typescript-stack group (#481)
+- chore(deps-dev)(deps-dev): bump the dev-tools group across 1 directory with 12 updates (#514)
+- chore(deps)(deps): bump @dcyfr/ai from 3.0.1 to 3.0.2 (#491)
+- chore(deps)(deps): bump inngest in the background-jobs group (#486)
+- chore(deps)(deps): bump the email group with 2 updates (#489)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.89.0 to 0.90.0 (#492)
+- chore(deps)(deps): bump @tanstack/react-virtual from 3.13.23 to 3.13.24 (#490)
+- **release** - version 2026.04.21
+- **release** - version 2026.04.20
+- **release** - version 2026.04.20
+- **release** - version 2026.04.20
+- **release** - version 2026.04.20
+- Testing - round 7 — targeted coverage for SonarCloud quality gate
+- **release** - version 2026.04.20
+- Testing - round 6 — api-guardrails (32 tests), merge-projects (7 tests), targeted exclusions
+- **release** - version 2026.04.19
+- Testing - round 5 coverage — 12 new test files (192 tests), expand exclusions
+- **release** - version 2026.04.19
+- Testing - round 4 coverage — 8 new test files (143 tests), expand exclusions
+- **release** - version 2026.04.19
+- Testing - add 80 tests for core lib modules (round 3)
+- **release** - version 2026.04.19
+- Testing - add 140 tests for lib modules + tune SonarCloud coverage exclusions
+- **release** - version 2026.04.19
+- Testing - add comprehensive tests for table-utils, api-cost-calculator, redis-client, api-usage-tracker
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **agents** - Documentation - stock vs brand-variant sibling adoption rule
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- fix/issue triage cross repo token (#462)
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- deprecate stale prompt security workflow to prevent false scheduled failures
+- **release** - version 2026.04.19
+- **release** - version 2026.04.19
+- **release** - version 2026.04.18
+- **release** - version 2026.04.18
+- **auto-calver** - make tag creation idempotent (#424)
+- **vercel-remediation** - scope to Production deployments only (#423)
+- chore(deps)(deps): bump protobufjs, @opentelemetry/exporter-trace-otlp-proto, @opentelemetry/auto-instrumentations-node and @opentelemetry/exporter-trace-otlp-http (#419)
+- **release** - version 2026.04.18
+- **security-review** - skip Claude Code on Dependabot PRs (#422)
+- **release** - version 2026.04.18
+- Revert "Refactor code structure for improved readability and maintainability"
+- **release** - version 2026.04.18
+- Refactor code structure for improved readability and maintainability
+
+### Fixed
+
+- **ci** - raise npm audit threshold to high
+- **ci** - restore github issue helper for weekly test health
+- **ci** - accept non-padded CalVer in validation gate
+- **ci** - stabilize remaining main workflow failures
+- **security** - override @vercel/microfrontends to 2.3.2 to clear npm audit highs
+- add 'Universal PR Auto-Merge' to workflow monitor coverage audit
+- **ci** - use validate:color-contrast in accessibility workflow
+- **ci** - skip universal auto-merge evaluation when PR context is absent
+- **ci** - repair workflow YAML parse failures in accessibility, auto-merge, and vercel remediation
+- **ci** - use x-cron-secret header in cache-refresh workflow
+- **ci** - exclude cancelled conclusions from workflow failure monitor
+- **security** - pin GitHub Action to SHA + fix CORS wildcard in OPTIONS handler
+- prevent issue-triage workflow failure loops on inaccessible script repo (#457)
+- add missing workflows to failure monitor coverage (#453) (#454)
+- resolve sitemap validation and SonarCloud quality gate failures (#435)
+- **security** - remediate 25 CodeQL/Semgrep alerts (closes #421)
+- **tests** - topline dedup regex misses ` | ` table separators (#426)
+- **red-team** - drop pool/poolOptions config — incompatible with vitest 4.x (#425)
+
+### Security
+
+- remediate GHSA-rp42-5vxx-qpwr DoS via basic-ftp@5.3.0 override (#452)
+
+### Dependencies
+
+- add @vercel/toolbar to devDependencies
+
+---
+
+**Full Changelog**: [2026.4.21...2026.04.24](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.4.21...v2026.04.24)
+
 ## [2026.04.21] - 2026-04-21
 
 ### Added
