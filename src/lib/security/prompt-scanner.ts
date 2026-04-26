@@ -96,7 +96,10 @@ const LOCAL_PATTERNS = [
     confidence: 0.95,
   },
   {
-    pattern: /<script[^>]*>[\s\S]*<\/script\s*>/i,
+    // CodeQL js/bad-tag-filter: closing tag must accept any non-`>` characters
+    // after the tag name (whitespace, attributes, line breaks) — `</script\s*>`
+    // misses real-world variants like `</script\n bar>`.
+    pattern: /<script[^>]*>[\s\S]*<\/script[^>]*>/i,
     category: 'xss-attempt',
     severity: 'high' as const,
     confidence: 0.9,

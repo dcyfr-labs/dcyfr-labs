@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, ExternalLink, Clock, Tag } from 'lucide-react';
 import type { InoreaderArticle } from '@/types/inoreader';
+import DOMPurify from 'dompurify';
 import { decode } from 'he';
 import { SPACING, HOVER_EFFECTS } from '@/lib/design-tokens';
 
@@ -120,17 +121,19 @@ function ArticleCard({ article }: { article: InoreaderArticle }) {
     year: 'numeric',
   });
 
-  // Extract plain text from HTML summary (first 200 chars)
-  // FIX: CWE-116 - Use 'he' library for safe HTML entity decoding
-  // This prevents double-decoding attacks by properly handling entity order
-  let plainTextSummary = article.summary.content
-    .replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, '') // Pass 1: Remove dangerous tags ([\s\S]*? matches across newlines)
-    .replace(/<[^>]+>/g, '') // Pass 2: Remove all HTML tags
-    .replace(/\s+/g, ' ') // Pass 3: Normalize whitespace
+  // Extract plain text from HTML summary (first 200 chars).
+  // DOMPurify with empty allowlists strips every tag via real DOM parsing —
+  // safer than the previous regex chain (CodeQL js/incomplete-multi-character-
+  // sanitization flagged Pass 1 of the old chain for missing variants like
+  // `</script\n foo>`). Then `he.decode` does one-level entity decoding to
+  // preserve the double-encoding-attack defense (CWE-116) — DOMPurify
+  // re-escapes `&` on serialize, so a single decode pass is the safe ceiling.
+  let plainTextSummary = DOMPurify.sanitize(article.summary.content, {
+    ALLOWED_TAGS: [],
+    ALLOWED_ATTR: [],
+  })
+    .replace(/\s+/g, ' ')
     .trim();
-
-  // Pass 4: Safely decode ALL HTML entities using battle-tested library
-  // The 'he' library handles all edge cases including double-encoding
   plainTextSummary = decode(plainTextSummary).substring(0, 200);
 
   // Get article URL

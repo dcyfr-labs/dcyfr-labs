@@ -79,13 +79,18 @@ describe('Topline file de-duplication', () => {
   // Shared link hrefs and shared command tokens are expected overlap — the
   // contract only bans substantive PROSE duplication across the four files.
   function normalize(text: string): string {
-    return text
-      .replace(/\[[^\]]*?\]\([^)]*\)/g, '') // markdown links
-      .replace(/`[^`\n]+`/g, '') // inline code spans
-      .replace(/^[\s|:\-]*[|:\-][\s|:\-]*$/gm, '') // table separators (incl. `| --- | --- |` style with spaces)
-      .replace(/^\s*```[\s\S]*?```\s*$/gm, '') // fenced code blocks
-      .replace(/<!--[\s\S]*?-->/g, '') // html comments (incl. audience tag)
-      .replace(/<!--/g, ''); // defensive: remove any remaining comment-opens after the above pass
+    return (
+      text
+        .replace(/\[[^\]]*?\]\([^)]*\)/g, '') // markdown links
+        .replace(/`[^`\n]+`/g, '') // inline code spans
+        .replace(/^[\s|:\-]*[|:\-][\s|:\-]*$/gm, '') // table separators (incl. `| --- | --- |` style with spaces)
+        .replace(/^\s*```[\s\S]*?```\s*$/gm, '') // fenced code blocks
+        // Single-pass HTML-comment stripper: matches `<!--…-->` OR a
+        // dangling `<!--` (no closing). CodeQL js/incomplete-multi-character-
+        // sanitization required combining the two prior passes so the static
+        // analyzer can trace that no `<!--` survives.
+        .replace(/<!--[\s\S]*?(?:-->|$)/g, '')
+    );
   }
 
   const contents = TOPLINE_FILES.map(({ file }) => ({
