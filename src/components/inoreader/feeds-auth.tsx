@@ -44,11 +44,12 @@ export function FeedsAuth() {
     // ALSO persist state in a cookie so the server-side callback can validate it
     // (sessionStorage is inaccessible from server route handlers).
     // SameSite=Lax prevents the cookie being sent cross-origin, and Max-Age=600
-    // ensures it expires if the OAuth flow is abandoned.
-    // Secure flag is set when the page is served over HTTPS (production).
-    const secureFlag =
-      typeof window !== 'undefined' && window.location.protocol === 'https:' ? ';Secure' : '';
-    globalThis.document.cookie = `inoreader_oauth_state=${state};SameSite=Lax;Path=/;Max-Age=600${secureFlag}`;
+    // ensures it expires if the OAuth flow is abandoned. Secure is set
+    // unconditionally — modern browsers allow Secure cookies on localhost over
+    // HTTP for dev, and Inoreader's OAuth callback rejects non-HTTPS origins
+    // in production anyway, so a non-Secure cookie on this flow would never
+    // actually validate. Closes CodeQL js/clear-text-cookie.
+    globalThis.document.cookie = `inoreader_oauth_state=${state};SameSite=Lax;Path=/;Max-Age=600;Secure`;
 
     // Build OAuth consent URL
     const redirectUri = `${globalThis.location.origin}/api/inoreader/callback`;

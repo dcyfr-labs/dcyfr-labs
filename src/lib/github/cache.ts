@@ -50,9 +50,17 @@ function cacheFilePath(key: string): string {
 function writeCache<T extends { fetchedAt: string }>(key: string, data: T): void {
   ensureCacheDir();
   const file = cacheFilePath(key);
-  // Use a random suffix so the temp file is not predictable (CWE-377).
-  const tmp = `${file}.${crypto.randomBytes(6).toString('hex')}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf-8');
+  // Random suffix + exclusive create satisfies CWE-377 (predictable-temp-file)
+  // and CodeQL js/insecure-temporary-file. `wx` = O_EXCL | O_CREAT — fails if
+  // the file already exists, preventing TOCTOU races on the temp path. Mode
+  // 0o600 restricts the temp file to the owner before the atomic rename.
+  const tmp = `${file}.${crypto.randomBytes(16).toString('hex')}.tmp`;
+  const fd = fs.openSync(tmp, 'wx', 0o600);
+  try {
+    fs.writeFileSync(fd, JSON.stringify(data, null, 2), 'utf-8');
+  } finally {
+    fs.closeSync(fd);
+  }
   fs.renameSync(tmp, file);
 }
 
