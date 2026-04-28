@@ -2,6 +2,32 @@
 
 ### Changed
 
+- chore(deps)(deps): bump inngest (#525)
+- chore(deps)(deps): bump the ui-framework group across 1 directory with 2 updates (#536)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.90.0 to 0.91.1 (#527)
+- chore(deps)(deps): bump dompurify from 3.4.0 to 3.4.1 (#526)
+- chore(deps-dev)(deps-dev): bump the dev-tools group across 1 directory with 12 updates (#522)
+- **release** - version 2026.04.28
+- **release** - version 2026.04.24
+
+### Fixed
+
+- **ci** - unblock 3 ci-bot workflows (auto-merge, vercel, calver) (#539)
+- **deps** - override postcss + uuid to close 2 moderates (#538)
+- **security** - close 7 of 8 remaining CodeQL alerts (3 fixes + 6 dismissals) (#520)
+- **security** - close CodeQL sanitizer cluster (8 high alerts) (#519)
+- **ci** - skip Lighthouse job on dependabot PRs (#533)
+- **ci** - repair Lighthouse bc syntax error and glob test (#532)
+- **ci** - raise npm audit threshold to high
+
+---
+
+**Full Changelog**: [2026.4.28...2026.04.28](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.4.28...v2026.04.28)
+
+## [2026.04.28] - 2026-04-28
+
+### Changed
+
 - **release** - version 2026.04.24
 - **release** - version 2026.04.21
 - **release** - version 2026.04.21
