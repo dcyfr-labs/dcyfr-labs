@@ -220,7 +220,10 @@ jobs:
   remediate:
     name: Auto-Remediate Deployment
     needs: detect-failure
-    if: needs.detect-failure.outputs.should_remediate == 'true'
+    # Production deployment_status events don't have a PR context — pr_number
+    # comes back empty and `refs/pull//head` is an invalid refspec, so the
+    # checkout fails. Gate on a non-empty pr_number.
+    if: needs.detect-failure.outputs.should_remediate == 'true' && needs.detect-failure.outputs.pr_number != ''
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
