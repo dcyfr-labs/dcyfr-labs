@@ -19,6 +19,9 @@ concurrency:
 
 jobs:
   lighthouse:
+    # Skip on dependabot PRs: OP_SERVICE_ACCOUNT_TOKEN is not available
+    # for third-party PRs and the 1Password action hard-fails when it's empty.
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
