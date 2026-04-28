@@ -76,8 +76,8 @@ jobs:
           lhci autorun --config=.github/lighthouse/ci.json || true
 
           # Extract metrics from latest run
-          if [ -f ".lighthouseci/lhr-*.json" ]; then
-            LATEST_LHR=$(ls -t .lighthouseci/lhr-*.json | head -1)
+          LATEST_LHR=$(ls -t .lighthouseci/lhr-*.json 2>/dev/null | head -1)
+          if [ -n "$LATEST_LHR" ]; then
 
             PERF_SCORE=$(jq '.categories.performance.score * 100' "$LATEST_LHR")
             LCP=$(jq '.audits["largest-contentful-paint"].numericValue / 1000' "$LATEST_LHR")
@@ -225,13 +225,19 @@ jobs:
           *Automated by performance-monitoring workflow*
           REPORTEOF
 
-          # Populate report with actual values
+          # Populate report with actual values (default to 0 when lighthouse step produced no output)
           PERF_SCORE="${{ steps.lighthouse.outputs.perf_score }}"
           LCP="${{ steps.lighthouse.outputs.lcp }}"
           FID="${{ steps.lighthouse.outputs.fid }}"
           CLS="${{ steps.lighthouse.outputs.cls }}"
           TTI="${{ steps.lighthouse.outputs.tti }}"
           TBT="${{ steps.lighthouse.outputs.tbt }}"
+          PERF_SCORE="${PERF_SCORE:-0}"
+          LCP="${LCP:-0}"
+          FID="${FID:-0}"
+          CLS="${CLS:-0}"
+          TTI="${TTI:-0}"
+          TBT="${TBT:-0}"
 
           # Determine status messages
           if (( $(echo "$PERF_SCORE >= 90" | bc -l) )); then
