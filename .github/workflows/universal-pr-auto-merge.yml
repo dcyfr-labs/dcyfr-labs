@@ -104,9 +104,10 @@ jobs:
           fi
 
           # Fetch PR details
-          PR_DATA=$(gh pr view "$PR_NUMBER" --json \
-            title,labels,author,isDraft,mergeable,mergeStateStatus,\
-            reviewDecision,statusCheckRollup,headRefName,baseRefName)
+          # Note: --json fields must stay on a single line. Backslash-continuation
+          # introduces leading whitespace on the next line, which the shell word-splits
+          # into a second positional arg, breaking `gh pr view` ("accepts at most 1 arg(s)").
+          PR_DATA=$(gh pr view "$PR_NUMBER" --json title,labels,author,isDraft,mergeable,mergeStateStatus,reviewDecision,statusCheckRollup,headRefName,baseRefName)
 
           # Extract fields
           TITLE=$(echo "$PR_DATA" | jq -r '.title')
