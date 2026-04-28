@@ -117,8 +117,20 @@ jobs:
       - name: Push changes
         if: steps.check.outputs.needs_update == 'true'
         run: |
-          git push origin main
-          echo "✅ Version ${{ steps.calver.outputs.version }} deployed"
+          # Concurrent main-branch merges race this push — retry with rebase
+          # up to 3 times before giving up. Without this, a benign race
+          # rejects the version bump and the daily CalVer never lands.
+          for attempt in 1 2 3; do
+            if git push origin main; then
+              echo "✅ Version ${{ steps.calver.outputs.version }} deployed (attempt $attempt)"
+              exit 0
+            fi
+            echo "⚠️ Push rejected (non-fast-forward), rebasing... (attempt $attempt of 3)"
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "❌ Failed to push after 3 rebase attempts"
+          exit 1
 
       - name: Create version tag
         if: steps.check.outputs.needs_update == 'true'
