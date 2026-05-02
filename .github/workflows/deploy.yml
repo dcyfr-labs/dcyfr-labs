@@ -44,8 +44,13 @@ jobs:
       - name: Quick validation
         run: |
           npm run lint:ci &
+          LINT_PID=$!
           npm run typecheck &
-          wait
+          TC_PID=$!
+          FAIL=0
+          wait $LINT_PID || FAIL=1
+          wait $TC_PID || FAIL=1
+          exit $FAIL
       
       # Vercel handles the actual build and deployment via Git integration
       - name: Deploy to Vercel

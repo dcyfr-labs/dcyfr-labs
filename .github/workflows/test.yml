@@ -109,8 +109,13 @@ jobs:
       - name: Lint and typecheck in parallel
         run: |
           npm run lint:ci &
+          LINT_PID=$!
           npm run typecheck &
-          wait
+          TC_PID=$!
+          FAIL=0
+          wait $LINT_PID || FAIL=1
+          wait $TC_PID || FAIL=1
+          exit $FAIL
 
   unit:
     needs: setup
