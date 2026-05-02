@@ -263,10 +263,10 @@ async function publishBlogPost(post) {
 
 ### Batch Submit Existing Posts
 
-To backfill all existing blog posts:
+To backfill all existing blog posts, drop a one-shot script alongside the codebase:
 
 ```typescript
-// scripts/backfill-google-indexing.mjs
+// e.g. scripts/backfill-google-indexing.mjs (one-shot — delete after running)
 import { inngest } from './src/inngest/client.js';
 import { getAllPosts } from './src/lib/blog.js';
 
@@ -284,12 +284,6 @@ async function backfillIndexing() {
 }
 
 backfillIndexing().catch(console.error);
-```
-
-Run the backfill:
-
-```bash
-node scripts/backfill-google-indexing.mjs
 ```
 
 ### Manual Submission

@@ -173,4 +173,3 @@ The cost of a brief pause is low. The cost of an unwanted destructive action is 
 - [`docs/brand/`](./docs/brand/) — public-safe brand surface (voice, tokens, components)
 - [`CLAUDE.md`](./CLAUDE.md) — Claude inline task routing (assistant surface, not governance)
 - [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) — Copilot quick reference (assistant surface)
-- [`docs/_archived/AGENTS-2026-04.md`](./docs/_archived/AGENTS-2026-04.md) — previous 1788-line version (archived for one quarter)

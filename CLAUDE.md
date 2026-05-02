@@ -14,8 +14,8 @@ Personal site + blog + portfolio for Drew at [dcyfr.ai](https://www.dcyfr.ai). N
 
 | Task                                         | Where to look                                                                |
 | -------------------------------------------- | ---------------------------------------------------------------------------- |
-| Add/edit a blog post                         | `content/blog/*.mdx`                                                         |
-| Add/edit a project entry                     | `content/projects/*.mdx`                                                     |
+| Add/edit a blog post                         | `src/content/blog/*.mdx`                                                     |
+| Add/edit a project entry                     | `src/content/projects/*.mdx`                                                 |
 | Change a page layout                         | `src/app/**/page.tsx`, `src/components/layouts/`                             |
 | Tweak a UI primitive                         | `src/components/ui/` (shadcn); brand variants live in `@dcyfr-labs` registry |
 | Add a brand-aligned UI primitive             | `npx shadcn@latest add @dcyfr-labs/<name>` — prefer this over raw shadcn     |
@@ -27,7 +27,7 @@ Personal site + blog + portfolio for Drew at [dcyfr.ai](https://www.dcyfr.ai). N
 
 ## Routing rules
 
-- **MDX content changes** — edit the file under `content/`, no code changes needed. Frontmatter fields are validated by `src/lib/mdx/`. Don't invent new frontmatter keys without checking the validator.
+- **MDX content changes** — edit the file under `src/content/`, no code changes needed. Frontmatter fields are validated by `src/lib/mdx/`. Don't invent new frontmatter keys without checking the validator.
 - **Design token enforcement** — ESLint (`eslint-plugin-design-tokens`) rejects raw colors, spacing values, or font sizes. If the lint error points at a hardcoded value, look it up in `src/lib/design-tokens.ts` and use the token.
 - **New dependency** — before `npm install <pkg>`, check whether an existing dep already covers the use case. The repo has a `depcheck` regression gate in CI, and new deps need to justify their weight.
 - **New route** — add the file under `src/app/<route>/page.tsx`. Add a sitemap entry in `src/app/sitemap.ts` and an analytics event if applicable. See existing pages for the pattern.
@@ -35,7 +35,7 @@ Personal site + blog + portfolio for Drew at [dcyfr.ai](https://www.dcyfr.ai). N
 
 ## Don'ts
 
-- Don't edit files outside `src/`, `content/`, `tests/`, `e2e/`, `scripts/`, `docs/` without reading the mutation policy in `AGENTS.md` first.
+- Don't edit files outside `src/`, `content/diagrams/`, `tests/`, `e2e/`, `scripts/`, `docs/` without reading the mutation policy in `AGENTS.md` first.
 - Don't create a new topline file (`CHANGELOG_*.md`, `SUMMARY_*.md`, `SETUP_*.md`). Private/dated docs go under `docs/_private/`.
 - Don't bypass pre-commit hooks with `--no-verify`. Design-token enforcement and secret scanning run there for a reason.
 - Don't hardcode spacing, color, or typography values. Use `src/lib/design-tokens.ts`.

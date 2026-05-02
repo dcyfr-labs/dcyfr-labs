@@ -271,7 +271,6 @@ You'll see in responses:
 **Still Works:**
 
 - `scripts/test-google-indexing.mjs`
-- `scripts/backfill-google-indexing.mjs`
 
 ---
 
