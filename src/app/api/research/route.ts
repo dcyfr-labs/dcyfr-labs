@@ -13,25 +13,18 @@
  * - Request size limits
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { blockExternalAccess } from "@/lib/api/api-security";
-import {
-  rateLimit,
-  getClientIp,
-  createRateLimitHeaders,
-} from "@/lib/rate-limit";
+import { NextRequest, NextResponse } from 'next/server';
+import { blockExternalAccess } from '@/lib/api/api-security';
+import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import {
   research,
   isPerplexityConfigured,
   type ChatMessage,
   type PerplexityRequestOptions,
   type ResearchResult,
-} from "@/lib/perplexity";
-import { SERVICES } from "@/lib/site-config";
-import {
-  recordApiCall,
-  estimatePerplexityCost,
-} from "@/lib/api/api-guardrails";
+} from '@/lib/perplexity';
+import { SERVICES } from '@/lib/site-config';
+import { recordApiCall, estimatePerplexityCost } from '@/lib/api/api-guardrails';
 
 // ============================================================================
 // CONFIG
@@ -68,10 +61,10 @@ function validateMessages(messages: unknown): messages is ChatMessage[] {
 
   for (const message of messages) {
     if (
-      typeof message !== "object" ||
+      typeof message !== 'object' ||
       message === null ||
-      !("role" in message) ||
-      !("content" in message)
+      !('role' in message) ||
+      !('content' in message)
     ) {
       return false;
     }
@@ -80,12 +73,12 @@ function validateMessages(messages: unknown): messages is ChatMessage[] {
     const content = message.content;
 
     // Validate role
-    if (!["system", "user", "assistant"].includes(role as string)) {
+    if (!['system', 'user', 'assistant'].includes(role as string)) {
       return false;
     }
 
     // Validate content
-    if (typeof content !== "string") {
+    if (typeof content !== 'string') {
       return false;
     }
 
@@ -108,14 +101,12 @@ function validateMessages(messages: unknown): messages is ChatMessage[] {
 /**
  * Validate request options
  */
-function validateOptions(
-  options: unknown
-): options is PerplexityRequestOptions {
+function validateOptions(options: unknown): options is PerplexityRequestOptions {
   if (options === undefined || options === null) {
     return true; // Options are optional
   }
 
-  if (typeof options !== "object") {
+  if (typeof options !== 'object') {
     return false;
   }
 
@@ -124,9 +115,9 @@ function validateOptions(
   // Validate model if provided
   if (opts.model !== undefined) {
     const validModels = [
-      "llama-3.1-sonar-small-128k-online",
-      "llama-3.1-sonar-large-128k-online",
-      "llama-3.1-sonar-huge-128k-online",
+      'llama-3.1-sonar-small-128k-online',
+      'llama-3.1-sonar-large-128k-online',
+      'llama-3.1-sonar-huge-128k-online',
     ];
     if (!validModels.includes(opts.model as string)) {
       return false;
@@ -136,9 +127,7 @@ function validateOptions(
   // Validate temperature if provided
   if (
     opts.temperature !== undefined &&
-    (typeof opts.temperature !== "number" ||
-      opts.temperature < 0 ||
-      opts.temperature > 2)
+    (typeof opts.temperature !== 'number' || opts.temperature < 0 || opts.temperature > 2)
   ) {
     return false;
   }
@@ -146,16 +135,14 @@ function validateOptions(
   // Validate max_tokens if provided
   if (
     opts.max_tokens !== undefined &&
-    (typeof opts.max_tokens !== "number" ||
-      opts.max_tokens < 1 ||
-      opts.max_tokens > 4096)
+    (typeof opts.max_tokens !== 'number' || opts.max_tokens < 1 || opts.max_tokens > 4096)
   ) {
     return false;
   }
 
   // Validate search_recency_filter if provided
   if (opts.search_recency_filter !== undefined) {
-    const validFilters = ["hour", "day", "week", "month"];
+    const validFilters = ['hour', 'day', 'week', 'month'];
     if (!validFilters.includes(opts.search_recency_filter as string)) {
       return false;
     }
@@ -165,7 +152,7 @@ function validateOptions(
   if (opts.search_domain_filter !== undefined) {
     if (
       !Array.isArray(opts.search_domain_filter) ||
-      !opts.search_domain_filter.every((d) => typeof d === "string")
+      !opts.search_domain_filter.every((d) => typeof d === 'string')
     ) {
       return false;
     }
@@ -182,44 +169,50 @@ function validateOptions(
 function handleResearchError(error: unknown): NextResponse {
   const errorMessage = error instanceof Error ? error.message : String(error);
 
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     const errorStack = error instanceof Error ? error.stack : undefined;
-    console.error("[Research API] Error:", errorMessage);
-    if (errorStack) console.error("Stack trace:", errorStack);
+    console.error('[Research API] Error:', errorMessage);
+    if (errorStack) console.error('Stack trace:', errorStack);
   } else {
-    console.error("[Research API] Error:", {
+    console.error('[Research API] Error:', {
       type: error instanceof Error ? error.constructor.name : typeof error,
       message: errorMessage,
       timestamp: new Date().toISOString(),
     });
   }
 
-  if (errorMessage.includes("API key not configured")) {
+  if (errorMessage.includes('API key not configured')) {
     return NextResponse.json(
-      { error: "Service not configured", message: "Perplexity API key is not configured on the server." },
+      {
+        error: 'Service not configured',
+        message: 'Perplexity API key is not configured on the server.',
+      },
       { status: 503 }
     );
   }
 
-  if (errorMessage.includes("401") || errorMessage.includes("Unauthorized")) {
+  if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
     return NextResponse.json(
-      { error: "Authentication failed", message: "Invalid or expired Perplexity API key." },
+      { error: 'Authentication failed', message: 'Invalid or expired Perplexity API key.' },
       { status: 503 }
     );
   }
 
-  if (errorMessage.includes("429") || errorMessage.toLowerCase().includes("rate limit")) {
+  if (errorMessage.includes('429') || errorMessage.toLowerCase().includes('rate limit')) {
     return NextResponse.json(
-      { error: "Upstream rate limit exceeded", message: "Perplexity API rate limit reached. Please try again later." },
+      {
+        error: 'Upstream rate limit exceeded',
+        message: 'Perplexity API rate limit reached. Please try again later.',
+      },
       { status: 503 }
     );
   }
 
   return NextResponse.json(
     {
-      error: "Research request failed",
-      message: "An error occurred while processing your research request.",
-      details: process.env.NODE_ENV === "development" ? errorMessage : undefined,
+      error: 'Research request failed',
+      message: 'An error occurred while processing your research request.',
+      details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
     },
     { status: 500 }
   );
@@ -262,14 +255,14 @@ export async function POST(request: NextRequest) {
   if (blockResponse) return blockResponse;
 
   // Validate request size to prevent DoS attacks via large payloads
-  const contentLength = request.headers.get("content-length");
+  const contentLength = request.headers.get('content-length');
   const maxSize = 100 * 1024; // 100KB limit for research endpoint
-  
+
   // Primary check: Content-Length header (for production environments)
   if (contentLength && parseInt(contentLength) > maxSize) {
     return NextResponse.json(
-      { 
-        error: "Request too large",
+      {
+        error: 'Request too large',
         message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
       },
       { status: 413 } // Payload Too Large
@@ -281,25 +274,25 @@ export async function POST(request: NextRequest) {
   let rawBody: string;
   try {
     rawBody = await request.text();
-    
+
     // Secondary check: Body size validation (for testing/environments without Content-Length)
     const bodySize = Buffer.byteLength(rawBody, 'utf8');
     if (bodySize > maxSize) {
       return NextResponse.json(
-        { 
-          error: "Request too large",
+        {
+          error: 'Request too large',
           message: `Request size must not exceed ${Math.floor(maxSize / 1024)}KB`,
         },
         { status: 413 } // Payload Too Large
       );
     }
-    
+
     body = JSON.parse(rawBody);
   } catch (error) {
     return NextResponse.json(
       {
-        error: "Invalid JSON in request body",
-        message: error instanceof Error ? error.message : "Unknown error",
+        error: 'Invalid JSON in request body',
+        message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 400 }
     );
@@ -309,9 +302,9 @@ export async function POST(request: NextRequest) {
   if (!isPerplexityConfigured()) {
     return NextResponse.json(
       {
-        error: "Research service not configured",
+        error: 'Research service not configured',
         message:
-          "Perplexity API key is not set. Please configure PERPLEXITY_API_KEY in your environment.",
+          'Perplexity API key is not set. Please configure PERPLEXITY_API_KEY in your environment.',
       },
       { status: 503 }
     );
@@ -329,24 +322,21 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: "Rate limit exceeded. Please try again later.",
+        error: 'Rate limit exceeded. Please try again later.',
         retryAfter,
       },
       {
         status: 429,
         headers: {
           ...createRateLimitHeaders(rateLimitResult),
-          "Retry-After": retryAfter.toString(),
+          'Retry-After': retryAfter.toString(),
         },
       }
     );
   }
 
-  if (!body || typeof body !== "object") {
-    return NextResponse.json(
-      { error: "Request body must be a JSON object" },
-      { status: 400 }
-    );
+  if (!body || typeof body !== 'object') {
+    return NextResponse.json({ error: 'Request body must be a JSON object' }, { status: 400 });
   }
 
   const { messages, options } = body as {
@@ -358,7 +348,7 @@ export async function POST(request: NextRequest) {
   if (!validateMessages(messages)) {
     return NextResponse.json(
       {
-        error: "Invalid messages format",
+        error: 'Invalid messages format',
         message: `Messages must be an array of 1-${MAX_MESSAGES} chat messages with role and content fields. Each message must be under ${MAX_MESSAGE_LENGTH} characters.`,
       },
       { status: 400 }
@@ -369,9 +359,8 @@ export async function POST(request: NextRequest) {
   if (!validateOptions(options)) {
     return NextResponse.json(
       {
-        error: "Invalid options format",
-        message:
-          "Options must be a valid PerplexityRequestOptions object. See API documentation.",
+        error: 'Invalid options format',
+        message: 'Options must be a valid PerplexityRequestOptions object. See API documentation.',
       },
       { status: 400 }
     );
@@ -386,9 +375,7 @@ export async function POST(request: NextRequest) {
 
     const result: ResearchResult = await research(messages, options);
 
-    console.warn(
-      `[Research API] Success - ${result.usage.totalTokens} tokens used`
-    );
+    console.warn(`[Research API] Success - ${result.usage.totalTokens} tokens used`);
 
     // Track API usage and cost
     const estimatedCost = estimatePerplexityCost({
@@ -397,19 +384,17 @@ export async function POST(request: NextRequest) {
       completionTokens: result.usage.completionTokens,
     });
 
-    recordApiCall("perplexity", "/api/research", {
+    await recordApiCall('perplexity', '/api/research', {
       cost: estimatedCost,
       tokens: result.usage.totalTokens,
     });
 
-    console.warn(
-      `[Research API] Estimated cost: $${estimatedCost.toFixed(4)}`
-    );
+    console.warn(`[Research API] Estimated cost: $${estimatedCost.toFixed(4)}`);
 
     return NextResponse.json(result, {
       headers: {
-        "Cache-Control": `public, s-maxage=${SERVICES.perplexity.cacheMinutes * 60}, stale-while-revalidate=${SERVICES.perplexity.cacheMinutes * 120}`,
-        "X-Cache-Status": "MISS",
+        'Cache-Control': `public, s-maxage=${SERVICES.perplexity.cacheMinutes * 60}, stale-while-revalidate=${SERVICES.perplexity.cacheMinutes * 120}`,
+        'X-Cache-Status': 'MISS',
         ...createRateLimitHeaders(rateLimitResult),
       },
     });
@@ -431,8 +416,8 @@ export async function GET(request: NextRequest) {
   const configured = isPerplexityConfigured();
 
   return NextResponse.json({
-    service: "Perplexity AI Research",
-    status: configured ? "available" : "not configured",
+    service: 'Perplexity AI Research',
+    status: configured ? 'available' : 'not configured',
     configured,
     rateLimit: {
       requestsPerMinute: RATE_LIMIT_CONFIG.limit,
@@ -442,9 +427,9 @@ export async function GET(request: NextRequest) {
       ttlMinutes: SERVICES.perplexity.cacheMinutes,
     },
     models: [
-      "llama-3.1-sonar-small-128k-online",
-      "llama-3.1-sonar-large-128k-online",
-      "llama-3.1-sonar-huge-128k-online",
+      'llama-3.1-sonar-small-128k-online',
+      'llama-3.1-sonar-large-128k-online',
+      'llama-3.1-sonar-huge-128k-online',
     ],
     defaultModel: SERVICES.perplexity.defaultModel,
   });

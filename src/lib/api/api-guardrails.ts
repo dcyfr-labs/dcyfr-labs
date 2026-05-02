@@ -9,7 +9,15 @@
  * - Enforce usage limits
  * - Monitor API consumption
  * - Alert on anomalies
+ *
+ * NOTE: The in-memory tracker below is per-process and dies with the
+ * Vercel cold start. The persistent tracker that drives the monthly
+ * cost-report email lives in `./api-usage-tracker.ts` (Redis-backed).
+ * `recordApiCall` dual-writes to both — in-memory for the dev-only admin
+ * view, Redis for cron aggregates.
  */
+
+import { trackApiUsage as trackApiUsageRedis } from './api-usage-tracker';
 
 // ============================================================================
 // CONFIGURATION
@@ -320,9 +328,19 @@ export async function checkApiLimitMiddleware(
 }
 
 /**
- * Track successful API call
+ * Track successful API call.
+ *
+ * Dual-writes to:
+ *  - the in-memory tracker (per-process; dev-only admin endpoint reads from it)
+ *  - the Redis-backed tracker (persistent monthly aggregate; consumed by the
+ *    `cron/monthly-api-cost-report` email and `cron/monitor-api-costs`)
+ *
+ * Returns a Promise; callers in async contexts should `await` so the Redis
+ * write completes before the response is sent. Redis failures are absorbed
+ * by `trackApiUsageRedis` (in-memory fallback inside that module) and never
+ * throw, so awaiting is safe.
  */
-export function recordApiCall(
+export async function recordApiCall(
   service: keyof typeof API_LIMITS,
   endpoint?: string,
   options?: {
@@ -330,8 +348,14 @@ export function recordApiCall(
     tokens?: number;
     duration?: number;
   }
-): void {
+): Promise<void> {
   trackApiUsage(service, endpoint, options?.cost);
+
+  await trackApiUsageRedis(service, endpoint ?? 'default', {
+    cost: options?.cost,
+    tokens: options?.tokens,
+    duration: options?.duration,
+  });
 
   // Log detailed metrics
   if (process.env.NODE_ENV === 'development') {
