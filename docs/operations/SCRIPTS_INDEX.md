@@ -105,7 +105,6 @@
 | `analyze-core-web-vitals.mjs` | `npm run perf:vitals`  | Analyze Core Web Vitals metrics |
 | `analyze-perf-metrics.mjs`    | `npm run perf:analyze` | Performance metrics analysis    |
 | `check-bundle-size.mjs`       | `npm run perf:bundle`  | Bundle size budget enforcement  |
-| `collect-perf-metrics.mjs`    | `npm run perf:collect` | Collect performance data        |
 | `find-large-images.sh`        | `npm run perf:images`  | Find oversized images           |
 | `check-bundle-size.mjs`       | (duplicate check)      | Bundle size validation          |
 
@@ -189,7 +188,6 @@
 | `cleanup-check.mjs`              | `npm run util:cleanup-check`    | Cleanup verification           |
 | `clear-activity-cache.mjs`       | `npm run cache:clear:activity`  | Clear activity cache           |
 | `clear-test-data.mjs`            | `npm run cache:clear:test`      | Clear test data from Redis     |
-| `convert-tokens.mjs`             | `npm run util:convert-tokens`   | Convert design tokens          |
 | `fix-barrel-exports.mjs`         | `npm run util:fix-exports`      | Fix barrel export patterns     |
 | `fix-mdx-less-than.mjs`          | `npm run util:fix-mdx`          | Fix MDX less-than escaping     |
 | `verify-links.mjs`               | `npm run util:verify-links`     | Verify link validity           |
@@ -207,7 +205,6 @@
 | `dev-utils.mjs`         | `npm run dev:utils`     | Development utilities CLI       |
 | `health-check.mjs`      | `npm run health:check`  | Project health check            |
 | `health-cli.mjs`        | `npm run health:cli`    | Health check CLI                |
-| `mcp-cli.mjs`           | `npm run mcp:cli`       | MCP server management CLI       |
 | `session-cli.mjs`       | `npm run session:cli`   | Session management CLI          |
 | `telemetry-cli.ts`      | `npm run telemetry:cli` | Telemetry CLI                   |
 | `check-images.mjs`      | `npm run debug:images`  | Debug image loading issues      |
