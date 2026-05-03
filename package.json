@@ -424,7 +424,10 @@
     "@axiomhq/js": "^1.6.0",
     "basic-ftp": "^5.3.0",
     "postcss": "^8.5.10",
-    "uuid": "^14.0.0"
+    "uuid": "^14.0.0",
+    "@dcyfr/ai": {
+      "@anthropic-ai/sdk": "^0.91.1"
+    }
   },
   "optionalDependencies": {
     "@anthropic-ai/sdk": "0.91.1"
