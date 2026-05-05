@@ -180,6 +180,10 @@ jobs:
         if: github.event_name == 'schedule' || github.event.inputs.create_report == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Pass multi-line/tab-bearing content via env (GHA handles this safely)
+          # rather than inline ${{ }} expansion, which breaks sed when newlines
+          # split the command. Consumed by the python substitution block below.
+          LARGEST_CHUNKS: ${{ steps.bundle.outputs.largest_chunks }}
         run: |
           cat > performance-report.md <<'REPORTEOF'
           # 📊 Weekly Performance Report
@@ -304,8 +308,23 @@ jobs:
           sed -i "s|CSS_SIZE_PLACEHOLDER|${{ steps.budgets.outputs.current_css }}|g" performance-report.md
           sed -i "s|CSS_BUDGET_PLACEHOLDER|${{ steps.budgets.outputs.budget_css }}|g" performance-report.md
           sed -i "s|CSS_STATUS_PLACEHOLDER|${CSS_STATUS}|g" performance-report.md
-          sed -i "s|LARGEST_CHUNKS_PLACEHOLDER|${{ steps.bundle.outputs.largest_chunks }}|g" performance-report.md
-          sed -i "s|RECOMMENDATIONS_PLACEHOLDER|${RECOMMENDATIONS}|g" performance-report.md
+          # LARGEST_CHUNKS + RECOMMENDATIONS contain multi-line content with tabs
+          # (du -h output / shell-newline-separated bullet lists). When sed expands
+          # ${{ steps.bundle.outputs.largest_chunks }} or ${RECOMMENDATIONS} inline
+          # before bash runs, the embedded newlines split the command and produce:
+          #   sed: -e expression #1, char 70: unterminated 's' command
+          # LARGEST_CHUNKS is passed via step `env:`. Export RECOMMENDATIONS so
+          # python can read it. Use literal string replace (no regex) to avoid
+          # any further escaping landmines.
+          export RECOMMENDATIONS
+          python3 - <<'PYEOF'
+          import os, pathlib
+          p = pathlib.Path("performance-report.md")
+          content = p.read_text()
+          content = content.replace("LARGEST_CHUNKS_PLACEHOLDER", os.environ.get("LARGEST_CHUNKS", "(no chunks data)"))
+          content = content.replace("RECOMMENDATIONS_PLACEHOLDER", os.environ.get("RECOMMENDATIONS", "(no recommendations)"))
+          p.write_text(content)
+          PYEOF
 
           if [ -z "${{ steps.find-issue.outputs.issue_number }}" ]; then
             # Create new issue
