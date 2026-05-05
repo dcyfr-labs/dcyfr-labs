@@ -410,7 +410,7 @@
     "brace-expansion": ">=5.0.5",
     "yaml": ">=2.8.3",
     "flatted": ">=3.4.2",
-    "axios": ">=1.15.0",
+    "axios": "^1.16.0",
     "koa": ">=3.1.2",
     "minimatch": ">=10.2.3",
     "mem0ai": {
