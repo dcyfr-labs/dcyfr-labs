@@ -49,7 +49,12 @@
     "lhci:autorun": "lhci autorun --config .lighthouse/rc.json",
     "lhci:analyze": "node scripts/analyze-core-web-vitals.mjs",
     "perf:check": "npm run build && node scripts/performance/check-bundle-size.mjs",
-    "perf:analyze": "ANALYZE=true npm run build"
+    "perf:analyze": "ANALYZE=true npm run build",
+    "lint:ci": "node scripts/run-eslint.mjs",
+    "lhci:assert": "lhci assert --config .lighthouse/rc.json",
+    "validate:color-contrast": "node scripts/validate.mjs color-contrast",
+    "update:baseline": "node scripts/ci/update-baseline-browser-mapping.mjs",
+    "deploy:invalidate": "node scripts/invalidate-cache-on-deploy.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
