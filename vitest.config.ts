@@ -31,8 +31,8 @@ export default defineConfig({
     },
     // Route pure-logic tests to lighter node environment (no DOM overhead)
     environmentMatchGlobs: [
-      ['src/**/agents/**/*.test.ts', 'node'],
-      ['src/__tests__/lib/**/*.test.ts', 'node'],
+      ['tests/lib/**/*.test.ts', 'node'],
+      ['tests/agents/**/*.test.ts', 'node'],
       ['scripts/__tests__/**/*.{test,spec}.{ts,mjs}', 'node'],
     ],
     // Cache: uses Vite's cacheDir (set at top level)
@@ -64,11 +64,7 @@ export default defineConfig({
       },
     },
     globals: true,
-    include: [
-      'src/**/*.{test,spec}.{ts,tsx}',
-      'tests/**/*.{test,spec}.{ts,tsx}',
-      'scripts/__tests__/**/*.{test,spec}.{ts,mjs}',
-    ],
+    include: ['tests/**/*.{test,spec}.{ts,tsx}', 'scripts/__tests__/**/*.{test,spec}.{ts,mjs}'],
     exclude: ['node_modules', '.next', 'e2e', '_deprecated'],
     // Silence console output during tests (cleaner output)
     // Set to false if debugging
