@@ -8,7 +8,6 @@
  * Services tracked:
  * - Perplexity AI (paid tiers)
  * - Resend (free tier, paid tiers)
- * - GreyNoise (free tier)
  * - Semantic Scholar (free)
  * - GitHub API (free with token)
  * - Redis/Upstash (free tier, paid tiers)
@@ -16,7 +15,12 @@
  * - Inngest (free tier)
  */
 
-import { getMonthlyUsage, getHistoricalUsage, type MonthlyUsageAggregate, type DailyUsageData } from './api-usage-tracker';
+import {
+  getMonthlyUsage,
+  getHistoricalUsage,
+  type MonthlyUsageAggregate,
+  type DailyUsageData,
+} from './api-usage-tracker';
 
 // ============================================================================
 // PRICING MODELS
@@ -56,19 +60,6 @@ export const PRICING = {
         maxEmails: 50000,
         cost: 20, // $20/month
         additionalPer1k: 1, // $1 per 1,000 additional emails
-      },
-    },
-  },
-  greynoise: {
-    name: 'GreyNoise IP Reputation',
-    tiers: {
-      free: {
-        maxRequests: 50000,
-        cost: 0,
-      },
-      community: {
-        maxRequests: 500000,
-        cost: 0,
       },
     },
   },
@@ -137,7 +128,6 @@ export const PRICING = {
 export const BUDGET = {
   perplexity: 50, // $50/month max
   resend: 0, // Stay on free tier
-  greynoise: 0, // Free tier sufficient
   semanticScholar: 0, // Free
   github: 0, // Free with token
   redis: 0, // Free tier sufficient
@@ -166,7 +156,7 @@ export function calculateServiceCost(
 
   if (service === 'perplexity') {
     const pricing = PRICING.perplexity;
-    
+
     // Use actual cost from usage tracking if available
     if (usage.totalCost > 0) {
       return {
@@ -176,11 +166,11 @@ export function calculateServiceCost(
         withinBudget: usage.totalCost <= budget,
       };
     }
-    
+
     // Fallback to request-based estimation
     const costPerRequest = pricing.tiers.standard.costPerRequest;
     const estimatedCost = usage.totalRequests * costPerRequest;
-    
+
     return {
       estimatedCost,
       tier: 'standard',
@@ -216,7 +206,7 @@ export function calculateServiceCost(
     };
   }
 
-  if (service === 'greynoise' || service === 'semanticScholar' || service === 'github' || service === 'inngest') {
+  if (service === 'semanticScholar' || service === 'github' || service === 'inngest') {
     // All free services
     return {
       estimatedCost: 0,
@@ -241,7 +231,7 @@ export function calculateServiceCost(
       };
     }
 
-    const excessCommands = usage.totalRequests - (free.maxCommands * usage.daysActive);
+    const excessCommands = usage.totalRequests - free.maxCommands * usage.daysActive;
     const commandsCost = (excessCommands / 100000) * payAsYouGo.costPer100kCommands;
 
     return {
@@ -316,7 +306,7 @@ export async function calculateMonthlyCost(month?: string): Promise<{
 
   for (const service of services) {
     const usage = await getMonthlyUsage(service, month);
-    
+
     if (usage) {
       const cost = calculateServiceCost(service, usage);
       results.push({
@@ -382,22 +372,21 @@ export async function predictLimitDate(
 
   // Calculate days until limit
   const remainingUsage = limit - currentUsage;
-  const daysUntilLimit = averageDailyUsage > 0
-    ? Math.floor(remainingUsage / averageDailyUsage)
-    : null;
+  const daysUntilLimit =
+    averageDailyUsage > 0 ? Math.floor(remainingUsage / averageDailyUsage) : null;
 
   // Estimate date
-  const estimatedDate = daysUntilLimit !== null
-    ? new Date(Date.now() + daysUntilLimit * 24 * 60 * 60 * 1000)
-    : null;
+  const estimatedDate =
+    daysUntilLimit !== null ? new Date(Date.now() + daysUntilLimit * 24 * 60 * 60 * 1000) : null;
 
   // Determine confidence based on data consistency
-  const variance = calculateVariance(history.map(h => h.count));
-  const confidence = variance < averageDailyUsage * 0.5
-    ? 'high'
-    : variance < averageDailyUsage * 1.5
-    ? 'medium'
-    : 'low';
+  const variance = calculateVariance(history.map((h) => h.count));
+  const confidence =
+    variance < averageDailyUsage * 0.5
+      ? 'high'
+      : variance < averageDailyUsage * 1.5
+        ? 'medium'
+        : 'low';
 
   return {
     daysUntilLimit,
@@ -417,27 +406,23 @@ function getServiceMonthlyLimit(service: keyof typeof PRICING): number {
     // Cost-based limit
     return Math.floor(BUDGET.perplexity / PRICING.perplexity.tiers.standard.costPerRequest);
   }
-  
+
   if (service === 'resend') {
     return PRICING.resend.tiers.free.maxEmails;
   }
-  
-  if (service === 'greynoise') {
-    return PRICING.greynoise.tiers.free.maxRequests;
-  }
-  
+
   if (service === 'redis') {
     return PRICING.redis.tiers.free.maxCommands * 30; // Per day × 30 days
   }
-  
+
   if (service === 'sentry') {
     return PRICING.sentry.tiers.developer.maxEvents;
   }
-  
+
   if (service === 'github') {
     return PRICING.github.tiers.authenticated.rateLimit * 24 * 30; // Per hour × 24 × 30
   }
-  
+
   // semanticScholar, inngest
   return Infinity;
 }
@@ -447,11 +432,11 @@ function getServiceMonthlyLimit(service: keyof typeof PRICING): number {
  */
 function calculateVariance(values: number[]): number {
   if (values.length === 0) return 0;
-  
+
   const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-  const squaredDiffs = values.map(val => Math.pow(val - mean, 2));
+  const squaredDiffs = values.map((val) => Math.pow(val - mean, 2));
   const variance = squaredDiffs.reduce((sum, val) => sum + val, 0) / values.length;
-  
+
   return Math.sqrt(variance);
 }
 
@@ -460,7 +445,11 @@ function calculateVariance(values: number[]): number {
 // ============================================================================
 
 /** Return an overall budget recommendation message or null */
-function getBudgetRecommendation(percentUsed: number, totalCost: number, totalBudget: number): string | null {
+function getBudgetRecommendation(
+  percentUsed: number,
+  totalCost: number,
+  totalBudget: number
+): string | null {
   if (percentUsed > 90) {
     return `🚨 CRITICAL: Total cost at ${percentUsed.toFixed(1)}% of budget ($${totalCost.toFixed(2)}/$${totalBudget})`;
   }
@@ -478,19 +467,27 @@ function getServiceRecommendations(
 ): string[] {
   const msgs: string[] = [];
   if (!cost.withinBudget) {
-    msgs.push(`❌ ${PRICING[service as keyof typeof PRICING].name}: Over budget ($${cost.estimatedCost.toFixed(2)} vs $${BUDGET[service as keyof typeof BUDGET]})`);
+    msgs.push(
+      `❌ ${PRICING[service as keyof typeof PRICING].name}: Over budget ($${cost.estimatedCost.toFixed(2)} vs $${BUDGET[service as keyof typeof BUDGET]})`
+    );
   }
   if (service === 'perplexity' && cost.estimatedCost > 30) {
-    msgs.push(`💡 Consider implementing more aggressive caching for Perplexity API calls (current: $${cost.estimatedCost.toFixed(2)}/month)`);
+    msgs.push(
+      `💡 Consider implementing more aggressive caching for Perplexity API calls (current: $${cost.estimatedCost.toFixed(2)}/month)`
+    );
   }
   if (service === 'resend' && usage.totalRequests > 2500) {
-    msgs.push(`📧 Approaching Resend free tier limit (${usage.totalRequests}/3000) - consider email consolidation or upgrade`);
+    msgs.push(
+      `📧 Approaching Resend free tier limit (${usage.totalRequests}/3000) - consider email consolidation or upgrade`
+    );
   }
   if (service === 'redis' && usage.totalRequests > 8000 * usage.daysActive) {
     msgs.push(`💾 High Redis usage detected - review caching strategies and TTL settings`);
   }
   if (service === 'sentry' && usage.totalRequests > 4000) {
-    msgs.push(`🔍 Consider filtering Sentry events or adjusting sample rates (current: ${usage.totalRequests} events)`);
+    msgs.push(
+      `🔍 Consider filtering Sentry events or adjusting sample rates (current: ${usage.totalRequests} events)`
+    );
   }
   return msgs;
 }
@@ -502,7 +499,11 @@ export async function generateCostRecommendations(month?: string): Promise<strin
   const monthlyCost = await calculateMonthlyCost(month);
   const recommendations: string[] = [];
 
-  const budgetRec = getBudgetRecommendation(monthlyCost.percentUsed, monthlyCost.totalCost, monthlyCost.totalBudget);
+  const budgetRec = getBudgetRecommendation(
+    monthlyCost.percentUsed,
+    monthlyCost.totalCost,
+    monthlyCost.totalBudget
+  );
   if (budgetRec) recommendations.push(budgetRec);
 
   for (const { service, usage, cost } of monthlyCost.services) {

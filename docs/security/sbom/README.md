@@ -51,6 +51,7 @@ A Software Bill of Materials is a comprehensive inventory of all components, dep
 **Purpose:** Comprehensive inventory including third-party services and MCP servers
 
 **Contains:**
+
 - All npm dependencies (runtime + dev)
 - Third-party services (Vercel, Redis, Sentry, etc.)
 - Internal packages (@dcyfr/ai, @dcyfr/agents)
@@ -75,6 +76,7 @@ node scripts/security/generate-sbom.mjs
 ### Automated Generation
 
 SBOMs are automatically generated:
+
 - **On release:** When version tags are created
 - **Monthly:** 1st day of each month at 2 AM UTC
 - **On demand:** Manual workflow trigger
@@ -90,6 +92,7 @@ SBOMs are automatically generated:
 **Total:** 110 packages (72 runtime + 38 dev)
 
 **Runtime Dependencies (72):**
+
 - Framework: Next.js 16, React 19, TypeScript
 - UI: Tailwind v4, Radix UI, Framer Motion
 - Content: MDX pipeline, Shiki syntax highlighting
@@ -97,6 +100,7 @@ SBOMs are automatically generated:
 - External services: Inngest, Resend, Sentry
 
 **Dev Dependencies (38):**
+
 - Testing: Vitest, Playwright, MSW
 - Linting: ESLint, TypeScript compiler
 - Security: CodeQL, Semgrep, Nuclei
@@ -104,20 +108,19 @@ SBOMs are automatically generated:
 
 ### Third-Party Services (12)
 
-| Service | Criticality | Purpose | SOC2 Report |
-|---------|-------------|---------|-------------|
-| GitHub API | Critical | Version control, CI/CD | [Available](https://github.com/security) |
-| Upstash Redis | Critical | Caching, analytics | On request |
-| Vercel | Critical | Hosting, deployment | [Available](https://vercel.com/security) |
-| Inngest | Critical | Background jobs | [Available](https://www.inngest.com/security) |
-| Sentry | Standard | Error tracking | [Available](https://sentry.io/security) |
-| Resend | Standard | Email delivery | On request |
-| Perplexity AI | Standard | AI research | Not available |
-| GreyNoise | Standard | IP reputation | On request |
-| Google Indexing | Low | Search indexing | [Available](https://cloud.google.com/security/compliance) |
-| Giscus | Low | Comments | Via GitHub |
-| Inoreader | Low | RSS feeds | Not available |
-| Axiom | Standard | Log aggregation | [Available](https://axiom.co/security) |
+| Service         | Criticality | Purpose                | SOC2 Report                                               |
+| --------------- | ----------- | ---------------------- | --------------------------------------------------------- |
+| GitHub API      | Critical    | Version control, CI/CD | [Available](https://github.com/security)                  |
+| Upstash Redis   | Critical    | Caching, analytics     | On request                                                |
+| Vercel          | Critical    | Hosting, deployment    | [Available](https://vercel.com/security)                  |
+| Inngest         | Critical    | Background jobs        | [Available](https://www.inngest.com/security)             |
+| Sentry          | Standard    | Error tracking         | [Available](https://sentry.io/security)                   |
+| Resend          | Standard    | Email delivery         | On request                                                |
+| Perplexity AI   | Standard    | AI research            | Not available                                             |
+| Google Indexing | Low         | Search indexing        | [Available](https://cloud.google.com/security/compliance) |
+| Giscus          | Low         | Comments               | Via GitHub                                                |
+| Inoreader       | Low         | RSS feeds              | Not available                                             |
+| Axiom           | Standard    | Log aggregation        | [Available](https://axiom.co/security)                    |
 
 ### Internal Packages (2)
 
@@ -154,18 +157,21 @@ cat docs/security/sbom/sbom-combined-$(date +%Y-%m-%d).json | jq '.thirdPartySer
 ### Compliance Audits
 
 **Monthly Audit:** Review SBOM for changes
+
 ```bash
 # Compare current SBOM to previous month
 npm run sbom:compare
 ```
 
 **Quarterly Audit:** Vendor risk assessment
+
 ```bash
 # Extract third-party services for risk scoring
 npm run sbom:vendors
 ```
 
 **Annual Audit:** Comprehensive review
+
 ```bash
 # Generate full compliance report
 npm run sbom:compliance-report
@@ -179,6 +185,7 @@ npm run sbom:compliance-report
 **Rationale:** SOC2 Type 2 requires 12 months observed + 12 months historical
 
 **Cleanup:**
+
 ```bash
 # Remove SBOMs older than 24 months
 find docs/security/sbom -name "sbom-*.json" -mtime +730 -delete
@@ -192,12 +199,12 @@ find docs/security/sbom -name "sbom-*.json" -mtime +730 -delete
 
 ### Trust Service Criteria
 
-| Criterion | Control | SBOM Role |
-|-----------|---------|-----------|
-| **SC3.2** | Security testing | Vulnerability identification |
-| **PI1.1** | Data validation | Component verification |
-| **C2.1** | Third-party inventory | Service catalog |
-| **P5.1** | Vendor management | Risk assessment support |
+| Criterion | Control               | SBOM Role                    |
+| --------- | --------------------- | ---------------------------- |
+| **SC3.2** | Security testing      | Vulnerability identification |
+| **PI1.1** | Data validation       | Component verification       |
+| **C2.1**  | Third-party inventory | Service catalog              |
+| **P5.1**  | Vendor management     | Risk assessment support      |
 
 ### Evidence Collection
 
@@ -216,6 +223,7 @@ find docs/security/sbom -name "sbom-*.json" -mtime +730 -delete
 **Symptom:** Script exits with error code 1
 
 **Diagnosis:**
+
 ```bash
 # Check npm dependencies are installed
 npm install
@@ -228,6 +236,7 @@ npx @cyclonedx/cyclonedx-npm --version
 ```
 
 **Resolution:**
+
 - Ensure all npm dependencies installed: `npm ci`
 - Update CycloneDX tool: `npm update -g @cyclonedx/cyclonedx-npm`
 - Check for corrupted package-lock.json: `rm package-lock.json && npm install`
@@ -237,6 +246,7 @@ npx @cyclonedx/cyclonedx-npm --version
 **Symptom:** Known dependencies not appearing in SBOM
 
 **Diagnosis:**
+
 ```bash
 # List all installed packages
 npm ls --all
@@ -246,6 +256,7 @@ cat docs/security/sbom/sbom-combined-*.json | jq '.summary'
 ```
 
 **Resolution:**
+
 - Regenerate package-lock.json: `rm package-lock.json && npm install`
 - Run SBOM generation with verbose logging: `DEBUG=* npm run sbom:generate`
 
@@ -254,9 +265,11 @@ cat docs/security/sbom/sbom-combined-*.json | jq '.summary'
 **Symptom:** External service missing from combined SBOM
 
 **Diagnosis:**
+
 - Check `THIRD_PARTY_SERVICES` constant in `scripts/security/generate-sbom.mjs`
 
 **Resolution:**
+
 - Add missing service to the inventory
 - Regenerate SBOM: `npm run sbom:generate`
 
@@ -267,12 +280,14 @@ cat docs/security/sbom/sbom-combined-*.json | jq '.summary'
 **Pattern:** `sbom-{format}-YYYY-MM-DD.{ext}`
 
 **Examples:**
+
 - `sbom-cyclonedx-2026-01-31.json`
 - `sbom-spdx-2026-01-31.json`
 - `sbom-combined-2026-01-31.json`
 - `sbom-summary-2026-01-31.md`
 
 **Rationale:** Date-based naming enables:
+
 - Historical comparison
 - Automated cleanup (retention policy)
 - Audit trail for compliance
@@ -284,6 +299,7 @@ cat docs/security/sbom/sbom-combined-*.json | jq '.summary'
 ### CI/CD Pipeline
 
 **GitHub Actions:**
+
 - Automated generation on release tags
 - Monthly scheduled generation
 - Manual trigger for on-demand generation
@@ -293,6 +309,7 @@ cat docs/security/sbom/sbom-combined-*.json | jq '.summary'
 ### Security Scanning
 
 **Tools:**
+
 - GitHub Dependency Graph (automatic)
 - Dependabot Security Alerts (automatic)
 - CodeQL scanning (daily)
@@ -307,10 +324,10 @@ cat docs/security/sbom/sbom-combined-*.json | jq '.summary'
 ### Internal Documentation
 
 - [SOC2 Compliance Plan](../
-.private/soc2-compliance-plan-2026-01-31.md)
+  .private/soc2-compliance-plan-2026-01-31.md)
 - [Security Index](../INDEX.md)
-- [Vendor Management Policy](../../governance/vendor-management-policy.md) *(To be created)*
-- [Monthly Audit Template](../.private/monthly-audit-YYYY-MM.md) *(To be created)*
+- [Vendor Management Policy](../../governance/vendor-management-policy.md) _(To be created)_
+- [Monthly Audit Template](../.private/monthly-audit-YYYY-MM.md) _(To be created)_
 
 ### Standards & Specifications
 
@@ -329,9 +346,9 @@ cat docs/security/sbom/sbom-combined-*.json | jq '.summary'
 
 ## Changelog
 
-| Date | Version | Changes |
-|------|---------|---------|
-| 2026-01-31 | 1.0.0 | Initial SBOM framework implementation |
+| Date       | Version | Changes                               |
+| ---------- | ------- | ------------------------------------- |
+| 2026-01-31 | 1.0.0   | Initial SBOM framework implementation |
 
 ---
 

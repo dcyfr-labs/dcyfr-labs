@@ -212,14 +212,8 @@ export function useMcpHealthDashboard() {
             responseTimeMs: 90,
             timestamp: new Date().toISOString(),
           },
-          {
-            name: 'GreyNoise',
-            status: 'ok',
-            responseTimeMs: 140,
-            timestamp: new Date().toISOString(),
-          },
         ],
-        summary: { total: 13, ok: 13, degraded: 0, down: 0 },
+        summary: { total: 12, ok: 12, degraded: 0, down: 0 },
       };
 
       let healthReport: McpHealthReport = mockHealthReport;

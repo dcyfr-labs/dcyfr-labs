@@ -4,13 +4,6 @@ import { inngest } from './client';
 export { validateDesignTokens } from './functions/design-token-validation';
 export { auditDependencies } from './functions/dependency-security-audit';
 
-// Import IP reputation functions
-export {
-  scheduleIpReputationCheck,
-  checkIpReputation,
-  handleMaliciousIpDetected,
-} from './ip-reputation-functions';
-
 // Import Credly cache functions
 export { refreshCredlyCache, clearCredlyCache } from './credly-cache-functions';
 

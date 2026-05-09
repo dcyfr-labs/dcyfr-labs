@@ -39,10 +39,6 @@
       "schedule": "0 1 * * *"
     },
     {
-      "path": "/api/cron/ip-reputation-check",
-      "schedule": "0 0,4,8,12,16,20 * * *"
-    },
-    {
       "path": "/api/cron/security-advisory-monitor",
       "schedule": "0 0,8,16 * * *"
     },
