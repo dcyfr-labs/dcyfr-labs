@@ -204,7 +204,6 @@ export function withCronAuth(request: NextRequest): NextResponse | null {
 
 // Whitelist of allowed external API domains
 const ALLOWED_EXTERNAL_DOMAINS = [
-  'api.perplexity.ai',
   'www.googleapis.com',
   'indexing.googleapis.com',
   'api.github.com',

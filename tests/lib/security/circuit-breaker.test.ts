@@ -494,10 +494,10 @@ describe('Predefined Circuits', () => {
   });
 
   it('should create external API circuit', () => {
-    const perplexityCircuit = createExternalAPICircuit('perplexity');
+    const resendCircuit = createExternalAPICircuit('resend');
 
-    expect(perplexityCircuit).toBeInstanceOf(CircuitBreaker);
-    expect(circuitBreakerRegistry.get('api-perplexity')).toBe(perplexityCircuit);
+    expect(resendCircuit).toBeInstanceOf(CircuitBreaker);
+    expect(circuitBreakerRegistry.get('api-resend')).toBe(resendCircuit);
   });
 
   it('should not count 4xx errors as Inngest failures', async () => {

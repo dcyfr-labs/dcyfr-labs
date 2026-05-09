@@ -18,7 +18,6 @@ export {
   ALERT_THRESHOLDS,
   checkApiLimitMiddleware,
   recordApiCall,
-  estimatePerplexityCost,
   estimateMonthlyCosts,
   getApiHealthStatus,
   logDailyUsageSummary,

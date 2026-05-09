@@ -6,7 +6,6 @@
  * predict when limits will be reached.
  *
  * Services tracked:
- * - Perplexity AI (paid tiers)
  * - Resend (free tier, paid tiers)
  * - Semantic Scholar (free)
  * - GitHub API (free with token)
@@ -31,23 +30,6 @@ import {
  * All costs in USD
  */
 export const PRICING = {
-  perplexity: {
-    name: 'Perplexity AI',
-    tiers: {
-      free: {
-        maxRequests: 5,
-        cost: 0,
-      },
-      standard: {
-        // Estimate: ~$0.005 per request (llama-3.1-sonar-small)
-        costPerRequest: 0.005,
-        costPer1kTokens: {
-          prompt: 0.0002,
-          completion: 0.0002,
-        },
-      },
-    },
-  },
   resend: {
     name: 'Resend Email',
     tiers: {
@@ -126,14 +108,13 @@ export const PRICING = {
  * Monthly budget allocation (in USD)
  */
 export const BUDGET = {
-  perplexity: 50, // $50/month max
   resend: 0, // Stay on free tier
   semanticScholar: 0, // Free
   github: 0, // Free with token
   redis: 0, // Free tier sufficient
   sentry: 0, // Free tier sufficient
   inngest: 0, // Free tier sufficient
-  total: 50, // $50/month total budget
+  total: 0, // No paid services currently configured
 } as const;
 
 // ============================================================================
@@ -153,31 +134,6 @@ export function calculateServiceCost(
   withinBudget: boolean;
 } {
   const budget = BUDGET[service];
-
-  if (service === 'perplexity') {
-    const pricing = PRICING.perplexity;
-
-    // Use actual cost from usage tracking if available
-    if (usage.totalCost > 0) {
-      return {
-        estimatedCost: usage.totalCost,
-        tier: 'standard',
-        breakdown: `${usage.totalRequests} requests, ${usage.totalTokens} tokens`,
-        withinBudget: usage.totalCost <= budget,
-      };
-    }
-
-    // Fallback to request-based estimation
-    const costPerRequest = pricing.tiers.standard.costPerRequest;
-    const estimatedCost = usage.totalRequests * costPerRequest;
-
-    return {
-      estimatedCost,
-      tier: 'standard',
-      breakdown: `${usage.totalRequests} requests × $${costPerRequest}`,
-      withinBudget: estimatedCost <= budget,
-    };
-  }
 
   if (service === 'resend') {
     const pricing = PRICING.resend;
@@ -324,7 +280,7 @@ export async function calculateMonthlyCost(month?: string): Promise<{
     services: results,
     totalCost,
     totalBudget,
-    percentUsed: (totalCost / totalBudget) * 100,
+    percentUsed: totalBudget > 0 ? (totalCost / totalBudget) * 100 : 0,
     withinBudget: totalCost <= totalBudget,
   };
 }
@@ -402,11 +358,6 @@ export async function predictLimitDate(
  * Get monthly limit for a service
  */
 function getServiceMonthlyLimit(service: keyof typeof PRICING): number {
-  if (service === 'perplexity') {
-    // Cost-based limit
-    return Math.floor(BUDGET.perplexity / PRICING.perplexity.tiers.standard.costPerRequest);
-  }
-
   if (service === 'resend') {
     return PRICING.resend.tiers.free.maxEmails;
   }
@@ -469,11 +420,6 @@ function getServiceRecommendations(
   if (!cost.withinBudget) {
     msgs.push(
       `❌ ${PRICING[service as keyof typeof PRICING].name}: Over budget ($${cost.estimatedCost.toFixed(2)} vs $${BUDGET[service as keyof typeof BUDGET]})`
-    );
-  }
-  if (service === 'perplexity' && cost.estimatedCost > 30) {
-    msgs.push(
-      `💡 Consider implementing more aggressive caching for Perplexity API calls (current: $${cost.estimatedCost.toFixed(2)}/month)`
     );
   }
   if (service === 'resend' && usage.totalRequests > 2500) {
