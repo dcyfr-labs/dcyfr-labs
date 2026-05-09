@@ -92,7 +92,7 @@ describe('calculateServiceCost', () => {
   });
 
   describe('free services', () => {
-    it.each(['greynoise', 'semanticScholar', 'github', 'inngest'] as const)(
+    it.each(['semanticScholar', 'github', 'inngest'] as const)(
       '%s returns free tier',
       (service) => {
         const usage = makeUsage({ service, totalRequests: 42 });
@@ -175,7 +175,6 @@ describe('PRICING constants', () => {
       expect.arrayContaining([
         'perplexity',
         'resend',
-        'greynoise',
         'semanticScholar',
         'github',
         'redis',

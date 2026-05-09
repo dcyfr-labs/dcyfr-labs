@@ -97,14 +97,6 @@ const THIRD_PARTY_SERVICES = [
     soc2Report: 'https://cloud.google.com/security/compliance',
   },
   {
-    name: 'GreyNoise',
-    purpose: 'IP reputation and threat intelligence',
-    criticality: 'Standard',
-    dataAccess: 'IP addresses for reputation lookup',
-    authentication: 'API keys',
-    soc2Report: 'Available on request',
-  },
-  {
     name: 'Giscus',
     purpose: 'GitHub Discussions-based comments',
     criticality: 'Low',
@@ -150,7 +142,8 @@ function generateCycloneDX() {
 
     const outputFile = join(outputDir, `sbom-cyclonedx-${timestamp}.json`);
 
-    execSync( // NOSONAR - Administrative script, inputs from controlled sources
+    execSync(
+      // NOSONAR - Administrative script, inputs from controlled sources
       `npx @cyclonedx/cyclonedx-npm --output-file "${outputFile}" --output-format JSON --spec-version 1.5`,
       { cwd: projectRoot, stdio: 'inherit' }
     );

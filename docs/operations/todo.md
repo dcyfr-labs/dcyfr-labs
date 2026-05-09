@@ -101,7 +101,6 @@ Phase 1 (Consolidation) and Phase 2 (Projects) complete. Remaining:
 
 - [ ] `src/inngest/session-management.ts:114` - Monitoring/alerting integration
 - [ ] `src/inngest/session-management.ts:152` - Production audit trail logging
-- [ ] `src/app/api/ip-reputation/route.ts:390` - Manual reputation override UI
 
 ---
 
