@@ -73,9 +73,8 @@ If a system has high autonomy and one fixed API, it's a bot with an ambitious sc
 
 - **Claude Code sub-agents** — `.claude/agents/*.md` — each owns a workflow (design check, security audit, deps audit) and runs to completion.
 - **Rei daemon** (upstream in `~/Code/scripts/rei-daemon/`) — 15-minute autonomy loop, observes repo state, plans, acts, records.
-- **dcyfr-workspace specialists** — `.claude/agents/dcyfr-*.md` — fullstack, frontend, security, database, test, devops engineers that own multi-step tasks.
 
-**Why agents load `AGENTS.md`.** Agents make consequential decisions — what to refactor, what dep to remove, what test to delete — and they need the anti-assumption protocol, the openspec-first workflow, and the mutation policy in front of them. Assistants don't need this because they never act unilaterally. Bots don't need this because they can't act outside their narrow rule set.
+**Why agents load `AGENTS.md`.** Agents make consequential decisions — what to refactor, what dep to remove, what test to delete — and they need the anti-assumption protocol and the mutation policy in front of them. Assistants don't need this because they never act unilaterally. Bots don't need this because they can't act outside their narrow rule set.
 
 ---
 
@@ -83,11 +82,11 @@ If a system has high autonomy and one fixed API, it's a bot with an ambitious sc
 
 Each actor class reads a specific set of files. Prose documents link here; this table is the source of truth.
 
-| class     | reads                                                                              | writes                                           | needs                                                                                                 |
-| --------- | ---------------------------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| bot       | `.well-known/automation.yaml`, `package.json` scripts with `# used-by:` comments   | workflow logs, artifacts, PRs with fixed titles  | stable script names, stable capability ids, deterministic inputs                                      |
-| assistant | `.well-known/automation.yaml`, `.github/copilot-instructions.md`, `CLAUDE.md`      | code suggestions in the current file             | tight token budget (≤10k), cheat-sheet style, task-routing pointers, **no governance policy payload** |
-| agent     | `.well-known/automation.yaml`, `AGENTS.md`, `dcyfr-workspace/openspec/`, this file | new files, PRs, commits, openspec change folders | mutation policy, anti-assumption protocol, openspec workflow, access to read/write/run tools          |
+| class     | reads                                                                            | writes                                          | needs                                                                                                 |
+| --------- | -------------------------------------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| bot       | `.well-known/automation.yaml`, `package.json` scripts with `# used-by:` comments | workflow logs, artifacts, PRs with fixed titles | stable script names, stable capability ids, deterministic inputs                                      |
+| assistant | `.well-known/automation.yaml`, `.github/copilot-instructions.md`, `CLAUDE.md`    | code suggestions in the current file            | tight token budget (≤10k), cheat-sheet style, task-routing pointers, **no governance policy payload** |
+| agent     | `.well-known/automation.yaml`, `AGENTS.md`, this file                            | new files, PRs, commits                         | mutation policy, anti-assumption protocol, access to read/write/run tools                             |
 
 **Read in this order.** Every actor class starts with `.well-known/automation.yaml`. That file tells it which prose file to load next and what its token budget is. Prose files never contradict the manifest — if there's a conflict, the manifest wins and the prose gets updated.
 

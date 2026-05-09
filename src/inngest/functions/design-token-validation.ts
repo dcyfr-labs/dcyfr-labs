@@ -6,8 +6,6 @@
  *
  * MIGRATION: Now using @dcyfr/ai framework with compatibility adapter.
  * Falls back to script-based validation if new system unavailable.
- *
- * @see docs/ai/enforcement/DESIGN_TOKENS.md
  */
 
 import { inngest } from '../client';

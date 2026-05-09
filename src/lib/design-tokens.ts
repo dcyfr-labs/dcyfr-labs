@@ -4,10 +4,7 @@
  * This file centralizes all design decisions to ensure consistency across the site.
  * Use these constants instead of magic strings in components.
  *
- * **File Size:** 2,977 lines | **Last Updated:** Phase 2 Complete (Feb 9, 2026)
- *
  * @see /docs/design/ux-ui-consistency-analysis.md for rationale and usage guidelines
- * @see /docs/reports/PHASE_2_COMPLETE_2026-02-09.md for recent improvements
  */
 
 // ============================================================================
@@ -759,9 +756,6 @@ export const FONT_CONTRAST = {
  * - content: Within content blocks (space-y-3 md:space-y-4 lg:space-y-5)
  * - prose: Running text paragraphs (space-y-5 md:space-y-6 lg:space-y-8)
  * - compact: Lists and alerts (space-y-2)
- *
- * @see /docs/ai/enforcement-rules.md#design-token-enforcement
- * @see /docs/ai/design-system-quick-ref.md for AI code generation guide
  *
  * @example Major page sections (largest gaps)
  * ```tsx

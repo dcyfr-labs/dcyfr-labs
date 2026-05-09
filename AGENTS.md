@@ -14,9 +14,8 @@ You read:
 
 1. [`.well-known/automation.yaml`](./.well-known/automation.yaml) — the manifest (load first, always)
 2. This file — `AGENTS.md`
-3. `dcyfr-workspace/openspec/` — active change proposals, specs, and archives
-4. [`docs/automation-glossary.md`](./docs/automation-glossary.md) — definitions of bot/assistant/agent
-5. The specific prose file for the task at hand (e.g., `docs/architecture/` for a refactor)
+3. [`docs/automation-glossary.md`](./docs/automation-glossary.md) — definitions of bot/assistant/agent
+4. The specific prose file for the task at hand (e.g., `docs/architecture/` for a refactor)
 
 You do **not** read `README.md` (human-audience) or `.github/copilot-instructions.md` (assistant-audience) on wake. Those are out of your contract surface.
 
@@ -27,29 +26,9 @@ You do **not** read `README.md` (human-audience) or `.github/copilot-instruction
 **Verify before acting.** Your mistakes are expensive because they run end-to-end without a human in the loop for every turn. Follow these rules:
 
 1. **Read the source before implementing.** If you're about to modify a function, read the current implementation first. If you're about to delete a file, grep for references first.
-2. **Read the spec before writing code.** If there's an openspec change for the work, load `proposal.md`, `tasks.md`, and `specs/<capability>/spec.md`. Implement against the spec, not against your intuition.
-3. **Ask when intent is ambiguous.** If you don't know whether Drew wants approach A or approach B, ask. Do not guess.
-4. **Verify test counts, file counts, and metrics before quoting them.** Do not restate numbers from memory. Run `wc -l`, `npm run test:run`, `grep -c`. Numbers in prose decay fast.
-5. **Don't restate what the code already says.** If a function is self-documenting, don't add comments. If a filename is clear, don't add a README to the directory.
-
----
-
-## OpenSpec-first workflow
-
-This repo is managed via openspec. Non-trivial changes start as a change proposal, not a patch.
-
-**When a change requires openspec:** new features, refactors touching more than one module, deletions of tracked code, changes to CI/CD, changes to branch protection, changes to `.well-known/automation.yaml`, changes to this file.
-
-**When it does not:** single-file bug fixes, typo corrections, dependency bumps from Dependabot, generated-file regeneration, adding a test to cover an existing function.
-
-**Workflow:**
-
-1. Draft the change under `dcyfr-workspace/openspec/changes/<change-name>/`.
-2. The change folder contains: `proposal.md` (why + what), `design.md` (architectural notes, optional), `tasks.md` (phased checklist), and `specs/<capability>/spec.md` (Requirement/Scenario format with WHEN/THEN clauses).
-3. Open a PR referencing the change folder. Implement the tasks in order. Mark tasks `[x]` as you complete them.
-4. When all tasks are complete and CI is green, move the change to `openspec/changes/archive/`.
-
-See existing archived changes for reference format.
+2. **Ask when intent is ambiguous.** If you don't know whether Drew wants approach A or approach B, ask. Do not guess.
+3. **Verify test counts, file counts, and metrics before quoting them.** Do not restate numbers from memory. Run `wc -l`, `npm run test:run`, `grep -c`. Numbers in prose decay fast.
+4. **Don't restate what the code already says.** If a function is self-documenting, don't add comments. If a filename is clear, don't add a README to the directory.
 
 ---
 
@@ -91,9 +70,7 @@ Do not delegate for small tasks. Do not delegate understanding — brief the sub
 
 ## Scope boundaries
 
-**This file governs dcyfr-labs only.** The parent `dcyfr-workspace/` repository has its own `AGENTS.md` with workspace-wide policy (worktree isolation, cross-package coordination, intelligence gateway access). When working inside dcyfr-labs, this file takes precedence. When working at the workspace level, load the workspace's `AGENTS.md` instead.
-
-**Do not modify files outside this repo.** If a task requires touching `dcyfr-ai/`, `dcyfr-ai-agents/`, `dcyfr-workspace-agents/`, or any other workspace package, stop and route the work to that package's own agent session. Cross-repo edits from inside dcyfr-labs are a governance violation.
+**This file governs dcyfr-labs only.** Do not modify files outside this repo.
 
 ---
 

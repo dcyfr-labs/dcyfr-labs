@@ -11,71 +11,70 @@
  * - Reduced user frustration and cognitive load
  *
  * @see https://www.smashingmagazine.com/2022/09/inline-validation-web-forms-ux/
- * @see docs/ai/form-validation-pattern.md
  */
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef } from 'react';
 
 /**
  * Validation rule definition
  */
 export type ValidationRule<T = string> = {
   /** Validation function - returns error message if invalid, null if valid */
-  validate: (value: T) => string | null
+  validate: (value: T) => string | null;
   /** Optional: only validate after first blur (default: false for required checks) */
-  onBlurOnly?: boolean
-}
+  onBlurOnly?: boolean;
+};
 
 /**
  * Field state for a single form field
  */
 export type FieldState = {
-  value: string
-  error: string | null
-  touched: boolean
+  value: string;
+  error: string | null;
+  touched: boolean;
   /** True if field has been blurred at least once */
-  blurred: boolean
+  blurred: boolean;
   /** True if field is currently valid */
-  isValid: boolean
+  isValid: boolean;
   /** True if field should show success indicator */
-  showSuccess: boolean
-}
+  showSuccess: boolean;
+};
 
 /**
  * Form validation configuration
  */
 export type FormConfig<T extends Record<string, string>> = {
   /** Initial field values */
-  initialValues: T
+  initialValues: T;
   /** Validation rules for each field */
   validationRules: {
-    [K in keyof T]?: ValidationRule[]
-  }
+    [K in keyof T]?: ValidationRule[];
+  };
   /** Callback when form is successfully validated and submitted */
-  onSubmit: (values: T) => Promise<void> | void
-}
+  onSubmit: (values: T) => Promise<void> | void;
+};
 
 /**
  * Return type for useFormValidation hook
  */
 export type UseFormValidationReturn<T extends Record<string, string>> = {
   /** Current field values */
-  values: T
+  values: T;
   /** Field states (error, touched, valid, etc.) */
-  fieldStates: Record<keyof T, FieldState>
+  fieldStates: Record<keyof T, FieldState>;
   /** Whether form is currently submitting */
-  isSubmitting: boolean
+  isSubmitting: boolean;
   /** Update a field's value */
-  setValue: (field: keyof T, value: string) => void
+  setValue: (field: keyof T, value: string) => void;
   /** Handle field blur event */
-  handleBlur: (field: keyof T) => void
+  handleBlur: (field: keyof T) => void;
   /** Handle form submission */
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   /** Reset form to initial state */
-  reset: () => void
+  reset: () => void;
   /** Check if entire form is valid */
-  isFormValid: boolean
-}
+  isFormValid: boolean;
+};
 
 /**
  * Built-in validation rules (common patterns)
@@ -90,33 +89,27 @@ export const validators = {
   /** Email format validator */
   email: (message = 'Please enter a valid email address'): ValidationRule => ({
     validate: (value) => {
-      if (!value) return null // Only validate if value exists (combine with required)
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      return emailRegex.test(value) ? null : message
+      if (!value) return null; // Only validate if value exists (combine with required)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value) ? null : message;
     },
     onBlurOnly: true, // Only show after blur (Punish Late)
   }),
 
   /** Minimum length validator */
-  minLength: (
-    min: number,
-    message = `Must be at least ${min} characters`
-  ): ValidationRule => ({
+  minLength: (min: number, message = `Must be at least ${min} characters`): ValidationRule => ({
     validate: (value) => {
-      if (!value) return null // Only validate if value exists
-      return value.length >= min ? null : message
+      if (!value) return null; // Only validate if value exists
+      return value.length >= min ? null : message;
     },
     onBlurOnly: true, // Only show after blur
   }),
 
   /** Maximum length validator */
-  maxLength: (
-    max: number,
-    message = `Must be no more than ${max} characters`
-  ): ValidationRule => ({
+  maxLength: (max: number, message = `Must be no more than ${max} characters`): ValidationRule => ({
     validate: (value) => {
-      if (!value) return null
-      return value.length <= max ? null : message
+      if (!value) return null;
+      return value.length <= max ? null : message;
     },
     onBlurOnly: true,
   }),
@@ -124,8 +117,8 @@ export const validators = {
   /** Pattern matching validator */
   pattern: (regex: RegExp, message: string): ValidationRule => ({
     validate: (value) => {
-      if (!value) return null
-      return regex.test(value) ? null : message
+      if (!value) return null;
+      return regex.test(value) ? null : message;
     },
     onBlurOnly: true,
   }),
@@ -139,7 +132,7 @@ export const validators = {
     validate: (value) => (validator(value) ? null : message),
     onBlurOnly,
   }),
-}
+};
 
 /**
  * Form validation hook implementing "Reward Early, Punish Late" pattern
@@ -163,30 +156,29 @@ export function useFormValidation<T extends Record<string, string>>({
   validationRules,
   onSubmit,
 }: FormConfig<T>): UseFormValidationReturn<T> {
-  const [values, setValues] = useState<T>(initialValues)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [values, setValues] = useState<T>(initialValues);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Track field states separately for granular control
-  const [fieldStates, setFieldStates] = useState<Record<keyof T, FieldState>>(
-    () =>
-      Object.keys(initialValues).reduce(
-        (acc, key) => ({
-          ...acc,
-          [key]: {
-            value: initialValues[key as keyof T],
-            error: null,
-            touched: false,
-            blurred: false,
-            isValid: false,
-            showSuccess: false,
-          },
-        }),
-        {} as Record<keyof T, FieldState>
-      )
-  )
+  const [fieldStates, setFieldStates] = useState<Record<keyof T, FieldState>>(() =>
+    Object.keys(initialValues).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: {
+          value: initialValues[key as keyof T],
+          error: null,
+          touched: false,
+          blurred: false,
+          isValid: false,
+          showSuccess: false,
+        },
+      }),
+      {} as Record<keyof T, FieldState>
+    )
+  );
 
   // Ref to track if form has been submitted (for showing all errors)
-  const hasSubmittedRef = useRef(false)
+  const hasSubmittedRef = useRef(false);
 
   /**
    * Validate a single field
@@ -194,24 +186,24 @@ export function useFormValidation<T extends Record<string, string>>({
    */
   const validateField = useCallback(
     (field: keyof T, value: string, isBlurred: boolean): string | null => {
-      const rules = validationRules[field]
-      if (!rules || rules.length === 0) return null
+      const rules = validationRules[field];
+      if (!rules || rules.length === 0) return null;
 
       // Run all validation rules
       for (const rule of rules) {
         // Skip onBlurOnly rules if field hasn't been blurred and form hasn't been submitted
         if (rule.onBlurOnly && !isBlurred && !hasSubmittedRef.current) {
-          continue
+          continue;
         }
 
-        const error = rule.validate(value)
-        if (error) return error
+        const error = rule.validate(value);
+        if (error) return error;
       }
 
-      return null
+      return null;
     },
     [validationRules]
-  )
+  );
 
   /**
    * Update a field's value and validate it
@@ -219,13 +211,12 @@ export function useFormValidation<T extends Record<string, string>>({
    */
   const setValue = useCallback(
     (field: keyof T, value: string) => {
-      setValues((prev) => ({ ...prev, [field]: value }))
+      setValues((prev) => ({ ...prev, [field]: value }));
 
-      const currentFieldState = fieldStates[field]
-      const error = validateField(field, value, currentFieldState.blurred)
-      const isValid = error === null
-      const showSuccess =
-        isValid && value.trim() !== '' && currentFieldState.blurred
+      const currentFieldState = fieldStates[field];
+      const error = validateField(field, value, currentFieldState.blurred);
+      const isValid = error === null;
+      const showSuccess = isValid && value.trim() !== '' && currentFieldState.blurred;
 
       setFieldStates((prev) => ({
         ...prev,
@@ -237,10 +228,10 @@ export function useFormValidation<T extends Record<string, string>>({
           isValid,
           showSuccess,
         },
-      }))
+      }));
     },
     [validateField, fieldStates]
-  )
+  );
 
   /**
    * Handle field blur event
@@ -248,10 +239,10 @@ export function useFormValidation<T extends Record<string, string>>({
    */
   const handleBlur = useCallback(
     (field: keyof T) => {
-      const value = values[field]
-      const error = validateField(field, value, true)
-      const isValid = error === null
-      const showSuccess = isValid && value.trim() !== ''
+      const value = values[field];
+      const error = validateField(field, value, true);
+      const isValid = error === null;
+      const showSuccess = isValid && value.trim() !== '';
 
       setFieldStates((prev) => ({
         ...prev,
@@ -262,25 +253,25 @@ export function useFormValidation<T extends Record<string, string>>({
           isValid,
           showSuccess,
         },
-      }))
+      }));
     },
     [values, validateField]
-  )
+  );
 
   /**
    * Validate all fields (used on submit)
    */
   const validateAllFields = useCallback((): boolean => {
-    let isValid = true
-    const newFieldStates = { ...fieldStates }
+    let isValid = true;
+    const newFieldStates = { ...fieldStates };
 
     Object.keys(values).forEach((key) => {
-      const field = key as keyof T
-      const value = values[field]
-      const error = validateField(field, value, true)
+      const field = key as keyof T;
+      const value = values[field];
+      const error = validateField(field, value, true);
 
       if (error) {
-        isValid = false
+        isValid = false;
       }
 
       newFieldStates[field] = {
@@ -289,12 +280,12 @@ export function useFormValidation<T extends Record<string, string>>({
         error,
         isValid: error === null,
         showSuccess: error === null && value.trim() !== '',
-      }
-    })
+      };
+    });
 
-    setFieldStates(newFieldStates)
-    return isValid
-  }, [values, validateField, fieldStates])
+    setFieldStates(newFieldStates);
+    return isValid;
+  }, [values, validateField, fieldStates]);
 
   /**
    * Handle form submission
@@ -302,28 +293,28 @@ export function useFormValidation<T extends Record<string, string>>({
    */
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      hasSubmittedRef.current = true
+      e.preventDefault();
+      hasSubmittedRef.current = true;
 
-      const isValid = validateAllFields()
-      if (!isValid) return
+      const isValid = validateAllFields();
+      if (!isValid) return;
 
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       try {
-        await onSubmit(values)
+        await onSubmit(values);
       } finally {
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     },
     [validateAllFields, onSubmit, values]
-  )
+  );
 
   /**
    * Reset form to initial state
    */
   const reset = useCallback(() => {
-    setValues(initialValues)
-    hasSubmittedRef.current = false
+    setValues(initialValues);
+    hasSubmittedRef.current = false;
     setFieldStates(
       Object.keys(initialValues).reduce(
         (acc, key) => ({
@@ -339,15 +330,13 @@ export function useFormValidation<T extends Record<string, string>>({
         }),
         {} as Record<keyof T, FieldState>
       )
-    )
-  }, [initialValues])
+    );
+  }, [initialValues]);
 
   /**
    * Check if entire form is valid
    */
-  const isFormValid = Object.keys(fieldStates).every(
-    (key) => fieldStates[key as keyof T].isValid
-  )
+  const isFormValid = Object.keys(fieldStates).every((key) => fieldStates[key as keyof T].isValid);
 
   return {
     values,
@@ -358,5 +347,5 @@ export function useFormValidation<T extends Record<string, string>>({
     handleSubmit,
     reset,
     isFormValid,
-  }
+  };
 }

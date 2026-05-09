@@ -37,7 +37,6 @@ actors:
     examples:
       - dependabot
       - auto-calver
-      - monthly-cleanup
       - vercel-cron
 
   assistants:
@@ -60,18 +59,16 @@ actors:
     reads:
       - .well-known/automation.yaml
       - AGENTS.md
-      - dcyfr-workspace/openspec/
       - docs/automation-glossary.md
     primary_instructions: AGENTS.md
     scope: >-
       Autonomous, goal-directed, multi-turn task execution. Owns tasks end to
-      end, manages its own context, writes files, runs commands, and follows
-      openspec. Must obey mutation_policy below.
+      end, manages its own context, writes files, runs commands. Must obey
+      mutation_policy below.
     token_budget: 50000
     examples:
       - claude-code-sub-agents
       - rei-daemon
-      - dcyfr-workspace-specialists
 
 # ---------- capabilities ----------
 # Every automation-discoverable operation. Each capability names its owner
@@ -127,23 +124,11 @@ capabilities:
     idempotent: true
     requires_approval: false
 
-  - id: dependency-audit
-    summary: npm audit + depcheck regression gate
-    owner: .github/workflows/repo-budget-guardrails.yml
-    idempotent: true
-    requires_approval: false
-
   - id: release-calver
     summary: Calendar-versioned release tag and changelog
     owner: .github/workflows/release-automation.yml
     idempotent: false
     requires_approval: true
-
-  - id: repo-budget
-    summary: Topline doc / script count / workflow count guardrails
-    owner: .github/workflows/repo-budget-guardrails.yml
-    idempotent: true
-    requires_approval: false
 
 deprecated_capabilities: []
 

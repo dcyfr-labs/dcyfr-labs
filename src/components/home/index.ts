@@ -23,4 +23,3 @@ export { TrendingTechnologiesPanel } from './trending-technologies-panel';
 export type { TrendingProject, TrendingVelocity } from './trending-projects-panel';
 
 // Loading skeletons removed - components now use loading prop pattern
-// See docs/ai/skeleton-consolidation-pattern.md

@@ -4,8 +4,6 @@
  * Unified types for the universal activity timeline, inspired by modern
  * social media feeds. Supports multiple content sources with a consistent
  * interface for rendering and filtering.
- *
- * @see /docs/features/activity-feed.md (TODO: create documentation)
  */
 
 import {
@@ -20,7 +18,7 @@ import {
   BarChart3,
   Activity,
   Search,
-} from "lucide-react";
+} from 'lucide-react';
 
 // ============================================================================
 // ACTIVITY SOURCES & VERBS
@@ -30,39 +28,39 @@ import {
  * Sources that can generate activity items
  */
 export type ActivitySource =
-  | "blog" // Blog posts
-  | "project" // Portfolio projects
-  | "github" // GitHub commits/releases
-  | "changelog" // Site updates
-  | "milestone" // Achievements (view/comment milestones)
-  | "trending" // Trending posts
-  | "engagement" // High engagement posts
-  | "certification" // Credly certifications
-  | "analytics" // Vercel/GA traffic milestones
-  | "github-traffic" // Repository traffic achievements
-  | "seo"; // Search Console achievements
+  | 'blog' // Blog posts
+  | 'project' // Portfolio projects
+  | 'github' // GitHub commits/releases
+  | 'changelog' // Site updates
+  | 'milestone' // Achievements (view/comment milestones)
+  | 'trending' // Trending posts
+  | 'engagement' // High engagement posts
+  | 'certification' // Credly certifications
+  | 'analytics' // Vercel/GA traffic milestones
+  | 'github-traffic' // Repository traffic achievements
+  | 'seo'; // Search Console achievements
 
 /**
  * Action verbs describing what happened
  */
 export type ActivityVerb =
-  | "published" // New blog post
-  | "updated" // Content update
-  | "launched" // New project
-  | "released" // Version release
-  | "committed" // Code commit
-  | "achieved" // Milestone reached
-  | "earned" // Certification earned
-  | "reached"; // Traffic/analytics milestone reached
+  | 'published' // New blog post
+  | 'updated' // Content update
+  | 'launched' // New project
+  | 'released' // Version release
+  | 'committed' // Code commit
+  | 'achieved' // Milestone reached
+  | 'earned' // Certification earned
+  | 'reached'; // Traffic/analytics milestone reached
 
 /**
  * Display variants for different contexts
  */
 export type ActivityVariant =
-  | "compact" // Homepage widget: icon + title + time
-  | "standard" // Activity page: full card with description
-  | "timeline" // Vertical connected timeline with line
-  | "minimal"; // Sidebar: text-only list
+  | 'compact' // Homepage widget: icon + title + time
+  | 'standard' // Activity page: full card with description
+  | 'timeline' // Vertical connected timeline with line
+  | 'minimal'; // Sidebar: text-only list
 
 // ============================================================================
 // ACTIVITY ITEM
@@ -125,7 +123,7 @@ export interface ActivityMeta {
   readingTime?: string;
 
   /** Project status */
-  status?: "active" | "in-progress" | "archived";
+  status?: 'active' | 'in-progress' | 'archived';
 
   /** GitHub-specific fields */
   commits?: number;
@@ -171,7 +169,7 @@ export interface ActivityMeta {
 /**
  * Time-based grouping for social media style display
  */
-export type TimeGroup = "today" | "this-week" | "this-month" | "older";
+export type TimeGroup = 'today' | 'this-week' | 'this-month' | 'older';
 
 /**
  * Activity item with computed group for display
@@ -193,7 +191,7 @@ export interface ActivityFilters {
   sources?: ActivitySource[];
 
   /** Filter by time range */
-  timeRange?: "today" | "week" | "month" | "year" | "all";
+  timeRange?: 'today' | 'week' | 'month' | 'year' | 'all';
 
   /** Search query */
   query?: string;
@@ -232,60 +230,57 @@ export interface ActivityFeedProps {
 // STYLING MAPS
 // ============================================================================
 
-import { SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { SEMANTIC_COLORS } from '@/lib/design-tokens';
 
 /**
  * Color schemes for each activity source
  * Uses semantic color tokens for consistency
  * Badges now use stock light/dark variants
  */
-export const ACTIVITY_SOURCE_COLORS: Record<
-  ActivitySource,
-  { icon: string; border: string }
-> = {
+export const ACTIVITY_SOURCE_COLORS: Record<ActivitySource, { icon: string; border: string }> = {
   blog: {
     icon: SEMANTIC_COLORS.accent.sky.text,
-    border: "border-l-info",
+    border: 'border-l-info',
   },
   project: {
     icon: SEMANTIC_COLORS.accent.cyan.text,
-    border: "border-l-info",
+    border: 'border-l-info',
   },
   github: {
     icon: SEMANTIC_COLORS.accent.slate.text,
-    border: "border-l-slate-600",
+    border: 'border-l-slate-600',
   },
   changelog: {
     icon: SEMANTIC_COLORS.accent.sky.text,
-    border: "border-l-info",
+    border: 'border-l-info',
   },
   milestone: {
     icon: SEMANTIC_COLORS.accent.amber.text,
-    border: "border-l-warning",
+    border: 'border-l-warning',
   },
   trending: {
     icon: SEMANTIC_COLORS.accent.orange.text,
-    border: "border-l-orange-600",
+    border: 'border-l-orange-600',
   },
   engagement: {
     icon: SEMANTIC_COLORS.alert.critical.icon,
-    border: "border-l-error",
+    border: 'border-l-error',
   },
   certification: {
     icon: SEMANTIC_COLORS.alert.success.icon,
-    border: "border-l-success",
+    border: 'border-l-success',
   },
   analytics: {
     icon: SEMANTIC_COLORS.accent.indigo.text,
-    border: "border-l-indigo-600",
+    border: 'border-l-indigo-600',
   },
-  "github-traffic": {
+  'github-traffic': {
     icon: SEMANTIC_COLORS.accent.violet.text,
-    border: "border-l-purple-600",
+    border: 'border-l-purple-600',
   },
   seo: {
     icon: SEMANTIC_COLORS.alert.success.icon,
-    border: "border-l-success",
+    border: 'border-l-success',
   },
 } as const;
 
@@ -293,31 +288,31 @@ export const ACTIVITY_SOURCE_COLORS: Record<
  * Human-readable labels for sources
  */
 export const ACTIVITY_SOURCE_LABELS: Record<ActivitySource, string> = {
-  blog: "Post",
-  project: "Project",
-  github: "Code",
-  changelog: "Update",
-  milestone: "Milestone",
-  trending: "Trending",
-  engagement: "High Engagement",
-  certification: "Certification",
-  analytics: "Analytics",
-  "github-traffic": "Repository Growth",
-  seo: "SEO Achievement",
+  blog: 'Post',
+  project: 'Project',
+  github: 'Code',
+  changelog: 'Update',
+  milestone: 'Milestone',
+  trending: 'Trending',
+  engagement: 'High Engagement',
+  certification: 'Certification',
+  analytics: 'Analytics',
+  'github-traffic': 'Repository Growth',
+  seo: 'SEO Achievement',
 } as const;
 
 /**
  * Human-readable labels for verbs
  */
 export const ACTIVITY_VERB_LABELS: Record<ActivityVerb, string> = {
-  published: "Published",
-  updated: "Updated",
-  launched: "Launched",
-  released: "Released",
-  committed: "Committed",
-  achieved: "Achieved",
-  earned: "Earned",
-  reached: "Reached",
+  published: 'Published',
+  updated: 'Updated',
+  launched: 'Launched',
+  released: 'Released',
+  committed: 'Committed',
+  achieved: 'Achieved',
+  earned: 'Earned',
+  reached: 'Reached',
 } as const;
 
 /**
@@ -333,7 +328,7 @@ export const SOURCE_ICONS: Record<ActivitySource, typeof FileText> = {
   engagement: Flame,
   certification: Award,
   analytics: BarChart3,
-  "github-traffic": Activity,
+  'github-traffic': Activity,
   seo: Search,
 } as const;
 
