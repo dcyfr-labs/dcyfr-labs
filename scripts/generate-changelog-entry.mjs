@@ -26,7 +26,15 @@ const { values } = parseArgs({
 
 // Read commits from file
 const commitsText = fs.readFileSync(values['commits-file'], 'utf-8');
-const commits = commitsText.split('\n').filter(Boolean);
+const commits = commitsText
+  .split('\n')
+  .filter(Boolean)
+  // Drop the workflow's own version-bump commits — they are not user-facing
+  // changes and would pollute the changelog with `release - version X` rows.
+  .filter((line) => {
+    const message = line.split(' ').slice(1).join(' ');
+    return !/^chore\(release\)/.test(message);
+  });
 
 // Initialize categories following Keep a Changelog format
 const categories = {
