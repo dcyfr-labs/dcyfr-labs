@@ -165,12 +165,6 @@ export function useMcpHealthDashboard() {
             timestamp: new Date().toISOString(),
           },
           {
-            name: 'Perplexity',
-            status: 'ok',
-            responseTimeMs: 200,
-            timestamp: new Date().toISOString(),
-          },
-          {
             name: 'Inngest',
             status: 'ok',
             responseTimeMs: 95,
@@ -213,7 +207,7 @@ export function useMcpHealthDashboard() {
             timestamp: new Date().toISOString(),
           },
         ],
-        summary: { total: 12, ok: 12, degraded: 0, down: 0 },
+        summary: { total: 11, ok: 11, degraded: 0, down: 0 },
       };
 
       let healthReport: McpHealthReport = mockHealthReport;

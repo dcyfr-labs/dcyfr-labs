@@ -68,12 +68,12 @@ describe('api-usage-tracker', () => {
     it('creates new daily entry when none exists', async () => {
       mockRedis.get.mockResolvedValue(null); // no existing data
 
-      await trackApiUsage('perplexity', 'search', { cost: 0.05, tokens: 100 });
+      await trackApiUsage('resend', 'send', { cost: 0.05, tokens: 100 });
 
       // Should call set for daily + monthly
       expect(mockRedis.set).toHaveBeenCalled();
       const dailyCall = mockRedis.set.mock.calls[0];
-      expect(dailyCall[0]).toContain('api:usage:perplexity:search');
+      expect(dailyCall[0]).toContain('api:usage:resend:send');
       const stored = JSON.parse(dailyCall[1]);
       expect(stored.count).toBe(1);
       expect(stored.estimatedCost).toBe(0.05);
@@ -82,8 +82,8 @@ describe('api-usage-tracker', () => {
 
     it('increments existing daily entry', async () => {
       const existing = JSON.stringify({
-        service: 'perplexity',
-        endpoint: 'search',
+        service: 'resend',
+        endpoint: 'send',
         date: todayKey(),
         count: 5,
         estimatedCost: 0.25,
@@ -92,7 +92,7 @@ describe('api-usage-tracker', () => {
       });
       mockRedis.get.mockResolvedValueOnce(existing).mockResolvedValueOnce(null);
 
-      await trackApiUsage('perplexity', 'search', { cost: 0.05, tokens: 100, duration: 50 });
+      await trackApiUsage('resend', 'send', { cost: 0.05, tokens: 100, duration: 50 });
 
       const dailyCall = mockRedis.set.mock.calls[0];
       const stored = JSON.parse(dailyCall[1]);
@@ -105,7 +105,7 @@ describe('api-usage-tracker', () => {
       mockRedis.ping.mockRejectedValue(new Error('Connection refused'));
 
       // Should not throw
-      await expect(trackApiUsage('perplexity', 'search')).resolves.toBeUndefined();
+      await expect(trackApiUsage('resend', 'send')).resolves.toBeUndefined();
       // Should NOT have called set (Redis unavailable)
       expect(mockRedis.set).not.toHaveBeenCalled();
     });
@@ -113,7 +113,7 @@ describe('api-usage-tracker', () => {
     it('handles Redis errors gracefully', async () => {
       mockRedis.get.mockRejectedValue(new Error('Redis error'));
 
-      await expect(trackApiUsage('perplexity', 'search')).resolves.toBeUndefined();
+      await expect(trackApiUsage('resend', 'send')).resolves.toBeUndefined();
     });
   });
 
@@ -124,35 +124,35 @@ describe('api-usage-tracker', () => {
   describe('getDailyUsage', () => {
     it('returns parsed data from Redis', async () => {
       const data = {
-        service: 'perplexity',
-        endpoint: 'search',
+        service: 'resend',
+        endpoint: 'send',
         date: todayKey(),
         count: 10,
         estimatedCost: 0.5,
       };
       mockRedis.get.mockResolvedValue(JSON.stringify(data));
 
-      const result = await getDailyUsage('perplexity', 'search');
+      const result = await getDailyUsage('resend', 'send');
       expect(result).toEqual(data);
     });
 
     it('returns null when no data exists', async () => {
       mockRedis.get.mockResolvedValue(null);
-      const result = await getDailyUsage('perplexity', 'search');
+      const result = await getDailyUsage('resend', 'send');
       expect(result).toBeNull();
     });
 
     it('returns null when Redis is unavailable', async () => {
       mockRedis.ping.mockRejectedValue(new Error('down'));
       // When Redis is unavailable and nothing in memory fallback
-      const result = await getDailyUsage('perplexity', 'search');
+      const result = await getDailyUsage('resend', 'send');
       // Should return null or from memory
       expect(result === null || typeof result === 'object').toBe(true);
     });
 
     it('accepts custom date parameter', async () => {
       mockRedis.get.mockResolvedValue(null);
-      await getDailyUsage('perplexity', 'search', '2026-01-15');
+      await getDailyUsage('resend', 'send', '2026-01-15');
       expect(mockRedis.get).toHaveBeenCalledWith(expect.stringContaining('2026-01-15'));
     });
   });
@@ -164,7 +164,7 @@ describe('api-usage-tracker', () => {
   describe('getMonthlyUsage', () => {
     it('returns parsed monthly aggregate', async () => {
       const data = {
-        service: 'perplexity',
+        service: 'resend',
         month: monthKey(),
         totalRequests: 100,
         totalCost: 5,
@@ -174,13 +174,13 @@ describe('api-usage-tracker', () => {
       };
       mockRedis.get.mockResolvedValue(JSON.stringify(data));
 
-      const result = await getMonthlyUsage('perplexity');
+      const result = await getMonthlyUsage('resend');
       expect(result).toEqual(data);
     });
 
     it('returns null when Redis unavailable', async () => {
       mockRedis.ping.mockRejectedValue(new Error('down'));
-      const result = await getMonthlyUsage('perplexity');
+      const result = await getMonthlyUsage('resend');
       expect(result).toBeNull();
     });
   });
@@ -193,13 +193,13 @@ describe('api-usage-tracker', () => {
     it('returns stats from today keys', async () => {
       const today = todayKey();
       mockRedis.keys.mockResolvedValue([
-        `api:usage:perplexity:search:${today}`,
-        `api:usage:resend:default:${today}`,
+        `api:usage:resend:send:${today}`,
+        `api:usage:github:default:${today}`,
       ]);
 
       const data = {
-        service: 'perplexity',
-        endpoint: 'search',
+        service: 'resend',
+        endpoint: 'send',
         date: today,
         count: 10,
         estimatedCost: 0.5,
@@ -208,7 +208,7 @@ describe('api-usage-tracker', () => {
 
       const result = await getAllUsageStats();
       expect(result.length).toBeGreaterThan(0);
-      expect(result[0].service).toBe('perplexity');
+      expect(result[0].service).toBe('resend');
       expect(result[0].percentUsed).toBeGreaterThan(0);
     });
 
@@ -233,7 +233,7 @@ describe('api-usage-tracker', () => {
   describe('getHistoricalUsage', () => {
     it('returns empty when Redis unavailable', async () => {
       mockRedis.ping.mockRejectedValue(new Error('down'));
-      const result = await getHistoricalUsage('perplexity', 'search', 7);
+      const result = await getHistoricalUsage('resend', 'send', 7);
       expect(result).toEqual([]);
     });
 
@@ -244,8 +244,8 @@ describe('api-usage-tracker', () => {
         callCount++;
         if (callCount <= 2) {
           return JSON.stringify({
-            service: 'perplexity',
-            endpoint: 'search',
+            service: 'resend',
+            endpoint: 'send',
             date: `2026-04-${String(20 - callCount).padStart(2, '0')}`,
             count: callCount * 5,
             estimatedCost: callCount * 0.1,
@@ -254,7 +254,7 @@ describe('api-usage-tracker', () => {
         return null;
       });
 
-      const result = await getHistoricalUsage('perplexity', 'search', 5);
+      const result = await getHistoricalUsage('resend', 'send', 5);
       expect(result.length).toBeLessThanOrEqual(5);
     });
   });
@@ -266,7 +266,7 @@ describe('api-usage-tracker', () => {
   describe('getMonthlyHistory', () => {
     it('returns empty when Redis unavailable', async () => {
       mockRedis.ping.mockRejectedValue(new Error('down'));
-      const result = await getMonthlyHistory('perplexity', 3);
+      const result = await getMonthlyHistory('resend', 3);
       expect(result).toEqual([]);
     });
   });
@@ -278,11 +278,11 @@ describe('api-usage-tracker', () => {
   describe('getUsageSummary', () => {
     it('aggregates stats correctly', async () => {
       const today = todayKey();
-      mockRedis.keys.mockResolvedValue([`api:usage:perplexity:search:${today}`]);
+      mockRedis.keys.mockResolvedValue([`api:usage:resend:send:${today}`]);
       mockRedis.get.mockResolvedValue(
         JSON.stringify({
-          service: 'perplexity',
-          endpoint: 'search',
+          service: 'resend',
+          endpoint: 'send',
           date: today,
           count: 100,
           estimatedCost: 5,
@@ -304,40 +304,24 @@ describe('api-usage-tracker', () => {
   describe('checkServiceLimit', () => {
     it('allows when no usage data', async () => {
       mockRedis.get.mockResolvedValue(null);
-      const result = await checkServiceLimit('perplexity');
+      const result = await checkServiceLimit('resend');
       expect(result.allowed).toBe(true);
     });
 
     it('blocks when at limit', async () => {
       mockRedis.get.mockResolvedValue(
         JSON.stringify({
-          service: 'perplexity',
+          service: 'resend',
           endpoint: 'default',
           date: todayKey(),
-          count: 2000, // exceeds 1000 limit
+          count: 3000, // exceeds 2500 maxEmailsPerMonth limit
           estimatedCost: 0,
         })
       );
 
-      const result = await checkServiceLimit('perplexity');
+      const result = await checkServiceLimit('resend');
       expect(result.allowed).toBe(false);
       expect(result.reason).toContain('limit reached');
-    });
-
-    it('blocks perplexity on cost limit', async () => {
-      mockRedis.get.mockResolvedValue(
-        JSON.stringify({
-          service: 'perplexity',
-          endpoint: 'default',
-          date: todayKey(),
-          count: 100, // under request limit
-          estimatedCost: 60, // over $50 cost limit
-        })
-      );
-
-      const result = await checkServiceLimit('perplexity');
-      expect(result.allowed).toBe(false);
-      expect(result.reason).toContain('cost limit');
     });
   });
 
@@ -371,13 +355,13 @@ describe('api-usage-tracker', () => {
 
     it('deletes keys older than 90 days', async () => {
       mockRedis.keys.mockResolvedValue([
-        'api:usage:perplexity:search:2025-01-01', // old
-        `api:usage:perplexity:search:${todayKey()}`, // current
+        'api:usage:resend:send:2025-01-01', // old
+        `api:usage:resend:send:${todayKey()}`, // current
       ]);
 
       const result = await cleanupOldData();
       expect(result.deleted).toBe(1);
-      expect(mockRedis.del).toHaveBeenCalledWith('api:usage:perplexity:search:2025-01-01');
+      expect(mockRedis.del).toHaveBeenCalledWith('api:usage:resend:send:2025-01-01');
     });
 
     it('handles errors gracefully', async () => {

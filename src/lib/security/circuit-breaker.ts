@@ -10,7 +10,7 @@
  * Use cases:
  * - Inngest event sending
  * - MCP server calls
- * - External API requests (GitHub, Sentry, Perplexity, etc.)
+ * - External API requests (GitHub, Sentry, etc.)
  *
  * OWASP ASI-2026: ASI08 - External Service Dependency Failures
  */

@@ -27,12 +27,6 @@ import { trackApiUsage as trackApiUsageRedis } from './api-usage-tracker';
  * API Usage Limits (Monthly)
  */
 export const API_LIMITS = {
-  perplexity: {
-    maxRequestsPerMonth: 1000, // Prevent runaway costs
-    maxTokensPerRequest: 4000, // Limit response size
-    maxCostPerMonth: 50, // USD budget cap
-    estimatedCostPerRequest: 0.05, // Approximate cost
-  },
   inngest: {
     maxEventsPerMonth: 10000, // Free tier: unlimited, but set reasonable limit
     maxFunctionsPerMonth: 50000, // Free tier: unlimited
@@ -66,11 +60,6 @@ export const API_LIMITS = {
  */
 export const RATE_LIMITS = {
   // Public API endpoints
-  research: {
-    requestsPerMinute: 5,
-    requestsPerHour: 50,
-    requestsPerDay: 200,
-  },
   contact: {
     requestsPerMinute: 3,
     requestsPerHour: 10,
@@ -236,18 +225,6 @@ export function checkServiceLimit(
     };
   }
 
-  // Check cost limit for paid services
-  if (service === 'perplexity' && stats.estimatedCost) {
-    const costLimit = API_LIMITS.perplexity.maxCostPerMonth;
-    if (stats.estimatedCost >= costLimit) {
-      return {
-        allowed: false,
-        reason: `${service} cost limit reached ($${stats.estimatedCost.toFixed(2)}/$${costLimit})`,
-        stats,
-      };
-    }
-  }
-
   return { allowed: true, stats };
 }
 
@@ -366,39 +343,6 @@ export async function recordApiCall(
 // ============================================================================
 // COST ESTIMATION
 // ============================================================================
-
-/**
- * Estimate cost for Perplexity API request
- */
-export function estimatePerplexityCost(options: {
-  model: string;
-  promptTokens: number;
-  completionTokens: number;
-}): number {
-  // Pricing as of 2025 (approximate)
-  const pricing = {
-    'llama-3.1-sonar-small-128k-online': {
-      prompt: 0.0002, // $0.20 per 1M tokens
-      completion: 0.0002,
-    },
-    'llama-3.1-sonar-large-128k-online': {
-      prompt: 0.001, // $1 per 1M tokens
-      completion: 0.001,
-    },
-    'llama-3.1-sonar-huge-128k-online': {
-      prompt: 0.005, // $5 per 1M tokens
-      completion: 0.005,
-    },
-  };
-
-  const modelPricing =
-    pricing[options.model as keyof typeof pricing] || pricing['llama-3.1-sonar-large-128k-online'];
-
-  const promptCost = (options.promptTokens / 1000) * modelPricing.prompt;
-  const completionCost = (options.completionTokens / 1000) * modelPricing.completion;
-
-  return promptCost + completionCost;
-}
 
 /**
  * Estimate monthly costs for all services

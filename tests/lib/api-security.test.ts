@@ -135,7 +135,7 @@ describe('validateExternalUrl', () => {
 
   it('accepts whitelisted HTTPS URLs', () => {
     expect(validateExternalUrl('https://api.github.com/repos')).toEqual({ valid: true });
-    expect(validateExternalUrl('https://api.perplexity.ai/chat')).toEqual({ valid: true });
+    expect(validateExternalUrl('https://www.googleapis.com/v1/search')).toEqual({ valid: true });
   });
 
   it('rejects non-whitelisted domains', () => {

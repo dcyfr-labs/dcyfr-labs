@@ -38,40 +38,6 @@ function makeUsage(overrides: Partial<MonthlyUsageAggregate> = {}): MonthlyUsage
 // ---------------------------------------------------------------------------
 
 describe('calculateServiceCost', () => {
-  describe('perplexity', () => {
-    it('uses tracked cost when available', () => {
-      const usage = makeUsage({
-        service: 'perplexity',
-        totalCost: 25,
-        totalRequests: 500,
-        totalTokens: 100_000,
-      });
-      const result = calculateServiceCost('perplexity', usage);
-
-      expect(result.estimatedCost).toBe(25);
-      expect(result.tier).toBe('standard');
-      expect(result.withinBudget).toBe(true);
-      expect(result.breakdown).toContain('500 requests');
-    });
-
-    it('falls back to request-based estimation when cost is 0', () => {
-      const usage = makeUsage({ service: 'perplexity', totalCost: 0, totalRequests: 200 });
-      const result = calculateServiceCost('perplexity', usage);
-
-      const expected = 200 * PRICING.perplexity.tiers.standard.costPerRequest;
-      expect(result.estimatedCost).toBe(expected);
-      expect(result.tier).toBe('standard');
-      expect(result.withinBudget).toBe(true);
-    });
-
-    it('reports over budget when cost exceeds limit', () => {
-      const usage = makeUsage({ service: 'perplexity', totalCost: 60 });
-      const result = calculateServiceCost('perplexity', usage);
-
-      expect(result.withinBudget).toBe(false);
-    });
-  });
-
   describe('resend', () => {
     it('stays on free tier within limit', () => {
       const usage = makeUsage({ service: 'resend', totalRequests: 1000 });
@@ -172,15 +138,7 @@ describe('calculateServiceCost', () => {
 describe('PRICING constants', () => {
   it('has all expected services', () => {
     expect(Object.keys(PRICING)).toEqual(
-      expect.arrayContaining([
-        'perplexity',
-        'resend',
-        'semanticScholar',
-        'github',
-        'redis',
-        'sentry',
-        'inngest',
-      ])
+      expect.arrayContaining(['resend', 'semanticScholar', 'github', 'redis', 'sentry', 'inngest'])
     );
   });
 });
@@ -204,20 +162,14 @@ describe('calculateMonthlyCost', () => {
 
   it('aggregates costs across services', async () => {
     vi.mocked(getMonthlyUsage).mockImplementation(async (service: string) => {
-      if (service === 'perplexity')
-        return makeUsage({
-          service: 'perplexity',
-          totalCost: 10,
-          totalRequests: 100,
-          totalTokens: 50_000,
-        });
-      if (service === 'resend') return makeUsage({ service: 'resend', totalRequests: 500 });
+      if (service === 'resend') return makeUsage({ service: 'resend', totalRequests: 55_000 });
+      if (service === 'sentry') return makeUsage({ service: 'sentry', totalRequests: 12_000 });
       return null;
     });
 
     const result = await calculateMonthlyCost();
     expect(result.services.length).toBeGreaterThanOrEqual(2);
-    expect(result.totalCost).toBeGreaterThanOrEqual(10);
+    expect(result.totalCost).toBeGreaterThan(0);
     expect(result.totalBudget).toBe(BUDGET.total);
     expect(typeof result.percentUsed).toBe('number');
     expect(typeof result.withinBudget).toBe('boolean');
@@ -245,7 +197,7 @@ describe('predictLimitDate', () => {
   it('returns null prediction with no history', async () => {
     vi.mocked(getHistoricalUsage).mockResolvedValue([]);
 
-    const result = await predictLimitDate('perplexity');
+    const result = await predictLimitDate('resend');
     expect(result.daysUntilLimit).toBeNull();
     expect(result.estimatedDate).toBeNull();
     expect(result.confidence).toBe('low');
@@ -253,12 +205,12 @@ describe('predictLimitDate', () => {
 
   it('predicts based on historical usage', async () => {
     vi.mocked(getHistoricalUsage).mockResolvedValue([
-      { service: 'perplexity', date: '2026-04-01', count: 10, estimatedCost: 0.5 },
-      { service: 'perplexity', date: '2026-04-02', count: 15, estimatedCost: 0.75 },
-      { service: 'perplexity', date: '2026-04-03', count: 20, estimatedCost: 1 },
+      { service: 'resend', date: '2026-04-01', count: 10, estimatedCost: 0 },
+      { service: 'resend', date: '2026-04-02', count: 15, estimatedCost: 0 },
+      { service: 'resend', date: '2026-04-03', count: 20, estimatedCost: 0 },
     ]);
 
-    const result = await predictLimitDate('perplexity');
+    const result = await predictLimitDate('resend');
     expect(result.averageDailyUsage).toBeGreaterThan(0);
     expect(result.currentUsage).toBe(20);
     expect(result.limit).toBeGreaterThan(0);
@@ -284,17 +236,15 @@ describe('generateCostRecommendations', () => {
 
   it('returns warnings for over-budget services', async () => {
     vi.mocked(getMonthlyUsage).mockImplementation(async (service: string) => {
-      if (service === 'perplexity')
+      if (service === 'sentry')
         return makeUsage({
-          service: 'perplexity',
-          totalCost: 60,
-          totalRequests: 1000,
-          totalTokens: 500_000,
+          service: 'sentry',
+          totalRequests: 60_000, // exceeds team tier max (50k)
         });
       return null;
     });
 
     const result = await generateCostRecommendations();
-    expect(result.some((r) => r.includes('❌') || r.includes('💡'))).toBe(true);
+    expect(result.some((r) => r.includes('❌'))).toBe(true);
   });
 });
