@@ -10,12 +10,10 @@
  * - Search history with localStorage persistence
  * - Performance optimized for <100ms on 1000+ items
  * - Highlight matched terms in results
- *
- * @see /docs/features/activity-feed.md
  */
 
-import MiniSearch from "minisearch";
-import type { ActivityItem, ActivitySource } from "./types";
+import MiniSearch from 'minisearch';
+import type { ActivityItem, ActivitySource } from './types';
 
 // ============================================================================
 // TYPES
@@ -76,20 +74,20 @@ export interface SearchHistoryItem {
 // CONSTANTS
 // ============================================================================
 
-const SEARCH_HISTORY_KEY = "dcyfr-activity-search-history";
+const SEARCH_HISTORY_KEY = 'dcyfr-activity-search-history';
 const MAX_SEARCH_HISTORY = 10;
 
 /**
  * MiniSearch configuration for activity items
  */
 const SEARCH_CONFIG = {
-  fields: ["title", "description", "tags", "category"], // Fields to search
-  storeFields: ["id"], // Fields to store for retrieval
+  fields: ['title', 'description', 'tags', 'category'], // Fields to search
+  storeFields: ['id'], // Fields to store for retrieval
   searchOptions: {
     boost: { title: 2, tags: 1.5, description: 1, category: 1 }, // Field importance
     fuzzy: 0.2, // Typo tolerance (0.2 = ~2 character edits)
     prefix: true, // Match word prefixes
-    combineWith: "AND" as const, // Default query combination
+    combineWith: 'AND' as const, // Default query combination
   },
 };
 
@@ -106,11 +104,11 @@ export function createSearchIndex(items: ActivityItem[]): MiniSearch {
     storeFields: SEARCH_CONFIG.storeFields,
     extractField: (document, fieldName) => {
       // Custom field extraction to handle nested metadata
-      if (fieldName === "tags") {
-        return (document as ActivityItem).meta?.tags?.join(" ") || "";
+      if (fieldName === 'tags') {
+        return (document as ActivityItem).meta?.tags?.join(' ') || '';
       }
-      if (fieldName === "category") {
-        return (document as ActivityItem).meta?.category || "";
+      if (fieldName === 'category') {
+        return (document as ActivityItem).meta?.category || '';
       }
       return (document as ActivityItem)[fieldName as keyof ActivityItem] as string;
     },
@@ -142,7 +140,7 @@ export function createSearchIndex(items: ActivityItem[]): MiniSearch {
  */
 export function parseSearchQuery(query: string): SearchQuery {
   const parsed: SearchQuery = {
-    terms: "",
+    terms: '',
     tags: [],
     sources: [],
     excludeSources: [],
@@ -157,7 +155,7 @@ export function parseSearchQuery(query: string): SearchQuery {
     phraseMatches.forEach((match) => {
       const phrase = match.slice(1, -1); // Remove quotes
       parsed.exactPhrases!.push(phrase);
-      remainingQuery = remainingQuery.replace(match, "");
+      remainingQuery = remainingQuery.replace(match, '');
     });
   }
 
@@ -165,9 +163,9 @@ export function parseSearchQuery(query: string): SearchQuery {
   const tagMatches = remainingQuery.match(/tag:(\w+)/g);
   if (tagMatches) {
     tagMatches.forEach((match) => {
-      const tag = match.replace("tag:", "");
+      const tag = match.replace('tag:', '');
       parsed.tags!.push(tag);
-      remainingQuery = remainingQuery.replace(match, "");
+      remainingQuery = remainingQuery.replace(match, '');
     });
   }
 
@@ -175,9 +173,9 @@ export function parseSearchQuery(query: string): SearchQuery {
   const sourceMatches = remainingQuery.match(/source:(\w+)/g);
   if (sourceMatches) {
     sourceMatches.forEach((match) => {
-      const source = match.replace("source:", "");
+      const source = match.replace('source:', '');
       parsed.sources!.push(source as ActivitySource);
-      remainingQuery = remainingQuery.replace(match, "");
+      remainingQuery = remainingQuery.replace(match, '');
     });
   }
 
@@ -185,9 +183,9 @@ export function parseSearchQuery(query: string): SearchQuery {
   const excludeMatches = remainingQuery.match(/-(\w+)/g);
   if (excludeMatches) {
     excludeMatches.forEach((match) => {
-      const source = match.replace("-", "");
+      const source = match.replace('-', '');
       parsed.excludeSources!.push(source as ActivitySource);
-      remainingQuery = remainingQuery.replace(match, "");
+      remainingQuery = remainingQuery.replace(match, '');
     });
   }
 
@@ -228,7 +226,8 @@ export function searchActivities(
 
   // Start with all items if no text search terms
   let results: SearchResult[] = [];
-  const hasTextSearch = parsedQuery.terms.trim() || (parsedQuery.exactPhrases && parsedQuery.exactPhrases.length > 0);
+  const hasTextSearch =
+    parsedQuery.terms.trim() || (parsedQuery.exactPhrases && parsedQuery.exactPhrases.length > 0);
 
   if (hasTextSearch) {
     // Create index if not provided
@@ -238,7 +237,7 @@ export function searchActivities(
     let searchTerms = parsedQuery.terms;
     if (parsedQuery.exactPhrases && parsedQuery.exactPhrases.length > 0) {
       // Add exact phrases with quotes
-      searchTerms += " " + parsedQuery.exactPhrases.map((p) => `"${p}"`).join(" ");
+      searchTerms += ' ' + parsedQuery.exactPhrases.map((p) => `"${p}"`).join(' ');
     }
 
     // Perform the search
@@ -306,7 +305,7 @@ export function searchActivities(
  * Load search history from localStorage
  */
 export function loadSearchHistory(): SearchHistoryItem[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === 'undefined') return [];
 
   try {
     const stored = localStorage.getItem(SEARCH_HISTORY_KEY);
@@ -318,7 +317,7 @@ export function loadSearchHistory(): SearchHistoryItem[] {
       timestamp: new Date(item.timestamp),
     }));
   } catch (error) {
-    console.error("Failed to load search history:", error);
+    console.error('Failed to load search history:', error);
     return [];
   }
 }
@@ -327,7 +326,7 @@ export function loadSearchHistory(): SearchHistoryItem[] {
  * Save a search query to history
  */
 export function saveSearchToHistory(query: string, resultCount: number): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
   if (!query.trim()) return;
 
   try {
@@ -337,14 +336,14 @@ export function saveSearchToHistory(query: string, resultCount: number): void {
     const filtered = history.filter((item) => item.query !== query);
 
     // Add new item at the beginning
-    const newHistory = [
-      { query, timestamp: new Date(), resultCount },
-      ...filtered,
-    ].slice(0, MAX_SEARCH_HISTORY);
+    const newHistory = [{ query, timestamp: new Date(), resultCount }, ...filtered].slice(
+      0,
+      MAX_SEARCH_HISTORY
+    );
 
     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
   } catch (error) {
-    console.error("Failed to save search history:", error);
+    console.error('Failed to save search history:', error);
   }
 }
 
@@ -352,12 +351,12 @@ export function saveSearchToHistory(query: string, resultCount: number): void {
  * Clear all search history
  */
 export function clearSearchHistory(): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
   try {
     localStorage.removeItem(SEARCH_HISTORY_KEY);
   } catch (error) {
-    console.error("Failed to clear search history:", error);
+    console.error('Failed to clear search history:', error);
   }
 }
 
@@ -406,25 +405,21 @@ export function highlightSearchTerms(
   }
 
   const segments: Array<{ text: string; highlighted: boolean }> = [];
-  
+
   // Create regex pattern for all search terms (case-insensitive)
-  const escapedTerms = searchTerms.map((term) => 
-    term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  );
-  const pattern = new RegExp(`(${escapedTerms.join("|")})`, "gi");
-  
+  const escapedTerms = searchTerms.map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const pattern = new RegExp(`(${escapedTerms.join('|')})`, 'gi');
+
   // Split text by matches
   const parts = text.split(pattern);
-  
+
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
     if (!part) continue; // Skip empty parts
-    
+
     // Check if this part matches any search term (case-insensitive)
-    const isMatch = searchTerms.some((term) => 
-      part.toLowerCase() === term.toLowerCase()
-    );
-    
+    const isMatch = searchTerms.some((term) => part.toLowerCase() === term.toLowerCase());
+
     segments.push({
       text: part,
       highlighted: isMatch,

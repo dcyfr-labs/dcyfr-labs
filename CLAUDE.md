@@ -54,7 +54,7 @@ Every script in `package.json` has a `# used-by:` comment declaring which workfl
 
 ## When you actually need governance
 
-You usually don't. Most inline tasks are "add this component", "fix this test", "explain this function". Policy questions (can I refactor this module, can I delete this dep, can I touch this CI file) route to `AGENTS.md`. If the task is large enough to need a change proposal, it belongs in `dcyfr-workspace/openspec/changes/` — see `AGENTS.md` for how that workflow works.
+You usually don't. Most inline tasks are "add this component", "fix this test", "explain this function". Policy questions (can I refactor this module, can I delete this dep, can I touch this CI file) route to `AGENTS.md`.
 
 ## Escalation
 

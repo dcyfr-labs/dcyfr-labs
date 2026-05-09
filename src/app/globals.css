@@ -158,8 +158,6 @@
      2. Prefer transform + opacity (GPU-accelerated, 60fps)
      3. CSS handles reduced-motion globally (no JS checks needed)
      4. Utility classes for common patterns
-
-     @see /docs/ai/design-system.md for usage guidelines
      ============================================================================ */
 
   /* Duration Scale - Standardized to 3 core values */

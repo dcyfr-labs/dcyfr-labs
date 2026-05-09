@@ -62,7 +62,7 @@ This repo is operated by three distinct classes of automation: **bots**, **assis
 
 - **Bots** (Dependabot, auto-calver, cron jobs) read [`.well-known/automation.yaml`](./.well-known/automation.yaml) — structured data only, no prose.
 - **Assistants** (GitHub Copilot inline, Claude inline chat) read [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) and [`CLAUDE.md`](./CLAUDE.md).
-- **Agents** (Claude Code sub-agents, workspace specialists) read [`AGENTS.md`](./AGENTS.md) + the `dcyfr-workspace/openspec/` change folders.
+- **Agents** (Claude Code sub-agents) read [`AGENTS.md`](./AGENTS.md).
 
 The definitions, axes, and read/write/needs contract for each class live in [`docs/automation-glossary.md`](./docs/automation-glossary.md). Start there if you're wiring new automation against this repo.
 
@@ -76,11 +76,10 @@ Production deploys from `main` to **Vercel** at <https://www.dcyfr.ai>. Preview 
 
 ## Contributing
 
-1. **Read** [`AGENTS.md`](./AGENTS.md) if you're an AI agent — it contains the anti-assumption protocol, openspec routing, and mutation policy.
-2. **Open a change proposal** in `dcyfr-workspace/openspec/changes/` before large refactors. This repo is an openspec-first project.
-3. **Run `npm run check`** before opening a PR. All gates must pass: typecheck, lint, tests, build.
-4. **Follow CalVer** for release tags — format is `YYYY.MM.DD`. See [`docs/operations/VERSIONING.md`](./docs/operations/VERSIONING.md).
-5. **Use design tokens** from `src/lib/design-tokens.ts` — never hardcode spacing, typography, or colors. ESLint will flag violations.
+1. **Read** [`AGENTS.md`](./AGENTS.md) if you're an AI agent — it contains the anti-assumption protocol and mutation policy.
+2. **Run `npm run check`** before opening a PR. All gates must pass: typecheck, lint, tests, build.
+3. **Follow CalVer** for release tags — format is `YYYY.MM.DD`.
+4. **Use design tokens** from `src/lib/design-tokens.ts` — never hardcode spacing, typography, or colors. ESLint will flag violations.
 
 ---
 

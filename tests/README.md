@@ -1,34 +1,29 @@
-# Test Setup Files
+# Tests
 
-This directory contains setup and configuration files for the testing infrastructure.
+Vitest scans two roots (see [`vitest.config.ts`](../vitest.config.ts)):
 
-## Files
+- `tests/**/*.{test,spec}.{ts,tsx}` — all unit, integration, security, and component tests
+- `scripts/__tests__/**/*.{test,spec}.{ts,mjs}` — tests for build/automation scripts
 
-### `vitest.setup.ts`
-Global setup file for Vitest that runs before all tests. Includes:
-- Testing Library cleanup after each test
-- Global fetch mock for Node.js environment
-- Jest DOM matchers setup
+E2E tests live in `e2e/` and run via Playwright (`npm run test:e2e`).
 
-### `msw-handlers.ts`
-Mock Service Worker (MSW) handlers for API mocking. Defines mock responses for:
-- `/api/github-contributions` - Returns sample contribution data
-- `/api/contact` - Returns success response
-- `/api/health` - Returns OK status
+**All tests live under `tests/`. There are no co-located test files in `src/`.** Mirror the source path under `tests/` — e.g. a test for `src/components/security/ScanResults.tsx` lives at `tests/components/security/ScanResults.test.tsx`. Import the module under test via the `@/` alias.
 
-## Usage
+## Where does this test go?
 
-These files are automatically loaded by Vitest via the `setupFiles` configuration in `vitest.config.ts`.
+| Test type                          | Location                                  |
+| ---------------------------------- | ----------------------------------------- |
+| Component render / hook behavior   | `tests/components/<area>/<name>.test.tsx` |
+| Pure function in `src/lib/`        | `tests/lib/<name>.test.ts`                |
+| API route integration              | `tests/integration/<name>.test.ts`        |
+| Security / auth / input-validation | `tests/security/<name>.test.ts`           |
+| Red-team negative cases            | `tests/red-team/<name>.test.ts`           |
+| Build / generator script behavior  | `scripts/__tests__/<name>.test.mjs`       |
+| Full user journey                  | `e2e/<name>.spec.ts`                      |
 
-To use MSW handlers in integration tests:
+## Setup files
 
-```typescript
-import { setupServer } from 'msw/node'
-import { handlers } from '@/tests/setup/msw-handlers'
-
-const server = setupServer(...handlers)
-
-beforeAll(() => server.listen())
-afterEach(() => server.resetHandlers())
-afterAll(() => server.close())
-```
+- [`vitest.setup.ts`](./vitest.setup.ts) — global Vitest setup (Testing Library cleanup, fetch mock, Jest DOM matchers)
+- [`msw-handlers.ts`](./msw-handlers.ts) — MSW handlers for `/api/github-contributions`, `/api/contact`, `/api/health`
+- [`common-mocks.ts`](./common-mocks.ts) — shared mock factories
+- [`__mocks__/server-only.ts`](./__mocks__/server-only.ts) — Next.js `server-only` marker shim
