@@ -37,7 +37,14 @@ jobs:
       - name: Generate CalVer version
         id: calver
         run: |
-          NEW_VERSION=$(date -u +%Y.%m.%d)
+          # Use unpadded month/day (%-m / %-d) so the generated version
+          # matches what `npm version` writes to package.json. semver
+          # normalizes leading zeros, so `npm version 2026.05.09` writes
+          # `2026.5.9`. Generating the padded form created a permanent
+          # diff against package.json, causing this workflow to bump the
+          # version on every merge to main. (Runs on ubuntu-latest = GNU
+          # date, which supports the `%-` no-pad modifier.)
+          NEW_VERSION=$(date -u +%Y.%-m.%-d)
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "Generated version: $NEW_VERSION"
 
