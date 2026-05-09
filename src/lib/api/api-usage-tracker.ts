@@ -584,28 +584,6 @@ export async function checkServiceLimit(
     };
   }
 
-  // Check cost limit for paid services
-  if (service === 'perplexity' && usage.estimatedCost) {
-    const costLimit = API_LIMITS.perplexity.maxCostPerMonth;
-    if (usage.estimatedCost >= costLimit) {
-      const stats: ApiUsageStats = {
-        service,
-        endpoint,
-        count: usage.count,
-        lastReset: new Date(usage.date),
-        estimatedCost: usage.estimatedCost,
-        limit,
-        percentUsed: (usage.count / limit) * 100,
-      };
-
-      return {
-        allowed: false,
-        reason: `${service} cost limit reached ($${usage.estimatedCost.toFixed(2)}/$${costLimit})`,
-        stats,
-      };
-    }
-  }
-
   return { allowed: true };
 }
 

@@ -8,18 +8,18 @@
  * Authorization: Bearer ADMIN_API_KEY
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { timingSafeEqual } from "crypto";
-import * as Sentry from "@sentry/nextjs";
-import { blockExternalAccess } from "@/lib/api/api-security";
-import { rateLimit, getClientIp, createRateLimitHeaders } from "@/lib/rate-limit";
+import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
+import * as Sentry from '@sentry/nextjs';
+import { blockExternalAccess } from '@/lib/api/api-security';
+import { rateLimit, getClientIp, createRateLimitHeaders } from '@/lib/rate-limit';
 import {
   getAllUsageStats,
   getUsageSummary,
   getApiHealthStatus,
   API_LIMITS,
   RATE_LIMITS,
-} from "@/lib/api/api-guardrails";
+} from '@/lib/api/api-guardrails';
 
 // ============================================================================
 // AUTHENTICATION
@@ -37,13 +37,11 @@ import {
  * @returns true if valid key, false otherwise
  */
 function isAuthenticated(request: NextRequest): boolean {
-  const authHeader = request.headers.get("authorization");
+  const authHeader = request.headers.get('authorization');
   const adminKey = process.env.ADMIN_API_KEY;
 
   if (!adminKey) {
-    console.warn(
-      "[API Usage] ADMIN_API_KEY not configured - endpoint disabled"
-    );
+    console.warn('[API Usage] ADMIN_API_KEY not configured - endpoint disabled');
     return false;
   }
 
@@ -51,7 +49,7 @@ function isAuthenticated(request: NextRequest): boolean {
     return false;
   }
 
-  const token = authHeader.replace("Bearer ", "");
+  const token = authHeader.replace('Bearer ', '');
 
   // Use timing-safe comparison to prevent timing attacks
   try {
@@ -66,7 +64,7 @@ function isAuthenticated(request: NextRequest): boolean {
     return timingSafeEqual(tokenBuf, keyBuf);
   } catch (error) {
     // If comparison fails (e.g., buffer creation error), deny access
-    console.error("[API Usage] Error during key validation:", error);
+    console.error('[API Usage] Error during key validation:', error);
     return false;
   }
 }
@@ -92,21 +90,21 @@ function isAuthenticated(request: NextRequest): boolean {
  * @param status - "success" or "denied"
  * @param reason - Reason for denial (if applicable)
  */
-function logAdminAccess(request: NextRequest, status: "success" | "denied", reason?: string) {
+function logAdminAccess(request: NextRequest, status: 'success' | 'denied', reason?: string) {
   const timestamp = new Date().toISOString();
   const ip = getClientIp(request);
-  const userAgent = request.headers.get("user-agent") || "unknown";
+  const userAgent = request.headers.get('user-agent') || 'unknown';
 
   const logData = {
-    event: "admin_access",
-    endpoint: "/api/admin/api-usage",
-    method: "GET",
+    event: 'admin_access',
+    endpoint: '/api/admin/api-usage',
+    method: 'GET',
     result: status,
     reason: reason || undefined,
     timestamp,
     ip,
     userAgent,
-    environment: process.env.NODE_ENV || "unknown",
+    environment: process.env.NODE_ENV || 'unknown',
     vercelEnv: process.env.VERCEL_ENV || undefined,
   };
 
@@ -114,53 +112,48 @@ function logAdminAccess(request: NextRequest, status: "success" | "denied", reas
   console.warn(JSON.stringify(logData));
 
   // Send security events to Sentry for alerting
-  if (status === "denied") {
+  if (status === 'denied') {
     // Determine severity based on reason
-    const level = reason?.includes("production") ? "error" : "warning";
+    const level = reason?.includes('production') ? 'error' : 'warning';
 
-    Sentry.captureMessage(`Admin access denied: ${reason || "unknown"}`, {
+    Sentry.captureMessage(`Admin access denied: ${reason || 'unknown'}`, {
       level,
       tags: {
-        event_type: "admin_access",
-        endpoint: "/api/admin/api-usage",
+        event_type: 'admin_access',
+        endpoint: '/api/admin/api-usage',
         result: status,
-        reason: reason || "unknown",
-        environment: process.env.NODE_ENV || "unknown",
-        vercel_env: process.env.VERCEL_ENV || "unknown",
+        reason: reason || 'unknown',
+        environment: process.env.NODE_ENV || 'unknown',
+        vercel_env: process.env.VERCEL_ENV || 'unknown',
       },
       contexts: {
         admin_access: logData,
       },
-      fingerprint: [
-        "admin_access",
-        "/api/admin/api-usage",
-        status,
-        reason || "unknown",
-      ],
+      fingerprint: ['admin_access', '/api/admin/api-usage', status, reason || 'unknown'],
     });
   }
 
   // CRITICAL: Production access attempts should NEVER happen
   // Admin endpoints are blocked in production via blockExternalAccess()
-  if (process.env.VERCEL_ENV === "production") {
+  if (process.env.VERCEL_ENV === 'production') {
     Sentry.captureMessage(
-      "CRITICAL: Admin endpoint accessed in production - possible security bypass!",
+      'CRITICAL: Admin endpoint accessed in production - possible security bypass!',
       {
-        level: "error",
+        level: 'error',
         tags: {
-          event_type: "admin_access_production",
-          endpoint: "/api/admin/api-usage",
+          event_type: 'admin_access_production',
+          endpoint: '/api/admin/api-usage',
           result: status,
-          critical: "true",
+          critical: 'true',
         },
         contexts: {
           admin_access: logData,
           security: {
-            alert: "Production admin access should be blocked by blockExternalAccess()",
+            alert: 'Production admin access should be blocked by blockExternalAccess()',
             investigation_required: true,
           },
         },
-        fingerprint: ["admin_access_production", "/api/admin/api-usage"],
+        fingerprint: ['admin_access_production', '/api/admin/api-usage'],
       }
     );
   }
@@ -189,20 +182,17 @@ export async function GET(request: NextRequest) {
 
   // Layer 1: Check authentication
   if (!isAuthenticated(request)) {
-    logAdminAccess(request, "denied", "invalid or missing API key");
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    );
+    logAdminAccess(request, 'denied', 'invalid or missing API key');
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   // Layer 2: Environment check - only allow in dev/preview
-  if (process.env.NODE_ENV === "production") {
-    logAdminAccess(request, "denied", "production environment blocked");
+  if (process.env.NODE_ENV === 'production') {
+    logAdminAccess(request, 'denied', 'production environment blocked');
     return NextResponse.json(
       {
-        error: "Forbidden",
-        message: "API usage endpoint is disabled in production for security",
+        error: 'Forbidden',
+        message: 'API usage endpoint is disabled in production for security',
       },
       { status: 403 }
     );
@@ -217,25 +207,25 @@ export async function GET(request: NextRequest) {
 
   if (!rateLimitResult.success) {
     const retryAfter = Math.ceil((rateLimitResult.reset - Date.now()) / 1000);
-    logAdminAccess(request, "denied", "rate limit exceeded");
+    logAdminAccess(request, 'denied', 'rate limit exceeded');
     return NextResponse.json(
       {
-        error: "Rate limit exceeded",
-        message: "Admin endpoint limited to 1 request per minute",
+        error: 'Rate limit exceeded',
+        message: 'Admin endpoint limited to 1 request per minute',
         retryAfter,
       },
       {
         status: 429,
         headers: {
           ...createRateLimitHeaders(rateLimitResult),
-          "Retry-After": retryAfter.toString(),
+          'Retry-After': retryAfter.toString(),
         },
       }
     );
   }
 
   // Layer 4: Log successful access
-  logAdminAccess(request, "success");
+  logAdminAccess(request, 'success');
 
   try {
     const stats = getAllUsageStats();
@@ -261,9 +251,7 @@ export async function GET(request: NextRequest) {
         count: stat.count,
         limit: stat.limit,
         percentUsed: `${stat.percentUsed.toFixed(1)}%`,
-        estimatedCost: stat.estimatedCost
-          ? `$${stat.estimatedCost.toFixed(4)}`
-          : undefined,
+        estimatedCost: stat.estimatedCost ? `$${stat.estimatedCost.toFixed(4)}` : undefined,
         lastReset: stat.lastReset,
       })),
       recommendations: generateRecommendations(stats, summary),
@@ -271,16 +259,13 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(response, {
       headers: {
-        "Cache-Control": "no-store, must-revalidate",
-        "Content-Type": "application/json",
+        'Cache-Control': 'no-store, must-revalidate',
+        'Content-Type': 'application/json',
       },
     });
   } catch (error) {
-    console.error("[API Usage] Error fetching stats:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch API usage statistics" },
-      { status: 500 }
-    );
+    console.error('[API Usage] Error fetching stats:', error);
+    return NextResponse.json({ error: 'Failed to fetch API usage statistics' }, { status: 500 });
   }
 }
 
@@ -300,7 +285,7 @@ function generateRecommendations(
   // Check for services near limit
   if (summary.servicesNearLimit.length > 0) {
     recommendations.push(
-      `⚠️  ${summary.servicesNearLimit.length} service(s) near limit: ${summary.servicesNearLimit.join(", ")}`
+      `⚠️  ${summary.servicesNearLimit.length} service(s) near limit: ${summary.servicesNearLimit.join(', ')}`
     );
   }
 
@@ -311,24 +296,14 @@ function generateRecommendations(
     );
   }
 
-  // Check for Perplexity usage
-  const perplexityStats = stats.find((s) => s.service === "perplexity");
-  if (perplexityStats && perplexityStats.count > 500) {
-    recommendations.push(
-      `🤖 High Perplexity usage detected (${perplexityStats.count} requests) - consider caching`
-    );
-  }
-
   // Check for email usage
-  const resendStats = stats.find((s) => s.service === "resend");
+  const resendStats = stats.find((s) => s.service === 'resend');
   if (resendStats && resendStats.percentUsed > 80) {
-    recommendations.push(
-      `📧 Email usage near free tier limit - consider upgrade or rate limiting`
-    );
+    recommendations.push(`📧 Email usage near free tier limit - consider upgrade or rate limiting`);
   }
 
   if (recommendations.length === 0) {
-    recommendations.push("✅ All services operating within healthy limits");
+    recommendations.push('✅ All services operating within healthy limits');
   }
 
   return recommendations;

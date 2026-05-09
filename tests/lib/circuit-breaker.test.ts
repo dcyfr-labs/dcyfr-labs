@@ -339,8 +339,8 @@ describe('createExternalAPICircuit', () => {
   });
 
   it('creates circuit with api- prefix', () => {
-    const breaker = createExternalAPICircuit('perplexity');
+    const breaker = createExternalAPICircuit('resend');
     expect(breaker).toBeInstanceOf(CircuitBreaker);
-    expect(circuitBreakerRegistry.get('api-perplexity')).toBe(breaker);
+    expect(circuitBreakerRegistry.get('api-resend')).toBe(breaker);
   });
 });
