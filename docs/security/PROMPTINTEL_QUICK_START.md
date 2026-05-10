@@ -1,4 +1,5 @@
 <!-- TLP:CLEAR -->
+
 # PromptIntel Quick Start Guide
 
 **For Developers:** Quick reference for using PromptIntel threat intelligence in your code
@@ -35,7 +36,7 @@ async function scanUserInput(input: string): Promise<boolean> {
   });
 
   // Check if input matches known patterns
-  const matches = threats.filter(threat =>
+  const matches = threats.filter((threat) =>
     input.toLowerCase().includes(threat.prompt?.toLowerCase() || '')
   );
 
@@ -49,7 +50,7 @@ async function scanUserInput(input: string): Promise<boolean> {
 const taxonomy = await client.getTaxonomy({ limit: 50 });
 
 // Access categories
-taxonomy.forEach(entry => {
+taxonomy.forEach((entry) => {
   console.log(`Category: ${entry.category_type}`);
   console.log(`Techniques: ${entry.techniques.length}`);
 });
@@ -61,7 +62,8 @@ taxonomy.forEach(entry => {
 await client.submitReport({
   agent_name: 'DCYFR Security Scanner',
   title: 'Prompt Injection Attempt Detected',
-  description: 'User attempted to bypass system prompt using ignore previous instructions technique',
+  description:
+    'User attempted to bypass system prompt using ignore previous instructions technique',
   severity: 'high',
   findings: {
     pattern: 'ignore previous instructions',
@@ -99,9 +101,7 @@ export async function promptSecurityCheck(req, res, next) {
       limit: 50,
     });
 
-    const isThreat = threats.some(t =>
-      userInput.toLowerCase().includes(t.pattern)
-    );
+    const isThreat = threats.some((t) => userInput.toLowerCase().includes(t.pattern));
 
     if (isThreat) {
       return res.status(403).json({
@@ -139,15 +139,10 @@ export async function POST(request: NextRequest) {
     limit: 20,
   });
 
-  const hasThreats = threats.some(t =>
-    message.includes(t.indicator)
-  );
+  const hasThreats = threats.some((t) => message.includes(t.indicator));
 
   if (hasThreats) {
-    return NextResponse.json(
-      { error: 'Potential security threat detected' },
-      { status: 403 }
-    );
+    return NextResponse.json({ error: 'Potential security threat detected' }, { status: 403 });
   }
 
   // Process message...
@@ -225,7 +220,7 @@ async function getCachedThreats(severity: string) {
 async function safeScan(input: string): Promise<boolean> {
   try {
     const threats = await client.getPrompts({ limit: 100 });
-    return !threats.some(t => input.includes(t.pattern));
+    return !threats.some((t) => input.includes(t.pattern));
   } catch (error) {
     console.error('Scan failed:', error);
     // Fail open - don't block on errors
@@ -265,7 +260,7 @@ const INJECTION_PATTERNS = [
 ];
 
 function hasInjectionPattern(input: string): boolean {
-  return INJECTION_PATTERNS.some(pattern => pattern.test(input));
+  return INJECTION_PATTERNS.some((pattern) => pattern.test(input));
 }
 ```
 
@@ -276,8 +271,8 @@ async function checkThreatLevel(input: string): Promise<'safe' | 'warn' | 'block
   const critical = await client.getPrompts({ severity: 'critical' });
   const high = await client.getPrompts({ severity: 'high' });
 
-  if (critical.some(t => input.includes(t.pattern))) return 'block';
-  if (high.some(t => input.includes(t.pattern))) return 'warn';
+  if (critical.some((t) => input.includes(t.pattern))) return 'block';
+  if (high.some((t) => input.includes(t.pattern))) return 'warn';
   return 'safe';
 }
 ```
@@ -335,14 +330,13 @@ describe('Prompt Security', () => {
 ## 📚 Additional Resources
 
 - [PromptIntel API Documentation](https://promptintel.novahunting.ai/docs)
-- [Integration Plan](./PROMPTINTEL_INTEGRATION_PLAN.md)
 - [Test Suite](../tests/integration/threat-intel-integration.test.ts)
 - [MCP Server](../src/mcp/promptintel-server.ts)
 
 ---
 
 **Need Help?**
-- Check [docs/PROMPTINTEL_INTEGRATION_PLAN.md](./PROMPTINTEL_INTEGRATION_PLAN.md)
+
 - Review test examples in `tests/integration/`
 - Contact security team
 

@@ -4,7 +4,6 @@
  * This module provides functions to fetch real analytics data from:
  * - Vercel Analytics API
  * - GitHub Traffic API (requires repository admin access)
- * - Google Search Console API (requires OAuth setup)
  *
  * All functions gracefully degrade to empty arrays if:
  * - APIs are not configured (missing credentials)
@@ -15,7 +14,6 @@
  * - VERCEL_TOKEN: Vercel API token
  * - VERCEL_ANALYTICS_ENDPOINT: Custom analytics endpoint
  * - GITHUB_TOKEN: GitHub Personal Access Token with `repo` scope
- * - SEARCH_CONSOLE_CLIENT_EMAIL / SEARCH_CONSOLE_PRIVATE_KEY: Service account (optional)
  */
 
 import { redis } from '@/lib/redis-client';
@@ -36,14 +34,6 @@ interface GitHubTrafficMilestone {
   type: 'stars' | 'forks' | 'watchers' | 'contributors';
   value: number;
   reached_at: string;
-}
-
-interface SearchConsoleMilestone {
-  type: 'impressions' | 'clicks' | 'ctr' | 'position' | 'top_keyword';
-  value: number | string;
-  reached_at: string;
-  query?: string;
-  page?: string;
 }
 
 // ============================================================================
@@ -262,92 +252,6 @@ export async function storeGitHubTrafficMilestones(): Promise<void> {
 }
 
 // ============================================================================
-// GOOGLE ANALYTICS - PLACEHOLDER (OAuth Required)
-// ============================================================================
-
-/**
- * Fetch Google Analytics data
- *
- * Requires Google Analytics API setup with OAuth 2.0 service account.
- * This is a placeholder - implement when ready to integrate GA.
- *
- * Setup instructions:
- * 1. Create Google Cloud project
- * 2. Enable Google Analytics Data API
- * 3. Create service account and download JSON key
- * 4. Add service account email to GA property as viewer
- * 5. Set GOOGLE_ANALYTICS_CREDENTIALS environment variable
- */
-export async function fetchGoogleAnalyticsMilestones(): Promise<AnalyticsMilestone[]> {
-  const isProduction =
-    process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
-
-  if (isProduction) {
-    console.error(
-      '❌ CRITICAL: Google Analytics not implemented yet. ' +
-        'Implement OAuth 2.0 integration when ready.'
-    );
-  } else {
-    console.warn('📊 Google Analytics not configured (placeholder)');
-  }
-
-  // TODO: Implement Google Analytics Data API integration
-  // https://developers.google.com/analytics/devguides/reporting/data/v1
-  return [];
-}
-
-/**
- * Store Google Analytics milestones (placeholder)
- */
-export async function storeGoogleAnalyticsMilestones(): Promise<void> {
-  console.warn('📊 Google Analytics storage (placeholder - not implemented)');
-  // TODO: Implement when GA integration is ready
-}
-
-// ============================================================================
-// GOOGLE SEARCH CONSOLE - PLACEHOLDER (OAuth Required)
-// ============================================================================
-
-/**
- * Fetch Google Search Console data
- *
- * Requires Google Search Console API setup with OAuth 2.0 service account.
- * This is a placeholder - implement when ready to integrate Search Console.
- *
- * Setup instructions:
- * 1. Verify site ownership in Google Search Console
- * 2. Enable Search Console API in Google Cloud
- * 3. Create service account and download JSON key
- * 4. Add service account email to Search Console as owner
- * 5. Set GOOGLE_SEARCH_CONSOLE_CREDENTIALS environment variable
- */
-export async function fetchSearchConsoleMilestones(): Promise<SearchConsoleMilestone[]> {
-  const isProduction =
-    process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
-
-  if (isProduction) {
-    console.error(
-      '❌ CRITICAL: Google Search Console not implemented yet. ' +
-        'Implement OAuth 2.0 integration when ready.'
-    );
-  } else {
-    console.warn('📊 Google Search Console not configured (placeholder)');
-  }
-
-  // TODO: Implement Google Search Console API integration
-  // https://developers.google.com/webmaster-tools/v1/api_reference_index
-  return [];
-}
-
-/**
- * Store Search Console milestones (placeholder)
- */
-export async function storeSearchConsoleMilestones(): Promise<void> {
-  console.warn('📊 Search Console storage (placeholder - not implemented)');
-  // TODO: Implement when Search Console integration is ready
-}
-
-// ============================================================================
 // UNIFIED UPDATE FUNCTION
 // ============================================================================
 
@@ -391,24 +295,6 @@ export async function updateAllAnalyticsMilestones(): Promise<{
   } catch (error) {
     console.error('❌ Failed to update GitHub traffic:', error);
     failed.push('github_traffic');
-  }
-
-  // Update Google Analytics (placeholder)
-  try {
-    await storeGoogleAnalyticsMilestones();
-    // Don't add to updated - not implemented yet
-  } catch (error) {
-    console.error('❌ Failed to update Google Analytics:', error);
-    failed.push('google_analytics');
-  }
-
-  // Update Search Console (placeholder)
-  try {
-    await storeSearchConsoleMilestones();
-    // Don't add to updated - not implemented yet
-  } catch (error) {
-    console.error('❌ Failed to update Search Console:', error);
-    failed.push('search_console');
   }
 
   const success = failed.length === 0;
