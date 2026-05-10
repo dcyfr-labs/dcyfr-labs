@@ -1,3 +1,36 @@
+## [2026.5.10] - 2026-05-10
+
+### Changed
+
+- Documentation - drop stale /api/research section from PROMPTINTEL plan (#583)
+- **ci** - fix auto-calver date format + filter release commits + collapse historical CHANGELOG dupes (#584)
+- remove Perplexity API integration (#581)
+- remove ip-reputation system (migrated to Vercel Pro WAF) (#580)
+- workspace cleanup — prune 132K lines of AI-orchestration scaffolding (#577)
+- chore(deps)(deps): bump ip-address and express-rate-limit (#572)
+- chore(deps)(deps): bump hono from 4.12.14 to 4.12.18 (#574)
+- chore(deps-dev)(deps-dev): bump the dev-tools group with 9 updates (#553)
+- chore(deps)(deps): bump lucide-react in the ui-framework group (#554)
+- chore(deps)(deps): bump inngest in the background-jobs group (#555)
+- chore(deps)(deps): bump @react-email/render in the email group (#556)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.91.1 to 0.93.0 (#557)
+- chore(deps)(deps): bump dompurify from 3.4.1 to 3.4.2 (#559)
+- chore(deps)(deps): bump zod from 4.4.2 to 4.4.3 (#558)
+
+### Fixed
+
+- address mechanical findings from design + content audits (#586, #587) (#588)
+- **ci** - restore npm scripts + scripts referenced by kept workflows (#579)
+- **security** - bump basic-ftp ^6.0.1 + fast-uri ^3.1.2 to clear 2 high advisories (#576)
+- **security** - bump axios override 1.15.0 → ^1.16.0 (clears 14 advisories) (#569)
+- **ci** - prose-validation — load 1Password secrets BEFORE running validation (#562)
+- **ci** - perf-monitoring sed bug on multi-line LARGEST_CHUNKS / RECOMMENDATIONS (#560)
+- **security** - bump nested @dcyfr/ai > @anthropic-ai/sdk to 0.91.1 (#549)
+
+---
+
+**Full Changelog**: [2026.5.9...2026.5.10](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.5.9...v2026.5.10)
+
 ## [2026.05.09] - 2026-05-09
 
 ### Changed
