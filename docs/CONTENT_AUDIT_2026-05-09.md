@@ -5,6 +5,10 @@
 **Production URL:** https://www.dcyfr.ai/
 **Companion:** [docs/design/PRODUCTION_AUDIT_2026-05-09.md](design/PRODUCTION_AUDIT_2026-05-09.md) (design audit, PR #586)
 
+> **2026-05-09 correction:** A follow-up comprehensive analysis flagged blog search at `/blog?q=…` as broken because in-browser DOM queries returned 0 article elements. **That was a false positive** caused by the Suspense streaming + fade-in animation (subsequently fixed in PR #588): the cards stream in via React's `<div hidden id="S:N">` placeholders before the `$RC` script splices them into the DOM, and a JS query that runs early counts 0. Curling the SSR HTML confirms search returns correct filtered results: `?q=zzzzzzzzznotapost` → 0 articles, `?q=owasp` → 2, `?q=portfolio` → 6. A regression test now lives at [tests/lib/archive-search.test.ts](../tests/lib/archive-search.test.ts) to pin the behavior.
+>
+> Note: search is intentionally broad (substring across `title + summary + body`), so a query like `?q=ai` matches every post that mentions "AI" anywhere. That's by design; if a tighter title-only search is desired, it's a future-feature decision rather than a bug fix.
+
 ---
 
 ## Methodology
