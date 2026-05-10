@@ -1,14 +1,14 @@
-import Image from "next/image";
-import type { PostImage } from "@/data/posts";
-import { IMAGE_PLACEHOLDER } from "@/lib/design-tokens";
-import { BlogPostHeroOverlay } from "@/components/common";
+import Image from 'next/image';
+import type { PostImage } from '@/data/posts';
+import { IMAGE_PLACEHOLDER } from '@/lib/design-tokens';
+import { BlogPostHeroOverlay } from '@/components/common';
 
 /**
  * PostHeroImage Component
- * 
+ *
  * Full-width hero image for blog posts with gradient overlays and responsive sizing.
  * Displays featured images at the top of blog post detail pages with optional captions.
- * 
+ *
  * Features:
  * - Full-width (breaks out of prose container)
  * - Responsive aspect ratios (16:9 on mobile, 21:9 on desktop)
@@ -17,11 +17,11 @@ import { BlogPostHeroOverlay } from "@/components/common";
  * - Optional caption and credit display below image
  * - Semantic HTML with figure/figcaption
  * - Dark mode optimized overlays
- * 
+ *
  * @param props.image - Post image object with url, alt, dimensions, caption, credit
  * @param props.title - Post title for fallback alt text
  * @param props.priority - Load image with priority (for above-fold hero images)
- * 
+ *
  * @example
  * ```tsx
  * <PostHeroImage
@@ -50,7 +50,7 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
   // descriptive alt using the post title.
   const alt = image.caption ?? image.alt ?? `Hero image for ${title}`;
   const hasCaption = image.caption || image.credit;
-  
+
   return (
     <figure className="not-prose -mx-4 sm:-mx-6 md:-mx-8 mb-8 md:mb-12">
       {/* Image Container with Overlays */}
@@ -70,18 +70,12 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
         {/* Dark overlay for text contrast */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30" />
       </div>
-      
+
       {/* Caption and Credit */}
       {hasCaption && (
         <figcaption className="px-4 md:px-8 pt-4 text-sm text-muted-foreground">
-          {image.caption && (
-            <p className="mb-2 italic">&quot;{image.caption}&quot;</p>
-          )}
-          {image.credit && (
-            <p className="text-xs opacity-75">
-              Photo by {image.credit}
-            </p>
-          )}
+          {image.caption && <p className="mb-2 italic">&quot;{image.caption}&quot;</p>}
+          {image.credit && <p className="text-xs opacity-75">Illustration by {image.credit}</p>}
         </figcaption>
       )}
     </figure>

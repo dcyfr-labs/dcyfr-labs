@@ -40,7 +40,7 @@ export const dynamic = 'force-dynamic';
 
 const pageTitle = 'Blog';
 const pageDescription =
-  'Blog posts on software development, cybersecurity, emerging technologies, and more.';
+  'Long-form analyses of AI security (OWASP Top 10 for Agentic AI, CVE deep-dives, Node.js security releases) plus engineering essays on AI-assisted development, event-driven architecture, and modern full-stack patterns. From DCYFR Labs.';
 const POSTS_PER_PAGE = 12;
 
 /**

@@ -25,7 +25,7 @@ import { fetchPackageStats } from '@/lib/npm/fetch-package-stats';
 
 export const revalidate = 3600;
 
-const pageTitle = '@dcyfr/ai — DCYFR AI';
+const pageTitle = '@dcyfr/ai';
 const pageDescription =
   'DCYFR AI (@dcyfr/ai) — portable open-source agent with plugin architecture, multi-provider support, telemetry, and quality validation. TypeScript-strict, tree-shakeable, zero config.';
 

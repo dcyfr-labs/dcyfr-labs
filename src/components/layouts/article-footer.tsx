@@ -57,7 +57,7 @@ export function ArticleFooter<T>({
       <NewsletterSignup
         variant="card"
         title="Stay in the loop"
-        description="Get new articles on AI engineering, cybersecurity, and security architecture delivered to your inbox."
+        description="New articles on AI engineering, cybersecurity, and security architecture — delivered to your inbox."
       />
 
       {/* Call-to-Action Section */}

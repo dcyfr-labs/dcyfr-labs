@@ -971,12 +971,39 @@
     }
   }
 
+  /* Slide-up only (no opacity fade) — content is visible during the animation
+     so it never flashes to invisible. Prefer this over fade-in-up when the
+     element is part of LCP (e.g. hero/above-fold) and a fade would cause a
+     flash of low-contrast content. */
+  @keyframes slide-up {
+    from {
+      transform: translateY(12px);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+
   .animate-fade-in {
     animation: fade-in 0.5s ease-out forwards;
   }
 
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.4s ease-out forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+
+    .animate-fade-in,
+    .animate-fade-in-up,
+    .animate-slide-up {
+      animation: none;
+    }
   }
 
   .skeleton-shimmer {
