@@ -33,7 +33,8 @@ const ScrollReveal = dynamic(
   }
 );
 
-const pageTitle = 'About DCYFR Labs';
+const pageTitle = 'About';
+const ogTitle = 'About DCYFR Labs';
 const pageDescription =
   'DCYFR Labs builds @dcyfr/ai — an open-source AI agent framework with plugin marketplace, delegation system, and 20+ specialist agents. Learn about our mission at the intersection of cybersecurity and modern AI engineering.';
 
@@ -47,15 +48,15 @@ export default async function AboutPage() {
   // Get nonce from proxy for CSP
   const nonce = (await headers()).get('x-nonce') || '';
 
-  // JSON-LD structured data for about page
-  const socialImage = getOgImageUrl(pageTitle, pageDescription);
+  // JSON-LD structured data for about page (uses full brand-qualified name for schema)
+  const socialImage = getOgImageUrl(ogTitle, pageDescription);
   const jsonLd = getAboutPageSchema(pageDescription, socialImage, {
     datePublished: SITE_LAUNCH_DATE,
     dateModified: SITE_LAST_UPDATED_DATE,
   });
   const breadcrumbJsonLd = createBreadcrumbSchema([
     { name: 'Home', url: SITE_URL },
-    { name: 'About DCYFR Labs', url: `${SITE_URL}/about` },
+    { name: 'About', url: `${SITE_URL}/about` },
   ]);
 
   return (

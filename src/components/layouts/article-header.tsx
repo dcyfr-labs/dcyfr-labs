@@ -1,10 +1,10 @@
 /**
  * Article Header Component
- * 
+ *
  * Standardized header for individual item pages with title, date, tags, and badges.
  * Provides consistent metadata display across all article-type pages.
  * Now supports featured background images with gradient overlays matching card designs.
- * 
+ *
  * @example
  * ```tsx
  * <ArticleHeader
@@ -30,34 +30,34 @@ import { cn } from '@/lib/utils';
 export interface ArticleHeaderProps {
   /** Article title */
   title: string;
-  
+
   /** Subtitle displayed below title (alternative to em-dash in title) */
   subtitle?: string;
-  
+
   /** Published date (optional) */
   date?: Date;
-  
+
   /** Tags/keywords (optional) */
   tags?: string[];
-  
+
   /** Custom badges (e.g., Draft, New, etc.) */
   badges?: React.ReactNode;
-  
+
   /** Additional metadata string (e.g., "5 min read · 1,234 views") */
   metadata?: string;
-  
+
   /** Date format (default: "MMMM d, yyyy") */
   dateFormat?: 'short' | 'long';
-  
+
   /** Show tags inline vs below title (default: below) */
   inlineTags?: boolean;
-  
+
   /** Custom className */
   className?: string;
-  
+
   /** Function to generate tag URLs (returns URL string) */
   onTagClick?: (tag: string) => string;
-  
+
   /** Featured background image with gradient overlay */
   backgroundImage?: {
     url: string;
@@ -72,7 +72,7 @@ export interface ArticleHeaderProps {
     /** Hide image in hero section */
     hideHero?: boolean;
   };
-  
+
   /** Additional content (e.g., metadata shown conditionally) */
   children?: React.ReactNode;
 }
@@ -94,9 +94,10 @@ export function ArticleHeader({
   /**
    * Format date for display
    */
-  const formattedDate = date 
-    ? date.toLocaleDateString('en-US', 
-        dateFormat === 'long' 
+  const formattedDate = date
+    ? date.toLocaleDateString(
+        'en-US',
+        dateFormat === 'long'
           ? { year: 'numeric', month: 'long', day: 'numeric' }
           : { year: 'numeric', month: 'short', day: 'numeric' }
       )
@@ -108,33 +109,21 @@ export function ArticleHeader({
       {/* Text Content Section - Outside and above the card */}
       <div className={`${SPACING.content} mb-6`}>
         {/* Badges */}
-        {badges && (
-          <div className="flex flex-wrap gap-2">
-            {badges}
-          </div>
-        )}
+        {badges && <div className="flex flex-wrap gap-2">{badges}</div>}
 
         {/* Title */}
-        <h1 className={TYPOGRAPHY.h1.article}>
-          {title}
-        </h1>
+        <h1 className={TYPOGRAPHY.h1.article}>{title}</h1>
 
         {/* Subtitle */}
         {subtitle && (
-          <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
-            {subtitle}
-          </p>
+          <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">{subtitle}</p>
         )}
 
         {/* Metadata Row */}
         {(date || metadata) && (
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
-            {formattedDate && (
-              <time dateTime={date?.toISOString()}>
-                {formattedDate}
-              </time>
-            )}
-            
+            {formattedDate && <time dateTime={date?.toISOString()}>{formattedDate}</time>}
+
             {metadata && (
               <>
                 {formattedDate && <span aria-hidden="true">·</span>}
@@ -146,15 +135,8 @@ export function ArticleHeader({
 
         {/* Tags */}
         {tags.length > 0 && (
-          <div className={cn(
-            "flex flex-wrap items-center gap-2",
-            !inlineTags && "mt-4"
-          )}>
-            {!inlineTags && (
-              <span className="text-sm text-muted-foreground">
-                Tagged:
-              </span>
-            )}
+          <div className={cn('flex flex-wrap items-center gap-2', !inlineTags && 'mt-4')}>
+            {!inlineTags && <span className="text-sm text-muted-foreground">Tagged:</span>}
             {tags.map((tag) => {
               const tagUrl = onTagClick?.(tag);
               const badgeContent = (
@@ -162,23 +144,25 @@ export function ArticleHeader({
                   key={tag}
                   variant="outline"
                   className={cn(
-                    "text-xs",
-                    tagUrl && "cursor-pointer hover:bg-accent transition-colors"
+                    'text-xs',
+                    tagUrl && 'cursor-pointer hover:bg-accent transition-colors'
                   )}
                 >
                   {tag}
                 </Badge>
               );
-              
+
               return tagUrl ? (
                 <Link key={tag} href={tagUrl}>
                   {badgeContent}
                 </Link>
-              ) : badgeContent;
+              ) : (
+                badgeContent
+              );
             })}
           </div>
         )}
-        
+
         {/* Children (additional content) */}
         {children}
       </div>
@@ -196,7 +180,7 @@ export function ArticleHeader({
               placeholder="blur"
               blurDataURL={IMAGE_PLACEHOLDER.blur}
               className={cn(
-                "object-cover bg-muted/50 dark:bg-muted/30",
+                'object-cover bg-muted/50 dark:bg-muted/30',
                 backgroundImage.position && `object-${backgroundImage.position}`
               )}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
@@ -210,7 +194,7 @@ export function ArticleHeader({
                 <p className="mb-2 italic">&quot;{backgroundImage.caption}&quot;</p>
               )}
               {backgroundImage.credit && (
-                <p className="text-xs opacity-75">Photo by {backgroundImage.credit}</p>
+                <p className="text-xs opacity-75">Illustration by {backgroundImage.credit}</p>
               )}
             </figcaption>
           )}

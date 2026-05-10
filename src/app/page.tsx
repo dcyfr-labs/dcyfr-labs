@@ -22,7 +22,6 @@ import {
 import { createPageMetadata, getJsonLdScriptProps } from '@/lib/metadata';
 import { PageLayout } from '@/components/layouts';
 import { cn } from '@/lib/utils';
-import { SiteLogo } from '@/components/common';
 import { SearchButton } from '@/components/search';
 import { posts, featuredPosts } from '@/data/posts';
 import { HomepageHeroActions } from '@/components/home/homepage-hero-actions';
@@ -165,15 +164,16 @@ export default async function Home() {
             'w-full mx-auto text-center',
             CONTAINER_WIDTHS.thread,
             CONTAINER_PADDING,
-            'opacity-0 translate-y-2 animate-fade-in-up'
+            'translate-y-2 animate-slide-up'
           )}
           style={{
             animationDelay: `${ANIMATION_CONSTANTS.stagger.normal}ms`,
             animationFillMode: 'forwards',
           }}
         >
-          <h1 className="sr-only">DCYFR Labs</h1>
-          <SiteLogo size="xl" showIcon={false} />
+          <h1 className={cn(TYPOGRAPHY.logo.xlarge, 'inline-flex items-center text-foreground')}>
+            DCYFR Labs
+          </h1>
 
           <p className={cn(TYPOGRAPHY.description, 'mt-5')}>
             Think Freely. Build Securely. Ship Boldly.
@@ -197,7 +197,7 @@ export default async function Home() {
             CONTAINER_VERTICAL_PADDING,
             CONTAINER_WIDTHS.thread,
             CONTAINER_PADDING,
-            'opacity-0 translate-y-2 animate-fade-in-up'
+            'translate-y-2 animate-slide-up'
           )}
           style={{
             animationDelay: `${ANIMATION_CONSTANTS.stagger.normal * 2}ms`,
@@ -219,19 +219,23 @@ export default async function Home() {
 
       {/* ── Four pillars bento ────────────────────────────────────────────── */}
       <section
+        aria-labelledby="home-pillars"
         className={cn(
           'border-t border-border/50',
           'mx-auto',
           CONTAINER_WIDTHS.standard,
           CONTAINER_PADDING,
           CONTAINER_VERTICAL_PADDING,
-          'opacity-0 translate-y-2 animate-fade-in-up'
+          'translate-y-2 animate-slide-up'
         )}
         style={{
           animationDelay: `${ANIMATION_CONSTANTS.stagger.normal * 2}ms`,
           animationFillMode: 'forwards',
         }}
       >
+        <h2 id="home-pillars" className="sr-only">
+          Explore DCYFR Labs
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {PILLARS.map(({ href, icon: Icon, label, description }) => (
             <Link
@@ -270,6 +274,7 @@ export default async function Home() {
       {/* ── Featured post ─────────────────────────────────────────────────── */}
       {featuredPost && (
         <section
+          aria-label="Featured post"
           className={cn(
             'border-t border-border/50',
             'mx-auto',
@@ -285,6 +290,7 @@ export default async function Home() {
       {/* ── From the blog ─────────────────────────────────────────────────── */}
       {latestPosts.length > 0 && (
         <section
+          aria-labelledby="home-from-the-blog"
           className={cn(
             'border-t border-border/50',
             'mx-auto',
@@ -294,7 +300,9 @@ export default async function Home() {
           )}
         >
           <div className={cn('flex items-center justify-between', SPACING.sectionDivider.heading)}>
-            <h2 className={TYPOGRAPHY.h2.standard}>From the blog</h2>
+            <h2 id="home-from-the-blog" className={TYPOGRAPHY.h2.standard}>
+              From the blog
+            </h2>
             <Link
               href="/blog"
               className={cn(
@@ -356,6 +364,7 @@ export default async function Home() {
 
       {/* ── AI framework spotlight ─────────────────────────────────────────── */}
       <section
+        aria-labelledby="home-ai-spotlight"
         className={cn(
           'border-t border-border/50',
           'mx-auto',
@@ -380,7 +389,9 @@ export default async function Home() {
               </span>
             </div>
 
-            <h2 className={cn(TYPOGRAPHY.h2.standard, 'mb-2')}>DCYFR AI</h2>
+            <h3 id="home-ai-spotlight" className={cn(TYPOGRAPHY.h2.standard, 'mb-2')}>
+              DCYFR AI
+            </h3>
 
             <p className={cn(TYPOGRAPHY.metadata, 'mb-5 max-w-lg leading-relaxed')}>
               Portable framework with plugin architecture, multi-provider support (OpenAI,
@@ -421,6 +432,7 @@ export default async function Home() {
 
       {/* ── Newsletter ────────────────────────────────────────────────────── */}
       <section
+        aria-label="Newsletter signup"
         className={cn(
           'border-t border-border/50',
           'mx-auto',
@@ -439,6 +451,7 @@ export default async function Home() {
       {/* ── Browse by topic ───────────────────────────────────────────────── */}
       {topics.length > 0 && (
         <section
+          aria-labelledby="home-browse-topics"
           className={cn(
             'border-t border-border/50',
             'mx-auto',
@@ -447,7 +460,10 @@ export default async function Home() {
             CONTAINER_VERTICAL_PADDING
           )}
         >
-          <h2 className={cn(TYPOGRAPHY.h2.standard, SPACING.sectionDivider.heading)}>
+          <h2
+            id="home-browse-topics"
+            className={cn(TYPOGRAPHY.h2.standard, SPACING.sectionDivider.heading)}
+          >
             Browse by topic
           </h2>
           <div className="flex flex-wrap gap-2">
