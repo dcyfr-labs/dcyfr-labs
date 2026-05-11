@@ -102,7 +102,7 @@
     "gray-matter": "^4.0.3",
     "he": "^1.2.0",
     "html2canvas": "^1.4.1",
-    "inngest": "^4.2.6",
+    "inngest": "^4.4.0",
     "js-yaml": "^4.1.0",
     "katex": "^0.16.45",
     "lucide-react": "^1.14.0",
