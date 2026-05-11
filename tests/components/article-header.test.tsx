@@ -19,7 +19,7 @@ describe('ArticleHeader', () => {
     );
 
     expect(screen.getByText(/^"This is a caption"$/)).toBeInTheDocument();
-    expect(screen.getByText(/Photo by Jane Doe/)).toBeInTheDocument();
+    expect(screen.getByText(/Illustration by Jane Doe/)).toBeInTheDocument();
 
     // Ensure figcaption exists
     const figcaption = document.querySelector('figcaption');
