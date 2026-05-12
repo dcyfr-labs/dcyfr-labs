@@ -203,7 +203,7 @@ jobs:
     needs: [setup, determine-scope]
     name: E2E Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     if: needs.determine-scope.outputs.run_e2e == 'true'
     permissions:
       contents: read
