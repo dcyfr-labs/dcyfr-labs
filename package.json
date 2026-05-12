@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "@axiomhq/js": "^1.6.0",
-    "@axiomhq/logging": "^0.2.0",
+    "@axiomhq/logging": "^0.2.1",
     "@axiomhq/nextjs": "^0.2.0",
     "@axiomhq/react": "^0.2.0",
     "@dcyfr/ai": "^3.0.2",
