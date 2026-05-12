@@ -1,3 +1,51 @@
+## [2026.5.12] - 2026-05-12
+
+### Changed
+
+- **test** - raise E2E timeout from 12m to 20m (#606)
+- chore(deps)(deps): bump zustand from 5.0.12 to 5.0.13 (#605)
+- chore(deps)(deps): bump @axiomhq/react from 0.2.0 to 0.2.1 (#602)
+- chore(deps)(deps): bump @axiomhq/logging from 0.2.0 to 0.2.1 (#601)
+- chore(deps)(deps): bump @upstash/redis from 1.37.0 to 1.38.0 (#599)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.93.0 to 0.95.2 (#598)
+- chore(deps)(deps): bump resend from 6.12.2 to 6.12.3 in the email group (#597)
+- chore(deps)(deps): bump inngest in the background-jobs group (#596)
+- chore(deps)(deps): bump tailwind-merge in the ui-framework group (#595)
+- chore(deps-dev)(deps-dev): bump @types/node (#594)
+- chore(deps-dev)(deps-dev): bump the dev-tools group with 17 updates (#593)
+- chore(deps)(deps): bump the nextjs-core group with 3 updates (#592)
+- chore(deps)(deps): bump @opentelemetry/auto-instrumentations-node (#591)
+- test+docs: pin /blog?q= search behavior + correct content-audit false positive (#589)
+- drop stale PROMPTINTEL plan + dead GA/Search Console placeholders (#585)
+- **design** - Documentation - production design audit of dcyfr.ai (2026-05-09) (#586)
+- **content** - Documentation - production content audit of dcyfr.ai (2026-05-09) (#587)
+- Documentation - drop stale /api/research section from PROMPTINTEL plan (#583)
+- **ci** - fix auto-calver date format + filter release commits + collapse historical CHANGELOG dupes (#584)
+- remove Perplexity API integration (#581)
+- remove ip-reputation system (migrated to Vercel Pro WAF) (#580)
+- workspace cleanup — prune 132K lines of AI-orchestration scaffolding (#577)
+- chore(deps)(deps): bump ip-address and express-rate-limit (#572)
+- chore(deps)(deps): bump hono from 4.12.14 to 4.12.18 (#574)
+- chore(deps-dev)(deps-dev): bump the dev-tools group with 9 updates (#553)
+- chore(deps)(deps): bump lucide-react in the ui-framework group (#554)
+- chore(deps)(deps): bump inngest in the background-jobs group (#555)
+- chore(deps)(deps): bump @react-email/render in the email group (#556)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.91.1 to 0.93.0 (#557)
+- chore(deps)(deps): bump dompurify from 3.4.1 to 3.4.2 (#559)
+- chore(deps)(deps): bump zod from 4.4.2 to 4.4.3 (#558)
+
+### Fixed
+
+- **test** - align article-header credit label with component ("Illustration by") (#590)
+- address mechanical findings from design + content audits (#586, #587) (#588)
+- **ci** - restore npm scripts + scripts referenced by kept workflows (#579)
+- **security** - bump basic-ftp ^6.0.1 + fast-uri ^3.1.2 to clear 2 high advisories (#576)
+- **security** - bump axios override 1.15.0 → ^1.16.0 (clears 14 advisories) (#569)
+
+---
+
+**Full Changelog**: [2026.5.11...2026.5.12](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.5.11...v2026.5.12)
+
 ## [2026.5.11] - 2026-05-11
 
 ### Changed
