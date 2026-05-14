@@ -223,7 +223,9 @@
       "axios": ">=1.15.0"
     },
     "hono": ">=4.12.4",
-    "langsmith": ">=0.4.6",
+    "langsmith": ">=0.6.0",
+    "protobufjs": "^7.5.8",
+    "@opentelemetry/otlp-transformer": "^0.218.0",
     "undici": ">=6.23.0",
     "@vercel/microfrontends": "2.3.2",
     "@qdrant/js-client-rest": ">=1.16.0",
