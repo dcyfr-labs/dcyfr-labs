@@ -211,7 +211,7 @@ export default async function Home() {
           ].map(({ stat, label }) => (
             <div key={stat}>
               <p className={cn(TYPOGRAPHY.h3.standard, 'tabular-nums')}>{stat}</p>
-              <p className={cn(TYPOGRAPHY.metadata, 'mt-0.5 opacity-60')}>{label}</p>
+              <p className={cn(TYPOGRAPHY.metadata, 'mt-0.5')}>{label}</p>
             </div>
           ))}
         </div>
