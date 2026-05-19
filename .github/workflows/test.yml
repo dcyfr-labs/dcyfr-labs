@@ -243,7 +243,6 @@ jobs:
         run: npm run test:e2e
         env:
           CI: true
-          VERCEL_AUTOMATION_BYPASS_SECRET: $VERCEL_AUTOMATION_BYPASS_SECRET
 
       - name: Upload Playwright report
         if: always()
