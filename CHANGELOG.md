@@ -1,3 +1,35 @@
+## [2026.5.19] - 2026-05-19
+
+### Changed
+
+- **test** - drop dead VERCEL_AUTOMATION_BYPASS_SECRET env on e2e (#630)
+- **test** - skip 1Password load on Dependabot PRs (#628)
+- chore(deps)(deps): bump the ui-framework group across 1 directory with 2 updates (#615)
+- chore(deps)(deps): bump @dcyfr/ai from 3.0.3 to 3.0.6 (#618)
+- chore(deps)(deps): bump date-fns from 4.1.0 to 4.2.1 (#619)
+- chore(deps)(deps): bump @axiomhq/nextjs from 0.2.1 to 0.2.2 (#622)
+- chore(deps-dev)(deps-dev): bump sury (#623)
+- chore(deps-dev)(deps-dev): bump @types/node (#614)
+- chore(deps-dev)(deps-dev): bump the dev-tools group with 9 updates (#613)
+- chore(deps)(deps): bump ws from 8.20.0 to 8.20.1 (#612)
+- chore(deps)(deps): bump katex in the content-pipeline group (#616)
+- chore(deps)(deps): bump @axiomhq/logging from 0.2.1 to 0.2.2 (#617)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.95.2 to 0.96.0 (#620)
+- chore(deps)(deps): bump dompurify from 3.4.2 to 3.4.5 (#621)
+- chore(deps)(deps): bump @axiomhq/react from 0.2.1 to 0.2.2 (#624)
+- chore(deps)(deps): bump brace-expansion from 5.0.5 to 5.0.6 (#611)
+- chore(deps)(deps): bump langsmith from 0.5.20 to 0.6.3 (#609)
+- chore(deps)(deps): bump @protobufjs/utf8 from 1.1.0 to 1.1.1 (#608)
+
+### Fixed
+
+- **deps** - pin sury to 11.0.0-alpha.4 — alpha.5 breaks Turbopack build (#627)
+- **security** - protobufjs CVE override — drop 8.0.1 transitive (#610)
+
+---
+
+**Full Changelog**: [2026.5.12...2026.5.19](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.5.12...v2026.5.19)
+
 ## [2026.5.12] - 2026-05-12
 
 ### Changed
