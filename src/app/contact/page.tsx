@@ -84,9 +84,7 @@ export default async function ContactPage() {
                 className={cn('rounded-xl border border-border/50 p-4', HOVER_EFFECTS.card)}
               >
                 <p className={cn(TYPOGRAPHY.label.small, 'mb-1')}>{label}</p>
-                <p className={cn(TYPOGRAPHY.metadata, 'opacity-60 leading-relaxed')}>
-                  {description}
-                </p>
+                <p className={cn(TYPOGRAPHY.metadata, 'leading-relaxed')}>{description}</p>
               </div>
             ))}
           </div>
