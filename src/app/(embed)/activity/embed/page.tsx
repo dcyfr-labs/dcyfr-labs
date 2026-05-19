@@ -55,46 +55,42 @@ export default async function ActivityEmbedPage({
   let allActivities: ActivityItem[] = [];
   let error: string | null = null;
 
+  // Static transforms — always succeed, drive baseline content even when
+  // every external data source is unreachable (CI, no creds, network down).
+  const staticPosts = transformPosts(posts);
+  const staticProjects = transformProjects([...projects]);
+  const staticChangelog = transformChangelog(changelog);
+
+  // Settle each external source independently so one failing fetch (e.g.
+  // Vercel Analytics without creds) does not zero the entire feed.
+  const settled = await Promise.allSettled([
+    transformPostsWithViews(posts),
+    transformMilestones(posts),
+    transformHighEngagementPosts(posts),
+    transformCommentMilestones(posts),
+    transformCredlyBadges(),
+    transformVercelAnalytics(),
+    transformGitHubTraffic(),
+    transformGoogleAnalytics(),
+    transformSearchConsole(),
+  ]);
+
+  const externalActivities: ActivityItem[] = [];
+  for (const r of settled) {
+    if (r.status === 'fulfilled') {
+      externalActivities.push(...r.value);
+    } else {
+      // Log per-source failure but keep going.
+      console.error('[Activity Embed] Source failed:', r.reason);
+    }
+  }
+
   try {
-    const [
-      postsWithViews,
-      milestones,
-      highEngagement,
-      commentMilestones,
-      credlyBadges,
-      vercelAnalytics,
-      githubTraffic,
-      googleAnalytics,
-      searchConsole,
-    ] = await Promise.all([
-      transformPostsWithViews(posts),
-      transformMilestones(posts),
-      transformHighEngagementPosts(posts),
-      transformCommentMilestones(posts),
-      transformCredlyBadges(),
-      transformVercelAnalytics(),
-      transformGitHubTraffic(),
-      transformGoogleAnalytics(),
-      transformSearchConsole(),
-    ]);
-
-    const staticPosts = transformPosts(posts);
-    const staticProjects = transformProjects([...projects]);
-    const staticChangelog = transformChangelog(changelog);
-
     allActivities = aggregateActivities([
       ...staticPosts,
       ...staticProjects,
       ...staticChangelog,
-      ...postsWithViews,
-      ...milestones,
-      ...highEngagement,
-      ...commentMilestones,
-      ...credlyBadges,
-      ...vercelAnalytics,
-      ...githubTraffic,
-      ...googleAnalytics,
-      ...searchConsole,
+      ...externalActivities,
     ]);
 
     // Cache for future requests
@@ -108,9 +104,9 @@ export default async function ActivityEmbedPage({
       console.error('[Activity Embed] Cache write failed:', writeError);
     }
   } catch (err) {
-    console.error('[Activity Embed] Failed to load activities:', err);
+    console.error('[Activity Embed] Failed to aggregate activities:', err);
     error = err instanceof Error ? err.message : 'Unknown error';
-    allActivities = [];
+    allActivities = [...staticPosts, ...staticProjects, ...staticChangelog];
   }
 
   // Serialize activities for client

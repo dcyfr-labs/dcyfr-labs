@@ -214,7 +214,17 @@ function getDevOnlyRouteResponse(pathname: string): NextResponse | null {
  */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const response = NextResponse.next();
+
+  // Forward the pathname to RSCs via a request header so the root layout
+  // (and any other server component that needs it) can read `x-pathname`.
+  // Without this, `headers().get('x-pathname')` returns `null` and the
+  // embed-route detection silently falls back to the full nav layout.
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', pathname);
+
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 
   // ==========================================================================
   // 1. SECURITY HEADERS (All routes)
