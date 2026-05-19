@@ -191,6 +191,12 @@ test.describe('Screen Reader Support', () => {
 
     if (inputs.length > 0) {
       for (const input of inputs) {
+        // Hidden inputs (e.g. anti-spam honeypot, CSRF tokens) are not exposed
+        // to assistive tech and do not need labels. Matches the pattern in
+        // components.a11y.spec.ts:128.
+        const type = await input.getAttribute('type');
+        if (type === 'hidden') continue;
+
         const id = await input.getAttribute('id');
         const ariaLabel = await input.getAttribute('aria-label');
         const ariaLabelledby = await input.getAttribute('aria-labelledby');

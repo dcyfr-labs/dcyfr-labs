@@ -13,6 +13,7 @@ import { CONTAINER_WIDTHS, ANIMATION, NAVIGATION_HEIGHT, Z_INDEX } from '@/lib/d
 import { NAVIGATION, BLOG_NAV, WORK_NAV, isNavItemActive, getAriaCurrent } from '@/lib/navigation';
 import { useDropdown } from '@/hooks/use-dropdown';
 import { useLogoClick } from '@/hooks/use-navigation';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 /**
  * Site Header Component
@@ -35,6 +36,10 @@ export function SiteHeader() {
   const handleLogoClick = useLogoClick();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  // Toggle `inert` on responsive variants whose CSS hides them but leaves
+  // their links/buttons in the DOM — keeps focus + AT consistent with what
+  // the user actually sees, and stops focus tests from picking up phantoms.
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,6 +106,7 @@ export function SiteHeader() {
         <nav
           aria-label="Main navigation"
           className="hidden md:flex items-center justify-center gap-1 sm:gap-3 md:gap-4 text-[clamp(0.875rem,1vw+0.75rem,1rem)] h-full lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2"
+          inert={!isDesktop}
         >
           {NAVIGATION.header
             .filter((item) => item.href !== '/') // Home handled by logo
@@ -254,13 +260,16 @@ export function SiteHeader() {
         </nav>
 
         {/* Desktop Icon Links - visible md and up */}
-        <div className="hidden md:flex items-center gap-2 shrink-0 ml-auto lg:ml-0">
+        <div
+          className="hidden md:flex items-center gap-2 shrink-0 ml-auto lg:ml-0"
+          inert={!isDesktop}
+        >
           <SearchButton variant="default" />
           <ThemeToggle />
         </div>
 
         {/* Mobile Navigation - visible on mobile, hidden md and up */}
-        <div className="flex md:hidden items-center gap-2 ml-auto">
+        <div className="flex md:hidden items-center gap-2 ml-auto" inert={isDesktop}>
           <SearchButton variant="default" />
           <ThemeToggle />
           <MobileNav />
