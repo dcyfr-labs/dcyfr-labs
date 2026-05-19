@@ -286,7 +286,12 @@ jobs:
           echo "| Unit Tests | $UNIT_STATUS |" >> $GITHUB_STEP_SUMMARY
           echo "| Bundle Size | $BUNDLE_STATUS |" >> $GITHUB_STEP_SUMMARY
           echo "| E2E Tests | $E2E_STATUS |" >> $GITHUB_STEP_SUMMARY
+      # Skip on dependabot PRs: OP_SERVICE_ACCOUNT_TOKEN is only in the Actions
+      # secret namespace, not the Dependabot namespace, so the action hard-fails
+      # on empty token. The summary above already ran; the secret isn't used by
+      # any subsequent step in this job. See #626.
       - name: Load secrets from 1Password
+        if: github.actor != 'dependabot[bot]'
         uses: 1password/load-secrets-action@v1
         with:
           export-env: true
