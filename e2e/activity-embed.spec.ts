@@ -93,7 +93,11 @@ test.describe('Activity Feed Embed', () => {
   });
 });
 
-test.describe('Activity Embed Generator', () => {
+// The EmbedGenerator component exists in src/components/activity/ and has
+// passing unit tests, but it has never been mounted on /activity. These
+// E2E tests assume a "Show Embed Code" toggle that does not exist in the
+// shipped UI. Skipping until the integration ships — see #633.
+test.describe.skip('Activity Embed Generator', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/activity');
   });

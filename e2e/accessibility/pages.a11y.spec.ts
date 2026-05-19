@@ -127,8 +127,10 @@ test.describe('Keyboard Accessibility', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    // Find navigation elements
-    const navLinks = await page.locator('nav a').all();
+    // Only assert focusability for visible nav links — see also
+    // components.a11y.spec.ts. The hidden responsive variant is in the DOM
+    // but cannot be focused, and that's correct.
+    const navLinks = await page.locator('nav a:visible').all();
     expect(navLinks.length).toBeGreaterThan(0);
 
     // Verify each nav link is keyboard accessible

@@ -17,6 +17,15 @@ export function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
 
   useEffect(() => {
+    // Guard against environments without matchMedia (jsdom in unit tests,
+    // or older runtimes). The hook just stays at `false` there — the only
+    // place we rely on it is `inert` on hidden responsive nav variants,
+    // which is harmless at `false` (the elements aren't rendered as
+    // visible-then-clicked in unit tests anyway).
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return;
+    }
+
     const mq = window.matchMedia(query);
     setMatches(mq.matches);
 

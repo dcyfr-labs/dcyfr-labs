@@ -30,7 +30,11 @@ test.describe('Navigation Component', () => {
   test('Navigation - keyboard accessible', async ({ page }) => {
     await page.goto('/');
 
-    const navLinks = await page.locator('nav a').all();
+    // Only assert focusability for visible nav links. The responsive variants
+    // (`hidden md:flex` main nav vs `md:hidden` bottom nav) deliberately leave
+    // the inactive side in the DOM; querying for visible elements matches what
+    // a real user can tab to at the test viewport.
+    const navLinks = await page.locator('nav a:visible').all();
     expect(navLinks.length).toBeGreaterThan(0);
 
     // Each link should be focusable
@@ -80,7 +84,9 @@ test.describe('Button Components', () => {
   test('Buttons - keyboard activatable', async ({ page }) => {
     await page.goto('/');
 
-    const buttons = await page.locator('button').all();
+    // Only test visible buttons; the responsive header keeps duplicate
+    // search/theme buttons in the DOM for both viewport variants.
+    const buttons = await page.locator('button:visible').all();
 
     for (const button of buttons.slice(0, 5)) {
       // Test first 5

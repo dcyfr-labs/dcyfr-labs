@@ -103,10 +103,12 @@ export default async function RootLayout({
   // Get nonce from proxy for CSP-compliant theme injection
   const nonce = (await headers()).get('x-nonce') || undefined;
 
-  // Detect if we're in an embed route
+  // Detect if we're in an embed route. The canonical path is /activity/embed
+  // (matched by next.config.ts header rules + EmbedGenerator), but the check is
+  // broad enough to cover any future `*/embed` route under the `(embed)` group.
   const headersList = await headers();
   const pathname = headersList.get('x-pathname') || '';
-  const isEmbed = pathname.startsWith('/embed');
+  const isEmbed = pathname.includes('/embed');
 
   // Organization schema for AI visibility and brand signals
   const organizationSchema = {
