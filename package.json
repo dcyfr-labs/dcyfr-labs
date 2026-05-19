@@ -239,6 +239,6 @@
     }
   },
   "optionalDependencies": {
-    "@anthropic-ai/sdk": "0.95.2"
+    "@anthropic-ai/sdk": "0.96.0"
   }
 }
