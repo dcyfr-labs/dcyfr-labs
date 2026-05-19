@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { NAVIGATION, isNavItemActive, getAriaCurrent } from '@/lib/navigation';
 import { ANIMATION, NAVIGATION_HEIGHT, Z_INDEX } from '@/lib/design-tokens';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 /**
  * Bottom navigation bar for mobile devices
@@ -31,6 +32,9 @@ export function BottomNav() {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = React.useState(true);
   const [lastScrollY, setLastScrollY] = React.useState(0);
+  // CSS hides this nav at md+ via `md:hidden`, but the DOM nodes remain.
+  // Mark them inert at that viewport so focus + AT skip them entirely.
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -68,7 +72,8 @@ export function BottomNav() {
         isVisible ? 'translate-y-0 bottom-0' : 'translate-y-full bottom-0'
       )}
       aria-label="Bottom navigation"
-      aria-hidden={!isVisible}
+      aria-hidden={!isVisible || isDesktop}
+      inert={isDesktop || !isVisible}
     >
       <div className={cn('grid grid-cols-5', NAVIGATION_HEIGHT, 'max-w-screen-md', 'mx-auto')}>
         {NAVIGATION.bottom.map((item) => {

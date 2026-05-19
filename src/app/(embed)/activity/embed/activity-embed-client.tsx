@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useState, useMemo, useEffect } from "react";
-import { ThreadedActivityFeed } from "@/components/activity";
-import type { ActivityItem, ActivitySource } from "@/lib/activity";
+import { useState, useMemo, useEffect } from 'react';
+import { ThreadedActivityFeed } from '@/components/activity';
+import type { ActivityItem, ActivitySource } from '@/lib/activity';
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
-type TimeRangeFilter = "today" | "week" | "month" | "year" | "all";
+type TimeRangeFilter = 'today' | 'week' | 'month' | 'year' | 'all';
 
-interface SerializedActivity extends Omit<ActivityItem, "timestamp"> {
+interface SerializedActivity extends Omit<ActivityItem, 'timestamp'> {
   timestamp: string;
 }
 
@@ -47,9 +47,7 @@ export function ActivityEmbedClient({
   const [selectedSources] = useState<ActivitySource[]>(
     initialSource ? [initialSource as ActivitySource] : []
   );
-  const [timeRange] = useState<TimeRangeFilter>(
-    (initialTimeRange as TimeRangeFilter) || "all"
-  );
+  const [timeRange] = useState<TimeRangeFilter>((initialTimeRange as TimeRangeFilter) || 'all');
 
   // Filter activities
   const filteredActivities = useMemo(() => {
@@ -57,9 +55,7 @@ export function ActivityEmbedClient({
 
     // Source filter
     if (selectedSources.length > 0) {
-      filtered = filtered.filter((activity) =>
-        selectedSources.includes(activity.source)
-      );
+      filtered = filtered.filter((activity) => selectedSources.includes(activity.source));
     }
 
     // Time range filter
@@ -90,7 +86,7 @@ export function ActivityEmbedClient({
       const targetOrigin = document.referrer
         ? new URL(document.referrer).origin
         : window.location.origin;
-      window.parent.postMessage({ type: "activity-embed-resize", height }, targetOrigin);
+      window.parent.postMessage({ type: 'activity-embed-resize', height }, targetOrigin);
     };
 
     // Send initial height

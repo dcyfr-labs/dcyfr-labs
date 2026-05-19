@@ -40,7 +40,9 @@ export function SearchButton({ variant = 'default', className }: SearchButtonPro
         aria-label="Search posts"
       >
         <Search className="h-4 w-4 shrink-0" />
-        <span className="text-sm">Search posts, tags, topics...</span>
+        <span className="text-sm text-foreground/70 group-hover:text-foreground">
+          Search posts, tags, topics...
+        </span>
         <kbd
           className={cn(
             'ml-auto hidden sm:inline-flex h-6 select-none items-center gap-1 rounded border bg-background px-2 font-mono opacity-70 group-hover:opacity-100',

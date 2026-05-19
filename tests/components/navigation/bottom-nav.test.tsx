@@ -14,6 +14,24 @@ describe('BottomNav', () => {
       writable: true,
       value: 0,
     });
+
+    // Mock matchMedia to return false for `(min-width: 768px)` — i.e. simulate a
+    // mobile viewport where the bottom nav is the active variant (not inert).
+    // jsdom's default viewport is 1024×768 which would otherwise trigger the
+    // desktop-side `inert + aria-hidden` and make queries fail.
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
   });
 
   afterEach(() => {

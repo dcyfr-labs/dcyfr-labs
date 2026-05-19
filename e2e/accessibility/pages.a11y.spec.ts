@@ -127,8 +127,10 @@ test.describe('Keyboard Accessibility', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    // Find navigation elements
-    const navLinks = await page.locator('nav a').all();
+    // Only assert focusability for visible nav links — see also
+    // components.a11y.spec.ts. The hidden responsive variant is in the DOM
+    // but cannot be focused, and that's correct.
+    const navLinks = await page.locator('nav a:visible').all();
     expect(navLinks.length).toBeGreaterThan(0);
 
     // Verify each nav link is keyboard accessible
@@ -191,6 +193,12 @@ test.describe('Screen Reader Support', () => {
 
     if (inputs.length > 0) {
       for (const input of inputs) {
+        // Hidden inputs (e.g. anti-spam honeypot, CSRF tokens) are not exposed
+        // to assistive tech and do not need labels. Matches the pattern in
+        // components.a11y.spec.ts:128.
+        const type = await input.getAttribute('type');
+        if (type === 'hidden') continue;
+
         const id = await input.getAttribute('id');
         const ariaLabel = await input.getAttribute('aria-label');
         const ariaLabelledby = await input.getAttribute('aria-labelledby');
