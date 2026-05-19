@@ -176,7 +176,7 @@
     "lighthouse": "^13.3.0",
     "lint-staged": "^17.0.5",
     "msw": "^2.14.6",
-    "sury": "^11.0.0-alpha.4",
+    "sury": "^11.0.0-alpha.5",
     "tailwindcss": "^4.2.4",
     "ts-morph": "^28.0.0",
     "tsx": "^4.22.2",
