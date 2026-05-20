@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-import { GeistPixelSquare, GeistPixelGrid } from 'geist/font/pixel';
+import { GeistPixelSquare, GeistPixelGrid } from '@/fonts/geist-pixel';
 import { Alegreya } from 'next/font/google';
 import './globals.css';
 // print.css and katex.css are imported via globals.css @import
