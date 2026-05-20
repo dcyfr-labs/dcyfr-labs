@@ -14,26 +14,29 @@ import localFont from 'next/font/local';
  * dropping the three dead preloads. The .woff2 files are vendored from
  * `geist/dist/fonts/geist-pixel/` (decorative display fonts — stable, not
  * versioned independently).
+ *
+ * Note: `next/font` requires every `localFont()` option to be an inline
+ * literal — the compiler plugin rejects values referenced from a shared
+ * const, so the fallback stack is repeated verbatim in each call (this is
+ * also why the upstream geist package repeats it).
  */
-
-const PIXEL_FALLBACK = [
-  'Geist Mono',
-  'ui-monospace',
-  'SFMono-Regular',
-  'Roboto Mono',
-  'Menlo',
-  'Monaco',
-  'Liberation Mono',
-  'DejaVu Sans Mono',
-  'Courier New',
-  'monospace',
-];
 
 export const GeistPixelSquare = localFont({
   src: './GeistPixel-Square.woff2',
   variable: '--font-geist-pixel-square',
   weight: '500',
-  fallback: PIXEL_FALLBACK,
+  fallback: [
+    'Geist Mono',
+    'ui-monospace',
+    'SFMono-Regular',
+    'Roboto Mono',
+    'Menlo',
+    'Monaco',
+    'Liberation Mono',
+    'DejaVu Sans Mono',
+    'Courier New',
+    'monospace',
+  ],
   adjustFontFallback: false,
 });
 
@@ -41,6 +44,17 @@ export const GeistPixelGrid = localFont({
   src: './GeistPixel-Grid.woff2',
   variable: '--font-geist-pixel-grid',
   weight: '500',
-  fallback: PIXEL_FALLBACK,
+  fallback: [
+    'Geist Mono',
+    'ui-monospace',
+    'SFMono-Regular',
+    'Roboto Mono',
+    'Menlo',
+    'Monaco',
+    'Liberation Mono',
+    'DejaVu Sans Mono',
+    'Courier New',
+    'monospace',
+  ],
   adjustFontFallback: false,
 });
