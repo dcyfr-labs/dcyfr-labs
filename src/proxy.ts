@@ -63,6 +63,13 @@ function getContentSecurityPolicy(): string {
       'https://www.youtube.com', // Embedded videos
       'https://player.vimeo.com',
     ],
+    'worker-src': [
+      "'self'",
+      'blob:', // Bundled libraries ship Web Workers as blob: URLs (Next.js,
+      //          syntax highlighting, etc.). Without this directive workers
+      //          fall back to script-src, which has no blob: and hard-blocks
+      //          them on every page.
+    ],
     'frame-ancestors': ["'self'"], // Prevent clickjacking except for /activity/embed (handled in next.config.ts)
     'object-src': ["'none'"], // Disable Flash and other plugins
     'base-uri': ["'self'"], // Restrict <base> tag URLs
