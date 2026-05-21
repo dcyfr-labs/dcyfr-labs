@@ -19,8 +19,7 @@ concurrency:
 
 jobs:
   lighthouse:
-    # Skip on dependabot PRs: OP_SERVICE_ACCOUNT_TOKEN is not available
-    # for third-party PRs and the 1Password action hard-fails when it's empty.
+    # Skip dependabot PRs to keep dependency-bump CI lightweight.
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -39,14 +38,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --prefer-offline
-
-      - name: Load secrets from 1Password
-        uses: 1password/load-secrets-action@v1
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: op://Production/Vercel/automation_bypass_secret
 
       - name: Update baseline browser mapping
         run: npm run update:baseline
@@ -80,7 +71,6 @@ jobs:
 
       - name: Run Lighthouse CI
         run: npm run lhci:autorun
-        # VERCEL_AUTOMATION_BYPASS_SECRET loaded from 1Password
         continue-on-error: true
 
       - name: Upload Lighthouse results
