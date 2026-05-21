@@ -1,178 +1,177 @@
 #!/usr/bin/env node
 
 /**
- * Color Contrast Validation Script
- * 
- * Validates WCAG 2.1 AA/AAA contrast ratios for all color combinations
- * in the design system.
- * 
- * WCAG Requirements:
- * - AA Normal Text: 4.5:1
- * - AA Large Text: 3:1
- * - AAA Normal Text: 7:1
- * - AAA Large Text: 4.5:1
+ * Color Contrast Validation
+ *
+ * Validates WCAG 2.1 AA/AAA contrast ratios for the design-system color
+ * tokens. Token values are read directly from src/app/globals.css — the
+ * source of truth — never hardcoded, so this check cannot silently drift
+ * from the real theme.
+ *
+ * WCAG AA normal text: 4.5:1 · AAA normal text: 7:1
+ *
+ * Run:  node scripts/validate-color-contrast.mjs
+ * Exit: 0 = every pair clears AA · 1 = one or more fail
  */
 
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import wcagContrast from 'wcag-contrast';
 
 /**
- * Convert OKLCH to RGB for contrast calculation
- * Simplified conversion - oklch(L C H) where C=0 (grayscale)
- * For grayscale, L directly maps to lightness
+ * Convert an `oklch(L C H)` string to an 8-bit sRGB `[r, g, b]` triple.
+ * Implements the OKLab → linear-sRGB transform (Björn Ottosson), so chroma
+ * and hue are honored — not just grayscale. Out-of-gamut channels are
+ * clamped into sRGB before gamma encoding.
  */
-function oklchToRgb(oklchString) {
-  // Parse: oklch(0.5 0 0)
-  const match = oklchString.match(/oklch\(([\d.]+)\s+[\d.]+\s+[\d.]+/);
-  if (!match) {
-    throw new Error(`Invalid OKLCH: ${oklchString}`);
-  }
-  
-  const lightness = parseFloat(match[1]);
-  
-  // For grayscale (C=0), convert L to RGB value
-  // OKLCH L range: 0-1, RGB range: 0-255
-  const value = Math.round(lightness * 255);
-  
-  // Return hex format for wcag-contrast library
-  const hex = value.toString(16).padStart(2, '0');
-  return `#${hex}${hex}${hex}`;
+export function oklchToSrgb(oklch) {
+  const parsed = oklch.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)/i);
+  if (!parsed) throw new Error(`Invalid OKLCH value: ${oklch}`);
+
+  const L = parseFloat(parsed[1]);
+  const C = parseFloat(parsed[2]);
+  const hRadians = (parseFloat(parsed[3]) * Math.PI) / 180;
+  const a = C * Math.cos(hRadians);
+  const b = C * Math.sin(hRadians);
+
+  // OKLab → nonlinear LMS
+  const lPrime = L + 0.3963377774 * a + 0.2158037573 * b;
+  const mPrime = L - 0.1055613458 * a - 0.0638541728 * b;
+  const sPrime = L - 0.0894841775 * a - 1.291485548 * b;
+
+  // LMS → linear sRGB
+  const l = lPrime ** 3;
+  const m = mPrime ** 3;
+  const s = sPrime ** 3;
+  const linear = [
+    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
+  ];
+
+  return linear.map((channel) => {
+    const clamped = Math.min(1, Math.max(0, channel));
+    const encoded = clamped <= 0.0031308 ? 12.92 * clamped : 1.055 * clamped ** (1 / 2.4) - 0.055;
+    return Math.round(encoded * 255);
+  });
 }
 
-// Define color tokens from globals.css
-const lightTheme = {
-  background: 'oklch(1 0 0)',
-  foreground: 'oklch(0.145 0 0)',
-  muted: 'oklch(0.96 0 0)',
-  'muted-foreground': 'oklch(0.44 0 0)',
-  primary: 'oklch(0.205 0 0)',
-  'primary-foreground': 'oklch(0.985 0 0)',
-  success: 'oklch(0.35 0 0)',
-  'success-foreground': 'oklch(0.98 0 0)',
-  warning: 'oklch(0.55 0 0)',
-  'warning-foreground': 'oklch(0.15 0 0)',
-  error: 'oklch(0.25 0 0)',
-  'error-foreground': 'oklch(0.98 0 0)',
-  info: 'oklch(0.45 0 0)',
-  'info-foreground': 'oklch(0.98 0 0)',
-};
+/**
+ * Parse light (`:root`) and dark (`.dark`) color tokens from globals.css.
+ * The dark theme is the `:root` baseline with `.dark` overrides applied,
+ * mirroring the CSS cascade — a token not redefined in `.dark` inherits
+ * its `:root` value.
+ */
+export function parseThemes(css) {
+  const extract = (block) => {
+    const tokens = {};
+    for (const token of block.matchAll(/--([a-z-]+):\s*(oklch\([^)]+\))/gi)) {
+      tokens[token[1]] = token[2];
+    }
+    return tokens;
+  };
 
-const darkTheme = {
-  background: 'oklch(0.1 0 0)',
-  foreground: 'oklch(0.985 0 0)',
-  muted: 'oklch(0.20 0 0)',
-  'muted-foreground': 'oklch(0.78 0 0)',
-  primary: 'oklch(0.922 0 0)',
-  'primary-foreground': 'oklch(0.205 0 0)',
-  success: 'oklch(0.35 0 0)',
-  'success-foreground': 'oklch(0.98 0 0)',
-  warning: 'oklch(0.55 0 0)',
-  'warning-foreground': 'oklch(0.15 0 0)',
-  error: 'oklch(0.25 0 0)',
-  'error-foreground': 'oklch(0.98 0 0)',
-  info: 'oklch(0.45 0 0)',
-  'info-foreground': 'oklch(0.98 0 0)',
-};
+  const darkStart = css.search(/\.dark\s*\{/);
+  if (darkStart === -1) {
+    const all = extract(css);
+    return { light: all, dark: all };
+  }
 
-// Define critical contrast pairs (text on background)
-const contrastPairs = [
-  { text: 'foreground', bg: 'background', type: 'normal' },
-  { text: 'muted-foreground', bg: 'background', type: 'normal' },
-  { text: 'muted-foreground', bg: 'muted', type: 'normal' },
-  { text: 'primary-foreground', bg: 'primary', type: 'normal' },
-  { text: 'success-foreground', bg: 'success', type: 'normal' },
-  { text: 'warning-foreground', bg: 'warning', type: 'normal' },
-  { text: 'error-foreground', bg: 'error', type: 'normal' },
-  { text: 'info-foreground', bg: 'info', type: 'normal' },
+  const light = extract(css.slice(0, darkStart));
+  const darkEnd = css.indexOf('}', darkStart);
+  const darkOverrides = extract(css.slice(darkStart, darkEnd === -1 ? undefined : darkEnd));
+  return { light, dark: { ...light, ...darkOverrides } };
+}
+
+// Text-on-background token pairs to check (normal-size text).
+const CONTRAST_PAIRS = [
+  { text: 'foreground', bg: 'background' },
+  { text: 'muted-foreground', bg: 'background' },
+  { text: 'muted-foreground', bg: 'muted' },
+  { text: 'primary-foreground', bg: 'primary' },
+  { text: 'success-foreground', bg: 'success' },
+  { text: 'warning-foreground', bg: 'warning' },
+  { text: 'error-foreground', bg: 'error' },
+  { text: 'info-foreground', bg: 'info' },
 ];
 
-// WCAG thresholds
-const WCAG_AA_NORMAL = 4.5;
-const WCAG_AA_LARGE = 3;
-const WCAG_AAA_NORMAL = 7;
-const WCAG_AAA_LARGE = 4.5;
+const WCAG_AA = 4.5;
+const WCAG_AAA = 7;
 
-function validateContrast(theme, themeName) {
-  console.log(`\n${'='.repeat(60)}`);
-  console.log(`${themeName.toUpperCase()} THEME - CONTRAST VALIDATION`);
-  console.log(`${'='.repeat(60)}\n`);
-  
-  const results = [];
-  let passed = 0;
-  let failed = 0;
-  
-  contrastPairs.forEach(({ text, bg, type }) => {
-    const textColor = oklchToRgb(theme[text]);
-    const bgColor = oklchToRgb(theme[bg]);
-    
-    const ratio = wcagContrast.hex(textColor, bgColor);
-    
-    const aaThreshold = type === 'large' ? WCAG_AA_LARGE : WCAG_AA_NORMAL;
-    const aaaThreshold = type === 'large' ? WCAG_AAA_LARGE : WCAG_AAA_NORMAL;
-    
-    const passesAA = ratio >= aaThreshold;
-    const passesAAA = ratio >= aaaThreshold;
-    
-    const status = passesAAA ? '✅ AAA' : passesAA ? '✅ AA' : '❌ FAIL';
-    
-    if (passesAA) {
-      passed++;
-    } else {
-      failed++;
-    }
-    
-    results.push({
-      text,
-      bg,
-      ratio: ratio.toFixed(2),
-      status,
-      passesAA,
-      passesAAA
-    });
-    
-    console.log(`${status.padEnd(10)} ${text.padEnd(20)} on ${bg.padEnd(20)} = ${ratio.toFixed(2)}:1`);
-  });
-  
-  console.log(`\n${'─'.repeat(60)}`);
-  console.log(`Results: ${passed} passed / ${failed} failed`);
-  
-  if (failed > 0) {
-    console.log(`\n⚠️  WARNING: ${failed} color pair(s) do not meet WCAG AA standards`);
-  } else {
-    console.log(`\n✅ All color pairs meet WCAG AA standards!`);
-  }
-  
-  return { passed, failed, results };
+function toHex([r, g, b]) {
+  return '#' + [r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('');
 }
 
-// Run validation
-console.log('\n🎨 WCAG COLOR CONTRAST VALIDATION\n');
-console.log('Standards:');
-console.log('  - WCAG AA Normal Text: 4.5:1');
-console.log('  - WCAG AA Large Text:  3:1');
-console.log('  - WCAG AAA Normal Text: 7:1');
-console.log('  - WCAG AAA Large Text:  4.5:1');
+function evaluateTheme(theme, themeName) {
+  console.log(`\n${'='.repeat(60)}`);
+  console.log(`${themeName.toUpperCase()} THEME — CONTRAST VALIDATION`);
+  console.log(`${'='.repeat(60)}\n`);
 
-const lightResults = validateContrast(lightTheme, 'Light');
-const darkResults = validateContrast(darkTheme, 'Dark');
+  let passed = 0;
+  let failed = 0;
 
-// Summary
-console.log(`\n${'='.repeat(60)}`);
-console.log('OVERALL SUMMARY');
-console.log(`${'='.repeat(60)}\n`);
-console.log(`Light Theme: ${lightResults.passed}/${lightResults.passed + lightResults.failed} passed`);
-console.log(`Dark Theme:  ${darkResults.passed}/${darkResults.passed + darkResults.failed} passed`);
+  for (const { text, bg } of CONTRAST_PAIRS) {
+    const textValue = theme[text];
+    const bgValue = theme[bg];
 
-const totalPassed = lightResults.passed + darkResults.passed;
-const totalFailed = lightResults.failed + darkResults.failed;
-const total = totalPassed + totalFailed;
-const percentage = ((totalPassed / total) * 100).toFixed(1);
+    if (!textValue || !bgValue) {
+      failed++;
+      const missing = !textValue ? `--${text}` : `--${bg}`;
+      console.log(
+        `${'❌ MISSING'.padEnd(10)} ${text} on ${bg} — ${missing} not found in globals.css`
+      );
+      continue;
+    }
 
-console.log(`\nTotal: ${totalPassed}/${total} (${percentage}%)`);
+    const ratio = wcagContrast.hex(toHex(oklchToSrgb(textValue)), toHex(oklchToSrgb(bgValue)));
+    const passesAA = ratio >= WCAG_AA;
+    const passesAAA = ratio >= WCAG_AAA;
+    const status = passesAAA ? '✅ AAA' : passesAA ? '✅ AA' : '❌ FAIL';
 
-if (totalFailed > 0) {
-  console.log('\n❌ Some contrast ratios need improvement');
-  process.exit(1);
-} else {
+    if (passesAA) passed++;
+    else failed++;
+
+    console.log(
+      `${status.padEnd(10)} ${text.padEnd(20)} on ${bg.padEnd(20)} = ${ratio.toFixed(2)}:1`
+    );
+  }
+
+  console.log(`\n${'─'.repeat(60)}`);
+  console.log(`Results: ${passed} passed / ${failed} failed`);
+
+  return { passed, failed };
+}
+
+function main() {
+  console.log('\n🎨 WCAG COLOR CONTRAST VALIDATION\n');
+  console.log('Tokens sourced from src/app/globals.css');
+  console.log('Standards: WCAG AA normal text 4.5:1 · AAA normal text 7:1');
+
+  const cssPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'app', 'globals.css');
+  const { light, dark } = parseThemes(readFileSync(cssPath, 'utf8'));
+
+  const lightResults = evaluateTheme(light, 'Light');
+  const darkResults = evaluateTheme(dark, 'Dark');
+
+  const totalPassed = lightResults.passed + darkResults.passed;
+  const totalFailed = lightResults.failed + darkResults.failed;
+
+  console.log(`\n${'='.repeat(60)}`);
+  console.log('OVERALL SUMMARY');
+  console.log(`${'='.repeat(60)}\n`);
+  console.log(`Light: ${lightResults.passed}/${lightResults.passed + lightResults.failed} passed`);
+  console.log(`Dark:  ${darkResults.passed}/${darkResults.passed + darkResults.failed} passed`);
+  console.log(`Total: ${totalPassed}/${totalPassed + totalFailed}`);
+
+  if (totalFailed > 0) {
+    console.log('\n❌ Some contrast ratios need improvement');
+    process.exit(1);
+  }
   console.log('\n✅ All contrast ratios meet WCAG AA standards!');
   process.exit(0);
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
 }
