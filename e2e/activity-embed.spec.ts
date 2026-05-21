@@ -93,11 +93,9 @@ test.describe('Activity Feed Embed', () => {
   });
 });
 
-// The EmbedGenerator component exists in src/components/activity/ and has
-// passing unit tests, but it has never been mounted on /activity. These
-// E2E tests assume a "Show Embed Code" toggle that does not exist in the
-// shipped UI. Skipping until the integration ships — see #633.
-test.describe.skip('Activity Embed Generator', () => {
+// EmbedGenerator is surfaced on /activity behind the EmbedCodeSection
+// "Show Embed Code" disclosure toggle.
+test.describe('Activity Embed Generator', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/activity');
   });
@@ -164,7 +162,7 @@ test.describe.skip('Activity Embed Generator', () => {
     await page.click("button[aria-label='Copy embed code']");
 
     // Verify button shows success state
-    await expect(page.locator("button[aria-label='Copy embed code']")).toHaveClass(/green/);
+    await expect(page.locator("button[aria-label='Copy embed code']")).toHaveClass(/success/);
 
     // Verify clipboard contains code
     const clipboardText = await page.evaluate(() => navigator.clipboard.readText());

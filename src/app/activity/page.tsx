@@ -7,6 +7,7 @@ import { CONTAINER_WIDTHS, CONTAINER_PADDING, TYPOGRAPHY, SPACING } from '@/lib/
 import { cn } from '@/lib/utils';
 import { ActivityPageClient } from './activity-client';
 import { ActivitySkeleton } from '@/components/activity';
+import { EmbedCodeSection } from '@/components/activity/EmbedCodeSection';
 import { PageLayout, ArchiveHero } from '@/components/layouts';
 import { FeedDropdown } from '@/components/blog/client';
 import { posts } from '@/data/posts';
@@ -237,6 +238,9 @@ export default async function ActivityPage() {
       <Suspense fallback={<ActivitySkeleton />}>
         <ActivityPageClient activities={serializedActivities} />
       </Suspense>
+
+      {/* Embed Code Section - low-profile disclosure for the activity feed embed */}
+      <EmbedCodeSection />
     </PageLayout>
   );
 }
