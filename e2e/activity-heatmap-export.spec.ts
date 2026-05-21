@@ -6,11 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 
-// The activity page does not currently surface a "Heatmap" tab in the
-// shipped UI — `curl https://www.dcyfr.ai/activity | grep Heatmap` returns
-// nothing. These E2E tests were written against an unmerged UI version.
-// Skipping until the tab actually ships — see #634.
-test.describe.skip('Activity Heatmap Export', () => {
+test.describe('Activity Heatmap Export', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to activity page with heatmap tab
     await page.goto('/activity');
