@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TYPOGRAPHY, SPACING, SEMANTIC_COLORS } from "@/lib/design-tokens";
+import { toast } from "@/lib/toast";
 import type { ActivityItem } from "@/lib/activity";
 import {
   aggregateActivitiesByDate,
@@ -128,7 +129,7 @@ export function ActivityHeatmapCalendar({
   // Handle export as image
   const handleExport = async () => {
     if (!heatmapRef.current) {
-      alert("Export failed: Heatmap element not found. Please try again.");
+      toast.error("Export failed: Heatmap element not found. Please try again.");
       return;
     }
 
@@ -142,12 +143,12 @@ export function ActivityHeatmapCalendar({
       });
 
       if (result.success) {
-        alert(`Export successful! Heatmap saved as ${result.filename}`);
+        toast.success(`Export successful! Heatmap saved as ${result.filename}`);
       } else {
-        alert(`Export failed: ${result.error || "An unknown error occurred."}`);
+        toast.error(`Export failed: ${result.error || "An unknown error occurred."}`);
       }
     } catch (error) {
-      alert(
+      toast.error(
         `Export failed: ${error instanceof Error ? error.message : "An unknown error occurred."}`
       );
     } finally {
