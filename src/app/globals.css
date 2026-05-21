@@ -425,8 +425,8 @@
 
   --info: oklch(0.639 0.198 254.624);
   /* blue-500 */
-  --info-foreground: oklch(1 0 0);
-  /* white */
+  --info-foreground: oklch(0 0 0);
+  /* black */
   --info-light: oklch(0.701 0.194 253.639);
   /* blue-400 */
   --info-dark: oklch(0.563 0.185 254.604);
