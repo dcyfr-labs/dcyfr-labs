@@ -17,7 +17,7 @@ import { Alert } from '@/components/common';
 
 type TimeRangeFilter = 'today' | 'week' | 'month' | 'year' | 'all';
 
-interface SerializedActivity extends Omit<ActivityItem, 'timestamp'> {
+export interface SerializedActivity extends Omit<ActivityItem, 'timestamp'> {
   timestamp: string;
 }
 

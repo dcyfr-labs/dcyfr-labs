@@ -5,7 +5,7 @@ import { createPageMetadata, getJsonLdScriptProps } from '@/lib/metadata';
 import { SITE_URL, AUTHOR_NAME } from '@/lib/site-config';
 import { CONTAINER_WIDTHS, CONTAINER_PADDING, TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
 import { cn } from '@/lib/utils';
-import { ActivityPageClient } from './activity-client';
+import { ActivityViews } from './activity-views';
 import { ActivitySkeleton } from '@/components/activity';
 import { EmbedCodeSection } from '@/components/activity/EmbedCodeSection';
 import { PageLayout, ArchiveHero } from '@/components/layouts';
@@ -234,9 +234,9 @@ export default async function ActivityPage() {
         </div>
       )}
 
-      {/* Search & Timeline Section */}
+      {/* Timeline + Heatmap views */}
       <Suspense fallback={<ActivitySkeleton />}>
-        <ActivityPageClient activities={serializedActivities} />
+        <ActivityViews activities={serializedActivities} />
       </Suspense>
 
       {/* Embed Code Section - low-profile disclosure for the activity feed embed */}
