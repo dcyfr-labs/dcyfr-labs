@@ -1,24 +1,25 @@
-"use client";
+'use client';
 
-import { useMemo, useState, useRef } from "react";
-import CalendarHeatmap from "react-calendar-heatmap";
-import { motion } from "framer-motion";
-import { Calendar, TrendingUp, Zap, Target, Download } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { TYPOGRAPHY, SPACING, SEMANTIC_COLORS } from "@/lib/design-tokens";
-import type { ActivityItem } from "@/lib/activity";
+import { useMemo, useState, useRef } from 'react';
+import CalendarHeatmap from 'react-calendar-heatmap';
+import { motion } from 'framer-motion';
+import { Calendar, TrendingUp, Zap, Target, Download } from 'lucide-react';
+import { toast } from 'sonner';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { TYPOGRAPHY, SPACING, SEMANTIC_COLORS } from '@/lib/design-tokens';
+import type { ActivityItem } from '@/lib/activity';
 import {
   aggregateActivitiesByDate,
   calculateHeatmapStats,
   getHeatmapColorClass,
   type ActivityHeatmapDay,
-} from "@/lib/activity";
-import { exportHeatmapAsImage } from "@/lib/activity";
+} from '@/lib/activity';
+import { exportHeatmapAsImage } from '@/lib/activity';
 
 // Import styles for react-calendar-heatmap
-import "react-calendar-heatmap/dist/styles.css";
+import 'react-calendar-heatmap/dist/styles.css';
 
 // ============================================================================
 // TYPES
@@ -92,10 +93,7 @@ export function ActivityHeatmapCalendar({
   );
 
   // Calculate statistics
-  const stats = useMemo(
-    () => calculateHeatmapStats(heatmapData),
-    [heatmapData]
-  );
+  const stats = useMemo(() => calculateHeatmapStats(heatmapData), [heatmapData]);
 
   // Handle date click
   const handleDateClick = (
@@ -117,18 +115,18 @@ export function ActivityHeatmapCalendar({
   // Format date for tooltip
   const formatTooltipDate = (dateStr: string): string => {
     const date = new Date(dateStr);
-    return date.toLocaleDateString("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     });
   };
 
   // Handle export as image
   const handleExport = async () => {
     if (!heatmapRef.current) {
-      alert("Export failed: Heatmap element not found. Please try again.");
+      toast.error('Export failed: heatmap element not found. Please try again.');
       return;
     }
 
@@ -142,13 +140,13 @@ export function ActivityHeatmapCalendar({
       });
 
       if (result.success) {
-        alert(`Export successful! Heatmap saved as ${result.filename}`);
+        toast.success(`Heatmap exported as ${result.filename}`);
       } else {
-        alert(`Export failed: ${result.error || "An unknown error occurred."}`);
+        toast.error(`Export failed: ${result.error || 'An unknown error occurred.'}`);
       }
     } catch (error) {
-      alert(
-        `Export failed: ${error instanceof Error ? error.message : "An unknown error occurred."}`
+      toast.error(
+        `Export failed: ${error instanceof Error ? error.message : 'An unknown error occurred.'}`
       );
     } finally {
       setIsExporting(false);
@@ -159,7 +157,7 @@ export function ActivityHeatmapCalendar({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className={className}
     >
       <Card>
@@ -169,8 +167,7 @@ export function ActivityHeatmapCalendar({
             <h3 className={TYPOGRAPHY.h3.standard}>Activity Heatmap</h3>
             <div className="flex items-center gap-3">
               <Badge variant="secondary" className="text-xs">
-                {stats.totalActivities.toLocaleString()} activities in{" "}
-                {monthsToShow} months
+                {stats.totalActivities.toLocaleString()} activities in {monthsToShow} months
               </Badge>
               <Button
                 variant="outline"
@@ -180,7 +177,7 @@ export function ActivityHeatmapCalendar({
                 className="gap-3"
               >
                 <Download className="h-4 w-4" />
-                {isExporting ? "Exporting..." : "Export PNG"}
+                {isExporting ? 'Exporting...' : 'Export PNG'}
               </Button>
             </div>
           </div>
@@ -191,41 +188,27 @@ export function ActivityHeatmapCalendar({
             <motion.div
               className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors"
               whileHover={{ y: -2 }}
-              transition={{ type: "spring", stiffness: 300 }}
+              transition={{ type: 'spring', stiffness: 300 }}
             >
               <div className="flex items-center gap-2 mb-1">
-                <Calendar
-                  className="w-4 h-4 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <span className="text-xs text-muted-foreground">
-                  Active Days
-                </span>
+                <Calendar className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                <span className="text-xs text-muted-foreground">Active Days</span>
               </div>
               <div className={TYPOGRAPHY.display.stat}>{stats.activeDays}</div>
-              <div className="text-xs text-muted-foreground">
-                of {heatmapData.length} days
-              </div>
+              <div className="text-xs text-muted-foreground">of {heatmapData.length} days</div>
             </motion.div>
 
             {/* Current Streak */}
             <motion.div
               className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors"
               whileHover={{ y: -2 }}
-              transition={{ type: "spring", stiffness: 300 }}
+              transition={{ type: 'spring', stiffness: 300 }}
             >
               <div className="flex items-center gap-2 mb-1">
-                <Zap
-                  className="w-4 h-4 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <span className="text-xs text-muted-foreground">
-                  Current Streak
-                </span>
+                <Zap className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                <span className="text-xs text-muted-foreground">Current Streak</span>
               </div>
-              <div className={TYPOGRAPHY.display.stat}>
-                {stats.currentStreak}
-              </div>
+              <div className={TYPOGRAPHY.display.stat}>{stats.currentStreak}</div>
               <div className="text-xs text-muted-foreground">days</div>
             </motion.div>
 
@@ -233,20 +216,13 @@ export function ActivityHeatmapCalendar({
             <motion.div
               className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors"
               whileHover={{ y: -2 }}
-              transition={{ type: "spring", stiffness: 300 }}
+              transition={{ type: 'spring', stiffness: 300 }}
             >
               <div className="flex items-center gap-2 mb-1">
-                <TrendingUp
-                  className="w-4 h-4 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <span className="text-xs text-muted-foreground">
-                  Best Streak
-                </span>
+                <TrendingUp className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                <span className="text-xs text-muted-foreground">Best Streak</span>
               </div>
-              <div className={TYPOGRAPHY.display.stat}>
-                {stats.longestStreak}
-              </div>
+              <div className={TYPOGRAPHY.display.stat}>{stats.longestStreak}</div>
               <div className="text-xs text-muted-foreground">days</div>
             </motion.div>
 
@@ -254,20 +230,13 @@ export function ActivityHeatmapCalendar({
             <motion.div
               className="bg-muted/50 rounded-lg p-3 border border-border hover:border-primary/50 transition-colors"
               whileHover={{ y: -2 }}
-              transition={{ type: "spring", stiffness: 300 }}
+              transition={{ type: 'spring', stiffness: 300 }}
             >
               <div className="flex items-center gap-2 mb-1">
-                <Target
-                  className="w-4 h-4 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <span className="text-xs text-muted-foreground">
-                  Busiest Day
-                </span>
+                <Target className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                <span className="text-xs text-muted-foreground">Busiest Day</span>
               </div>
-              <div className={TYPOGRAPHY.display.stat}>
-                {stats.busiestDay?.count || 0}
-              </div>
+              <div className={TYPOGRAPHY.display.stat}>{stats.busiestDay?.count || 0}</div>
               <div className="text-xs text-muted-foreground">activities</div>
             </motion.div>
           </div>
@@ -282,11 +251,11 @@ export function ActivityHeatmapCalendar({
             >
               <Target className="h-4 w-4 shrink-0" />
               <span>
-                Most active:{" "}
+                Most active:{' '}
                 <span className="font-medium text-foreground">
                   {formatTooltipDate(stats.busiestDay.date)}
-                </span>{" "}
-                with{" "}
+                </span>{' '}
+                with{' '}
                 <span className="font-medium text-foreground">
                   {stats.busiestDay.count} activities
                 </span>
@@ -302,31 +271,31 @@ export function ActivityHeatmapCalendar({
                 endDate={endDate}
                 values={heatmapData}
                 classForValue={(value) => {
-                  if (!value) return "color-empty";
+                  if (!value) return 'color-empty';
                   return getHeatmapColorClass(value.count);
                 }}
                 titleForValue={(value) => {
                   if (!value || value.count === 0) {
-                    return `No activities on ${formatTooltipDate(value?.date || "")}`;
+                    return `No activities on ${formatTooltipDate(value?.date || '')}`;
                   }
-                  return `${value.count} ${value.count === 1 ? "activity" : "activities"} on ${formatTooltipDate(value.date)}\nTop sources: ${value.topSources.join(", ")}`;
+                  return `${value.count} ${value.count === 1 ? 'activity' : 'activities'} on ${formatTooltipDate(value.date)}\nTop sources: ${value.topSources.join(', ')}`;
                 }}
                 onClick={handleDateClick}
                 showWeekdayLabels={false}
                 showMonthLabels={true}
                 monthLabels={[
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
+                  'Jan',
+                  'Feb',
+                  'Mar',
+                  'Apr',
+                  'May',
+                  'Jun',
+                  'Jul',
+                  'Aug',
+                  'Sep',
+                  'Oct',
+                  'Nov',
+                  'Dec',
                 ]}
                 showOutOfRangeDays={true}
                 gutterSize={4}
@@ -340,27 +309,27 @@ export function ActivityHeatmapCalendar({
                 <motion.div
                   className="w-2.5 h-2.5 rounded-sm bg-muted border border-border"
                   whileHover={{ scale: 1.2 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                 />
                 <motion.div
                   className="w-2.5 h-2.5 rounded-sm border border-border bg-[oklch(0.75_0_0)] dark:bg-[oklch(0.35_0_0)]"
                   whileHover={{ scale: 1.2 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                 />
                 <motion.div
                   className="w-2.5 h-2.5 rounded-sm border border-border bg-[oklch(0.58_0_0)] dark:bg-[oklch(0.48_0_0)]"
                   whileHover={{ scale: 1.2 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                 />
                 <motion.div
                   className="w-2.5 h-2.5 rounded-sm border border-border bg-[oklch(0.45_0_0)] dark:bg-[oklch(0.60_0_0)]"
                   whileHover={{ scale: 1.2 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                 />
                 <motion.div
                   className="w-2.5 h-2.5 rounded-sm border border-border bg-[oklch(0.32_0_0)] dark:bg-[oklch(0.72_0_0)]"
                   whileHover={{ scale: 1.2 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                 />
               </div>
               <span>More</span>
