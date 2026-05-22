@@ -170,7 +170,7 @@ describe('POST /api/contact - BotID Integration', () => {
       vi.unstubAllEnvs();
     });
 
-    it.skip('should call BotID check and block if BotID identifies a bot (TEMPORARILY DISABLED)', async () => {
+    it('should call BotID check and block if BotID identifies a bot', async () => {
       const callOrder: string[] = [];
 
       vi.mocked(checkBotId).mockImplementation(async () => {
@@ -208,7 +208,7 @@ describe('POST /api/contact - BotID Integration', () => {
       expect(checkBotId).toHaveBeenCalled();
     });
 
-    it.skip('should allow legitimate requests when BotID identifies human (TEMPORARILY DISABLED)', async () => {
+    it('should allow legitimate requests when BotID identifies human', async () => {
       const callOrder: string[] = [];
 
       vi.mocked(checkBotId).mockImplementation(async () => {
