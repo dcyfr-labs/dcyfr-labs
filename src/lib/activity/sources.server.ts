@@ -13,6 +13,7 @@ import type { ActivityItem, ActivitySource, ActivityVerb } from './types';
 import type { CredlyBadgesResponse } from '@/types/credly';
 import { getMultiplePostViews, getMultiplePostViewsInRange } from '@/lib/views.server';
 import { getPostCommentsBulk } from '@/lib/comments';
+import { getPostSharesBulk } from '@/lib/shares';
 import { getActivityReactionsBulk, mapGiscusReactionsToLikes } from '@/lib/giscus-reactions';
 import { redis } from '@/lib/redis-client';
 import { calculateTrendingStatus, type EngagementMetrics } from './trending';
@@ -84,7 +85,6 @@ export async function transformPostsWithViews(posts: Post[]): Promise<ActivityIt
       views: weeklyViews,
       likes: likes || 0,
       comments: comments || 0,
-      readingCompletion: 0, // TODO: Implement reading completion tracking
       periodDays: 7,
     };
 
@@ -92,7 +92,6 @@ export async function transformPostsWithViews(posts: Post[]): Promise<ActivityIt
       views: monthlyViews,
       likes: likes || 0,
       comments: comments || 0,
-      readingCompletion: 0,
       periodDays: 30,
     };
 
@@ -479,9 +478,10 @@ export async function transformHighEngagementPosts(
 
   try {
     // Fetch metrics in parallel
-    const [viewsMap, commentsMap] = await Promise.all([
+    const [viewsMap, commentsMap, sharesMap] = await Promise.all([
       getMultiplePostViews(postIds),
       getPostCommentsBulk(postSlugs),
+      getPostSharesBulk(postIds),
     ]);
 
     // Calculate engagement for each post
@@ -489,7 +489,7 @@ export async function transformHighEngagementPosts(
       .map((post) => {
         const views = viewsMap.get(post.id) || 0;
         const comments = commentsMap[post.slug] || 0;
-        const shares = 0; // TODO: Implement shares tracking
+        const shares = sharesMap[post.id] || 0;
 
         const engagementRate = calculateEngagementRate(views, shares, comments);
 

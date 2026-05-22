@@ -58,9 +58,9 @@ export interface TrendingThresholds {
  * These can be tuned based on your site's traffic patterns
  */
 export const DEFAULT_THRESHOLDS: TrendingThresholds = {
-  weeklyScore: 60,   // Trending if score >= 60 in past 7 days
-  monthlyScore: 50,  // Trending if score >= 50 in past 30 days
-  minViews: 10,      // Minimum 10 views to be eligible for trending
+  weeklyScore: 60, // Trending if score >= 60 in past 7 days
+  monthlyScore: 50, // Trending if score >= 50 in past 30 days
+  minViews: 10, // Minimum 10 views to be eligible for trending
 };
 
 /**
@@ -68,10 +68,10 @@ export const DEFAULT_THRESHOLDS: TrendingThresholds = {
  * Higher weight = more important for trending calculation
  */
 const ENGAGEMENT_WEIGHTS = {
-  views: 1,              // Base metric
-  likes: 5,              // Likes are 5x more valuable than views
-  comments: 10,          // Comments are 10x more valuable (high engagement)
-  readingCompletion: 2,  // Reading completion is 2x more valuable
+  views: 1, // Base metric
+  likes: 5, // Likes are 5x more valuable than views
+  comments: 10, // Comments are 10x more valuable (high engagement)
+  readingCompletion: 2, // Reading completion is 2x more valuable
 };
 
 // ============================================================================
@@ -86,13 +86,7 @@ const ENGAGEMENT_WEIGHTS = {
  * Normalized to 0-100 range
  */
 export function calculateEngagementScore(metrics: EngagementMetrics): number {
-  const {
-    views,
-    likes,
-    comments,
-    readingCompletion = 0,
-    periodDays,
-  } = metrics;
+  const { views, likes, comments, readingCompletion = 0, periodDays } = metrics;
 
   // Calculate weighted score
   const rawScore =
@@ -129,14 +123,10 @@ export function calculateTrendingStatus(
 
   // Determine trending status based on time period
   const isWeeklyTrending =
-    hasMinViews &&
-    metrics.periodDays <= 7 &&
-    score >= thresholds.weeklyScore;
+    hasMinViews && metrics.periodDays <= 7 && score >= thresholds.weeklyScore;
 
   const isMonthlyTrending =
-    hasMinViews &&
-    metrics.periodDays <= 30 &&
-    score >= thresholds.monthlyScore;
+    hasMinViews && metrics.periodDays <= 30 && score >= thresholds.monthlyScore;
 
   return {
     isWeeklyTrending,
@@ -151,77 +141,10 @@ export function calculateTrendingStatus(
  */
 export function getTrendingBadgeLabel(status: TrendingStatus): string | null {
   if (status.isWeeklyTrending) {
-    return "🔥 Trending this week";
+    return '🔥 Trending this week';
   }
   if (status.isMonthlyTrending) {
-    return "📈 Trending this month";
+    return '📈 Trending this month';
   }
   return null;
-}
-
-// ============================================================================
-// UTILITY FUNCTIONS
-// ============================================================================
-
-/**
- * Aggregate metrics from multiple sources
- * (Placeholder - will be connected to real data sources)
- */
-export async function getEngagementMetrics(
-  activityId: string,
-  periodDays: number
-): Promise<EngagementMetrics> {
-  // TODO: Implement real metric aggregation from:
-  // - View tracking (Vercel Analytics, Redis)
-  // - Like counts (localStorage → server)
-  // - Comment counts (Giscus API)
-  // - Reading completion (Analytics)
-
-  // For now, return simulated metrics
-  // This will be replaced with actual data fetching
-  return {
-    views: 0,
-    likes: 0,
-    comments: 0,
-    readingCompletion: 0,
-    periodDays,
-  };
-}
-
-/**
- * Check if activity should show trending badge
- * (Convenience function for UI components)
- */
-export async function shouldShowTrendingBadge(
-  activityId: string,
-  options: {
-    weeklyOnly?: boolean;
-    monthlyOnly?: boolean;
-    thresholds?: TrendingThresholds;
-  } = {}
-): Promise<{ show: boolean; label: string | null }> {
-  // Get metrics for both time periods
-  const weeklyMetrics = await getEngagementMetrics(activityId, 7);
-  const monthlyMetrics = await getEngagementMetrics(activityId, 30);
-
-  const weeklyStatus = calculateTrendingStatus(weeklyMetrics, options.thresholds);
-  const monthlyStatus = calculateTrendingStatus(monthlyMetrics, options.thresholds);
-
-  // Determine which status to show
-  let status: TrendingStatus;
-  if (options.weeklyOnly) {
-    status = weeklyStatus;
-  } else if (options.monthlyOnly) {
-    status = monthlyStatus;
-  } else {
-    // Prefer weekly over monthly (more recent = more relevant)
-    status = weeklyStatus.isWeeklyTrending ? weeklyStatus : monthlyStatus;
-  }
-
-  const label = getTrendingBadgeLabel(status);
-
-  return {
-    show: status.isWeeklyTrending || status.isMonthlyTrending,
-    label,
-  };
 }
