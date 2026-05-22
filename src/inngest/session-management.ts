@@ -1,5 +1,6 @@
 import { inngest } from '@/inngest/client';
 import { SecureSessionManager } from '@/lib/secure-session-manager';
+import { createServerLogger } from '@/lib/axiom/server-logger';
 
 /**
  * Session Cleanup Background Jobs
@@ -7,6 +8,9 @@ import { SecureSessionManager } from '@/lib/secure-session-manager';
  * Automated session management tasks for maintaining Redis session storage.
  * Runs cleanup, monitoring, and security tasks across all environments.
  */
+
+// Structured logger — console in dev/CI, Axiom when AXIOM_TOKEN is set.
+const logger = createServerLogger();
 
 /**
  * Daily session cleanup job
@@ -106,21 +110,20 @@ export const sessionMonitoring = inngest.createFunction(
       return alerts;
     });
 
-    // Log monitoring results
+    // Emit monitoring stats + alerts as structured events. Axiom monitors
+    // can alert on `session.monitoring.alert` — that is the alerting hook.
     await step.run('log-monitoring-results', async () => {
-      console.warn('📊 Session monitoring stats:', {
-        timestamp: new Date().toISOString(),
+      logger.info('session.monitoring.stats', {
         ...stats,
+        alertCount: alerts.length,
       });
 
-      if (alerts.length > 0) {
-        console.warn('⚠️ Session alerts:', alerts);
-
-        // In production, send alerts to monitoring system
-        if (process.env.NODE_ENV === 'production') {
-          // TODO: Integrate with your monitoring/alerting system
-          console.warn('🚨 Production alerts would be sent to monitoring system');
-        }
+      for (const alert of alerts) {
+        logger.warn('session.monitoring.alert', {
+          type: alert.type,
+          message: alert.message,
+          severity: alert.severity,
+        });
       }
     });
 
@@ -153,12 +156,12 @@ export const revokeUserSessions = inngest.createFunction(
     });
 
     await step.run('log-revocation', async () => {
-      console.warn(`✅ Revoked ${result.revoked} sessions for user ${userId}`);
-
-      // TODO: In production, log to audit trail
-      if (process.env.NODE_ENV === 'production') {
-        console.warn('📝 Session revocation logged to audit trail');
-      }
+      // Structured audit-trail event — retained and queryable in Axiom.
+      logger.info('audit.session.revoked', {
+        userId,
+        reason,
+        revokedSessions: result.revoked,
+      });
     });
 
     return {
@@ -263,17 +266,13 @@ export const emergencySessionLockdown = inngest.createFunction(
     });
 
     await step.run('log-emergency-action', async () => {
-      console.warn('🚨 EMERGENCY LOCKDOWN COMPLETED', {
-        timestamp: new Date().toISOString(),
+      // error-level structured event — this IS the critical security alert;
+      // Axiom error monitors page on `security.session.emergency_lockdown`.
+      logger.error('security.session.emergency_lockdown', {
         reason,
         initiatedBy,
         sessionsDestroyed: result.destroyed,
       });
-
-      // TODO: In production, send critical alert
-      if (process.env.NODE_ENV === 'production') {
-        console.warn('🚨 CRITICAL: Emergency lockdown alert sent to security team');
-      }
     });
 
     return {
