@@ -4,7 +4,7 @@ import { useMemo, useState, useRef } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import { motion } from 'framer-motion';
 import { Calendar, TrendingUp, Zap, Target, Download } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
