@@ -13,14 +13,11 @@
  */
 
 import { devLogger, setupHangDetection } from './dev-logger';
-// TODO: redis-debug is deprecated, remove this import
-// import { setupRedisMonitoring, redisManager } from './redis-debug';
 
 const isDev = process.env.NODE_ENV === 'development';
 
 let initialized = false;
 let hangDetectionInterval: NodeJS.Timeout | null = null;
-let redisMonitorInterval: NodeJS.Timeout | null = null;
 
 /**
  * Initialize development debugging tools
@@ -85,7 +82,7 @@ function setupProcessHandlers() {
   });
 
   // Graceful shutdown handlers
-  const shutdown = async (signal: string) => {
+  const shutdown = (signal: string) => {
     devLogger.info(`Received ${signal} signal, cleaning up...`);
 
     // Clear intervals
@@ -94,22 +91,8 @@ function setupProcessHandlers() {
       hangDetectionInterval = null;
     }
 
-    if (redisMonitorInterval) {
-      clearInterval(redisMonitorInterval);
-      redisMonitorInterval = null;
-    }
-
     // Log pending operations
     devLogger.logPendingOperations();
-
-    // TODO: Redis disconnection deprecated with Upstash (REST API, no connections)
-    // Disconnect Redis clients
-    // try {
-    //   await redisManager.disconnectAll();
-    //   devLogger.info('✓ All Redis connections closed');
-    // } catch (error) {
-    //   devLogger.error('Error closing Redis connections', { error });
-    // }
 
     devLogger.info('Cleanup complete');
     process.exit(0);
@@ -154,11 +137,6 @@ export function cleanupDevTools() {
   if (hangDetectionInterval) {
     clearInterval(hangDetectionInterval);
     hangDetectionInterval = null;
-  }
-
-  if (redisMonitorInterval) {
-    clearInterval(redisMonitorInterval);
-    redisMonitorInterval = null;
   }
 
   initialized = false;
