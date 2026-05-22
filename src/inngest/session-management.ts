@@ -249,16 +249,16 @@ export const emergencySessionLockdown = inngest.createFunction(
     const result = await step.run('destroy-all-sessions', async () => {
       const stats = await SecureSessionManager.getSessionStats();
 
-      // Force cleanup of ALL sessions (including active ones)
-      const cleanup = await SecureSessionManager.cleanupExpiredSessions();
+      // Destroy every session, active ones included. A breach response must
+      // invalidate live sessions — cleanupExpiredSessions() would spare exactly
+      // the sessions an attacker is riding.
+      const lockdown = await SecureSessionManager.destroyAllSessions();
 
-      // TODO: In a real emergency, you might want to clear ALL Redis session keys
-      // This would require additional SecureSessionManager method
-      console.warn(`🔥 Emergency cleanup: ${cleanup.cleaned} sessions destroyed`);
+      console.warn(`🔥 Emergency lockdown: ${lockdown.destroyed} sessions destroyed`);
 
       return {
         beforeLockdown: stats,
-        destroyed: cleanup.cleaned,
+        destroyed: lockdown.destroyed,
       };
     });
 

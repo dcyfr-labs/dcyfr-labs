@@ -500,4 +500,31 @@ export class SecureSessionManager {
       return { revoked: 0 };
     }
   }
+
+  /**
+   * Destroy every session unconditionally — active, expired, and corrupted alike.
+   *
+   * Intended for emergency security lockdown after a breach: every session must
+   * be invalidated so all users are forced to re-authenticate. Unlike
+   * cleanupExpiredSessions(), this does NOT spare active sessions — sparing them
+   * would leave an attacker's hijacked session alive.
+   */
+  static async destroyAllSessions(): Promise<{ destroyed: number }> {
+    if (!redis) return { destroyed: 0 };
+
+    try {
+      const keys = await redis.keys(`${this.SESSION_PREFIX}*`);
+      let destroyed = 0;
+
+      for (const key of keys) {
+        destroyed += await redis.del(key);
+      }
+
+      console.warn(`🔥 Emergency lockdown: destroyed ALL ${destroyed} sessions`);
+      return { destroyed };
+    } catch (error) {
+      console.error('Error destroying all sessions:', error);
+      return { destroyed: 0 };
+    }
+  }
 }
