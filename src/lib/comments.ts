@@ -201,8 +201,7 @@ export async function getPostCommentsBulk(slugs: string[]): Promise<Record<strin
  * @returns Map of slug to 24h comment count (currently returns 0)
  */
 export async function getPostComments24hBulk(slugs: string[]): Promise<Record<string, number>> {
-  // Simplified: return 0 for all posts
-  // TODO: Implement actual 24h filtering if needed
+  // Simplified: returns 0 for all posts — see the JSDoc above for why.
   return slugs.reduce(
     (acc, slug) => {
       acc[slug] = 0;

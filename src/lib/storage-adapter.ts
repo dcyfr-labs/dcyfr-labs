@@ -49,7 +49,7 @@ export interface StorageAdapter<T = any> {
 export class LocalStorageAdapter implements StorageAdapter {
   private prefix: string;
 
-  constructor(prefix: string = "dcyfr:") {
+  constructor(prefix: string = 'dcyfr:') {
     this.prefix = prefix;
   }
 
@@ -58,7 +58,7 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   async get<T = any>(key: string): Promise<T | null> {
-    if (typeof window === "undefined") return null;
+    if (typeof window === 'undefined') return null;
 
     try {
       const item = localStorage.getItem(this.getFullKey(key));
@@ -70,7 +70,7 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   async set<T = any>(key: string, value: T): Promise<void> {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     try {
       localStorage.setItem(this.getFullKey(key), JSON.stringify(value));
@@ -80,7 +80,7 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   async remove(key: string): Promise<void> {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     try {
       localStorage.removeItem(this.getFullKey(key));
@@ -90,7 +90,7 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   async has(key: string): Promise<boolean> {
-    if (typeof window === "undefined") return false;
+    if (typeof window === 'undefined') return false;
 
     try {
       return localStorage.getItem(this.getFullKey(key)) !== null;
@@ -101,7 +101,7 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
 
   async clear(): Promise<void> {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     try {
       // Only clear items with our prefix
@@ -112,34 +112,32 @@ export class LocalStorageAdapter implements StorageAdapter {
         }
       });
     } catch (error) {
-      console.error("[LocalStorageAdapter] Failed to clear:", error);
+      console.error('[LocalStorageAdapter] Failed to clear:', error);
     }
   }
 
   async keys(): Promise<string[]> {
-    if (typeof window === "undefined") return [];
+    if (typeof window === 'undefined') return [];
 
     try {
       const allKeys = Object.keys(localStorage);
       return allKeys
         .filter((key) => key.startsWith(this.prefix))
-        .map((key) => key.replace(this.prefix, ""));
+        .map((key) => key.replace(this.prefix, ''));
     } catch (error) {
-      console.error("[LocalStorageAdapter] Failed to get keys:", error);
+      console.error('[LocalStorageAdapter] Failed to get keys:', error);
       return [];
     }
   }
 }
 
 // ============================================================================
-// API STORAGE ADAPTER (FUTURE IMPLEMENTATION)
+// API STORAGE ADAPTER (SERVER-BACKED)
 // ============================================================================
 
 /**
- * API storage adapter for server-backed persistence
- * Used for authenticated users with OAuth
- *
- * TODO: Implement when OAuth is ready
+ * API storage adapter for server-backed persistence.
+ * Returned by createStorageAdapter() once an OAuth auth token is available.
  *
  * Features:
  * - Server-side persistence
@@ -156,14 +154,14 @@ export class ApiStorageAdapter implements StorageAdapter {
   private apiBaseUrl: string;
   private authToken?: string;
 
-  constructor(apiBaseUrl: string = "/api/user/engagement", authToken?: string) {
+  constructor(apiBaseUrl: string = '/api/user/engagement', authToken?: string) {
     this.apiBaseUrl = apiBaseUrl;
     this.authToken = authToken;
   }
 
   private async fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
     const headers: HeadersInit = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...(this.authToken && { Authorization: `Bearer ${this.authToken}` }),
       ...options.headers,
     };
@@ -189,7 +187,7 @@ export class ApiStorageAdapter implements StorageAdapter {
   async set<T = any>(key: string, value: T): Promise<void> {
     try {
       const response = await this.fetchWithAuth(`${this.apiBaseUrl}/${key}`, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({ value }),
       });
       if (!response.ok) {
@@ -203,7 +201,7 @@ export class ApiStorageAdapter implements StorageAdapter {
   async remove(key: string): Promise<void> {
     try {
       const response = await this.fetchWithAuth(`${this.apiBaseUrl}/${key}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       if (!response.ok && response.status !== 404) {
         throw new Error(`HTTP ${response.status}`);
@@ -216,7 +214,7 @@ export class ApiStorageAdapter implements StorageAdapter {
   async has(key: string): Promise<boolean> {
     try {
       const response = await this.fetchWithAuth(`${this.apiBaseUrl}/${key}`, {
-        method: "HEAD",
+        method: 'HEAD',
       });
       return response.ok;
     } catch (error) {
@@ -228,13 +226,13 @@ export class ApiStorageAdapter implements StorageAdapter {
   async clear(): Promise<void> {
     try {
       const response = await this.fetchWithAuth(this.apiBaseUrl, {
-        method: "DELETE",
+        method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
     } catch (error) {
-      console.error("[ApiStorageAdapter] Failed to clear:", error);
+      console.error('[ApiStorageAdapter] Failed to clear:', error);
     }
   }
 
@@ -247,7 +245,7 @@ export class ApiStorageAdapter implements StorageAdapter {
       const data = await response.json();
       return data.keys || [];
     } catch (error) {
-      console.error("[ApiStorageAdapter] Failed to get keys:", error);
+      console.error('[ApiStorageAdapter] Failed to get keys:', error);
       return [];
     }
   }
@@ -276,7 +274,7 @@ export function createStorageAdapter(
 ): StorageAdapter {
   // Use API storage for authenticated users with valid token
   if (isAuthenticated && authToken) {
-    return new ApiStorageAdapter("/api/user/engagement", authToken);
+    return new ApiStorageAdapter('/api/user/engagement', authToken);
   }
 
   // Fallback to localStorage for unauthenticated users
