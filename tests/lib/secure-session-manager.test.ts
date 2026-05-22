@@ -30,6 +30,23 @@ vi.mock('crypto', async () => {
   };
 });
 
+// SecureSessionManager instantiates @upstash/redis directly; mock the Redis
+// constructor so the Redis-backed methods can be exercised without a live
+// server. A plain function (not an arrow) is used so `new Redis()` works.
+const upstashRedisMock = {
+  get: vi.fn(),
+  set: vi.fn(),
+  setex: vi.fn(),
+  del: vi.fn(),
+  keys: vi.fn(),
+};
+function MockUpstashRedis() {
+  return upstashRedisMock;
+}
+vi.mock('@upstash/redis', () => ({
+  Redis: MockUpstashRedis,
+}));
+
 describe('SecureSessionManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -103,6 +120,47 @@ describe('SecureSessionManager', () => {
       expect(() => (SSM as any).getEncryptionKey()).toThrow(
         'SESSION_ENCRYPTION_KEY not configured'
       );
+    });
+  });
+
+  describe('destroyAllSessions', () => {
+    it('deletes every session key unconditionally, without decrypting any', async () => {
+      const SSM = await getManager();
+      upstashRedisMock.keys.mockResolvedValue([
+        'session:active-1',
+        'session:active-2',
+        'session:expired-1',
+      ]);
+      upstashRedisMock.del.mockResolvedValue(1);
+
+      const result = await SSM.destroyAllSessions();
+
+      expect(result.destroyed).toBe(3);
+      // The emergency path must not spare active sessions — it deletes keys
+      // without ever reading or decrypting them.
+      expect(upstashRedisMock.get).not.toHaveBeenCalled();
+      expect(upstashRedisMock.del.mock.calls.flat()).toEqual([
+        'session:active-1',
+        'session:active-2',
+        'session:expired-1',
+      ]);
+    });
+
+    it('returns zero and issues no delete when there are no sessions', async () => {
+      const SSM = await getManager();
+      upstashRedisMock.keys.mockResolvedValue([]);
+
+      const result = await SSM.destroyAllSessions();
+
+      expect(result.destroyed).toBe(0);
+      expect(upstashRedisMock.del).not.toHaveBeenCalled();
+    });
+
+    it('returns zero instead of throwing when Redis is unavailable', async () => {
+      const SSM = await getManager();
+      upstashRedisMock.keys.mockRejectedValue(new Error('redis unavailable'));
+
+      await expect(SSM.destroyAllSessions()).resolves.toEqual({ destroyed: 0 });
     });
   });
 });
