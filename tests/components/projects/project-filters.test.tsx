@@ -40,27 +40,6 @@ vi.mock('@/components/common/filters', async () => {
         placeholder={placeholder}
       />
     ),
-    FilterSelect: ({
-      value,
-      onChange,
-      options,
-    }: {
-      value: string;
-      onChange: (v: string) => void;
-      options: { value: string; label: string }[];
-    }) => (
-      <select
-        data-testid={`select-${value}`}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    ),
     FilterBadges: ({
       items,
       selected,
@@ -135,15 +114,20 @@ describe('ProjectFilters Component', () => {
       expect(screen.getByTestId('search-input')).toBeInTheDocument();
     });
 
-    // Status and sort filters are temporarily disabled
-    it.skip('should render status filter', () => {
+    it('should render status filter badges', () => {
       render(<ProjectFilters {...defaultProps} />);
-      expect(screen.getByTestId('select-all')).toBeInTheDocument();
+      expandFilters();
+      expect(screen.getByTestId('badge-active')).toBeInTheDocument();
+      expect(screen.getByTestId('badge-in-progress')).toBeInTheDocument();
+      expect(screen.getByTestId('badge-archived')).toBeInTheDocument();
     });
 
-    it.skip('should render sort filter', () => {
+    it('should render sort filter badges', () => {
       render(<ProjectFilters {...defaultProps} />);
-      expect(screen.getByTestId('select-newest')).toBeInTheDocument();
+      expandFilters();
+      expect(screen.getByTestId('badge-newest')).toBeInTheDocument();
+      expect(screen.getByTestId('badge-oldest')).toBeInTheDocument();
+      expect(screen.getByTestId('badge-alpha')).toBeInTheDocument();
     });
 
     it('should render technology tags as badges', () => {
@@ -224,33 +208,32 @@ describe('ProjectFilters Component', () => {
     });
   });
 
-  // Status and sort filters are temporarily disabled
-  describe.skip('Status Filter', () => {
-    it('should display current status', () => {
-      render(<ProjectFilters {...defaultProps} />);
-      const select = screen.getByTestId('select-active') as HTMLSelectElement;
-      expect(select.value).toBe('active');
+  describe('Status Filter', () => {
+    it('should mark the current status badge as selected', () => {
+      render(<ProjectFilters {...defaultProps} status="active" />);
+      expandFilters();
+      expect(screen.getByTestId('badge-active')).toHaveAttribute('data-selected', 'true');
     });
 
-    it('should handle status change', () => {
+    it('should handle status change on badge click', () => {
       render(<ProjectFilters {...defaultProps} />);
-      const select = screen.getByTestId('select-all');
-      fireEvent.change(select, { target: { value: 'in-progress' } });
+      expandFilters();
+      fireEvent.click(screen.getByTestId('badge-in-progress'));
       expect(mockPush).toHaveBeenCalled();
     });
   });
 
-  describe.skip('Sort Filter', () => {
-    it('should display current sort option', () => {
+  describe('Sort Filter', () => {
+    it('should mark the current sort badge as selected', () => {
       render(<ProjectFilters {...defaultProps} sortBy="oldest" />);
-      const select = screen.getByTestId('select-oldest') as HTMLSelectElement;
-      expect(select.value).toBe('oldest');
+      expandFilters();
+      expect(screen.getByTestId('badge-oldest')).toHaveAttribute('data-selected', 'true');
     });
 
-    it('should handle sort change', () => {
+    it('should handle sort change on badge click', () => {
       render(<ProjectFilters {...defaultProps} />);
-      const select = screen.getByTestId('select-newest');
-      fireEvent.change(select, { target: { value: 'alpha' } });
+      expandFilters();
+      fireEvent.click(screen.getByTestId('badge-alpha'));
       expect(mockPush).toHaveBeenCalled();
     });
   });
