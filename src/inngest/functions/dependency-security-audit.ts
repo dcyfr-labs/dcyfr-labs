@@ -8,6 +8,7 @@
  */
 
 import { inngest } from '../client';
+import { persistDependencyAudit, type DependencyAuditSnapshot } from '@/lib/maintenance-audit';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
@@ -149,17 +150,18 @@ export const auditDependencies = inngest.createFunction(
       });
     }
 
-    // Step 4: Track metrics
-    await step.run('track-metrics', async () => {
-      // TODO: Future enhancement - Store audit results in Redis
-      // TODO: Future enhancement - Track vulnerability trends over time
-      // TODO: Future enhancement - Dashboard visualization
-
-      return {
+    // Step 4: Persist the audit snapshot for the maintenance dashboard
+    await step.run('persist-audit-snapshot', async () => {
+      const snapshot: DependencyAuditSnapshot = {
         timestamp: new Date().toISOString(),
         branch,
         vulnerabilities: auditResult.vulnerabilities,
+        totalDependencies: auditResult.metadata.totalDependencies,
       };
+
+      await persistDependencyAudit(snapshot);
+
+      return snapshot;
     });
 
     return {

@@ -6,11 +6,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { blockExternalAccess } from '@/lib/api/api-security';
 import { redis } from '@/lib/redis-client';
+import { getDependencyAudit, getDesignTokenAudit } from '@/lib/maintenance-audit';
 import type { WeeklyMetrics } from '@/types/maintenance';
 
 /**
- * Generate mock 52-week trend data
- * TODO: Replace with real data from Redis once Inngest aggregation is implemented
+ * Generate mock 52-week trend data.
+ *
+ * The 52-week trend needs weekly history for test pass-rate, coverage, and
+ * cleanup metrics — pipelines that do not record that history yet. Current-period
+ * security metrics are real (see the `current` branch); this long-range trend
+ * stays mock until those weekly sources exist.
  */
 function generateMockTrendData(): WeeklyMetrics[] {
   const weeks: WeeklyMetrics[] = [];
@@ -99,7 +104,19 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Current metrics
+    // Current metrics.
+    //
+    // Security fields are real — sourced from the dependency-security and
+    // design-token Inngest audits via the maintenance-audit store. The
+    // remaining fields are placeholders awaiting their own pipelines (test
+    // runs, coverage reports, Dependabot/codebase scans). The `audits` block
+    // carries provenance so a consumer can tell a real value (with a lastRun
+    // timestamp) from a fallback zero.
+    const [dependencyAudit, designTokenAudit] = await Promise.all([
+      getDependencyAudit(),
+      getDesignTokenAudit(),
+    ]);
+
     const currentMetrics = {
       weekly: {
         testPassRate: 99.0,
@@ -109,16 +126,16 @@ export async function GET(request: NextRequest) {
         sentryErrors: 0,
       },
       monthly: {
-        criticalVulns: 0,
-        highVulns: 0,
-        mediumVulns: 0,
+        criticalVulns: dependencyAudit?.vulnerabilities.critical ?? 0,
+        highVulns: dependencyAudit?.vulnerabilities.high ?? 0,
+        mediumVulns: dependencyAudit?.vulnerabilities.moderate ?? 0,
         openDependabotPRs: 3,
         unusedExports: 12,
         largeFiles: 4,
         todoComments: 18,
       },
       content: {
-        validationErrors: 0,
+        validationErrors: designTokenAudit?.violationsTotal ?? 0,
         draftPosts: 2,
         seoWarnings: 1,
       },
@@ -126,6 +143,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       metrics: currentMetrics,
+      audits: {
+        dependencies: dependencyAudit ? { lastRun: dependencyAudit.timestamp } : null,
+        designTokens: designTokenAudit ? { lastRun: designTokenAudit.timestamp } : null,
+      },
       timestamp: new Date().toISOString(),
     });
   } catch (error) {

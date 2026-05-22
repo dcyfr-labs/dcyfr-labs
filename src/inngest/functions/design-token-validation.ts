@@ -9,6 +9,7 @@
  */
 
 import { inngest } from '../client';
+import { persistDesignTokenAudit, type DesignTokenAuditSnapshot } from '@/lib/maintenance-audit';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { validateDesignTokens as validateTokensCompat } from '@/lib/ai-compat.server';
@@ -55,6 +56,19 @@ function extractPattern(violation: string): string {
   if (violation.includes('BORDERS')) return 'borders';
   if (violation.includes('ANIMATION')) return 'animation';
   return 'unknown';
+}
+
+/**
+ * Tally violations by their categorized pattern.
+ */
+function countViolationsByPattern(violations: DesignTokenViolation[]): Record<string, number> {
+  return violations.reduce(
+    (acc, v) => {
+      acc[v.pattern] = (acc[v.pattern] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 }
 
 /**
@@ -115,33 +129,36 @@ export const validateDesignTokens = inngest.createFunction(
       console.warn(`[Design Tokens] Files checked: ${changedFiles.length}`);
       console.warn(`[Design Tokens] Violations found: ${violations.length}`);
 
+      const violationsByPattern = countViolationsByPattern(violations);
+
       if (violations.length > 0) {
         console.warn('[Design Tokens] Violations by pattern:');
-        const byPattern = violations.reduce(
-          (acc, v) => {
-            acc[v.pattern] = (acc[v.pattern] || 0) + 1;
-            return acc;
-          },
-          {} as Record<string, number>
-        );
-        console.warn(byPattern);
+        console.warn(violationsByPattern);
       }
 
       return {
         branch,
         filesChecked: changedFiles.length,
         violationsFound: violations.length,
-        violationsByPattern: violations.reduce(
-          (acc, v) => {
-            acc[v.pattern] = (acc[v.pattern] || 0) + 1;
-            return acc;
-          },
-          {} as Record<string, number>
-        ),
+        violationsByPattern,
       };
     });
 
-    // Step 3: Send notifications (if violations found)
+    // Step 3: Persist the audit snapshot for the maintenance dashboard
+    await step.run('persist-audit-snapshot', async () => {
+      const snapshot: DesignTokenAuditSnapshot = {
+        timestamp: new Date().toISOString(),
+        branch,
+        violationsTotal: violations.length,
+        violationsByPattern: countViolationsByPattern(violations),
+      };
+
+      await persistDesignTokenAudit(snapshot);
+
+      return snapshot;
+    });
+
+    // Step 4: Send notifications (if violations found)
     if (violations.length > 0) {
       await step.run('notify-violations', async () => {
         // TODO: Future enhancement - Post GitHub PR comment with violations
