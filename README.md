@@ -1,8 +1,9 @@
-# dcyfr-labs
-
-Personal site, blog, and project portfolio for Drew at [dcyfr.ai](https://www.dcyfr.ai).
-
-Built with **Next.js 16** (App Router), **React 19**, **TypeScript**, **Tailwind v4**, **shadcn/ui**, and **MDX**.
+<div align="center">
+  <img src="./public/images/dcyfr-avatar.svg" alt="DCYFR Logo" width="120" height="120" />
+  <h1>dcyfr-labs</h1>
+  <p>Personal site, blog, and project portfolio for Drew at <a href="https://www.dcyfr.ai">dcyfr.ai</a>.</p>
+  <p>Built with <strong>Next.js 16</strong> (App Router), <strong>React 19</strong>, <strong>TypeScript</strong>, <strong>Tailwind v4</strong>, <strong>shadcn/ui</strong>, and <strong>MDX</strong>.</p>
+</div>
 
 [![deploy](https://img.shields.io/badge/deploy-vercel-black?logo=vercel)](https://www.dcyfr.ai)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
@@ -65,6 +66,15 @@ This repo is operated by three distinct classes of automation: **bots**, **assis
 - **Agents** (Claude Code sub-agents) read [`AGENTS.md`](./AGENTS.md).
 
 The definitions, axes, and read/write/needs contract for each class live in [`docs/automation-glossary.md`](./docs/automation-glossary.md). Start there if you're wiring new automation against this repo.
+
+<div align="center">
+  <p><strong>📊 Architecture Diagrams</strong></p>
+  <p>
+    <a href="./public/diagrams/api-architecture-v1.html">API Architecture</a> •
+    <a href="./public/diagrams/auth-flow-v1.html">Authentication Flow</a> •
+    <a href="./public/diagrams/feature-comparison-v1.html">Feature Comparison</a>
+  </p>
+</div>
 
 ---
 
