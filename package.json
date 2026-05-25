@@ -98,7 +98,7 @@
     "fuse.js": "^7.3.0",
     "geist": "^1.7.0",
     "glob": "^13.0.4",
-    "googleapis": "^171.4.0",
+    "googleapis": "^172.0.0",
     "gray-matter": "^4.0.3",
     "he": "^1.2.0",
     "html2canvas": "^1.4.1",
