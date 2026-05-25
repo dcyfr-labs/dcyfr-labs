@@ -96,7 +96,7 @@
     "dotenv": "^17.4.2",
     "framer-motion": "^12.39.0",
     "fuse.js": "^7.3.0",
-    "geist": "^1.7.0",
+    "geist": "^1.7.1",
     "glob": "^13.0.4",
     "googleapis": "^171.4.0",
     "gray-matter": "^4.0.3",
