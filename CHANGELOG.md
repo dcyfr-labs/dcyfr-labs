@@ -1,3 +1,49 @@
+## [2026.5.26] - 2026-05-26
+
+### Added
+
+- **session** - emit monitoring, audit, and lockdown events to Axiom (#651)
+- **maintenance** - persist Inngest audit results so the dashboard reads real data (#646)
+- **activity** - add Heatmap tab with PNG export to /activity (#641)
+- **activity** - mount embed generator + fix muted-foreground contrast (#638)
+
+### Changed
+
+- **deps** - ignore sury until stable 11.x lands (#667)
+- chore(deps)(deps): bump @tanstack/react-virtual from 3.13.24 to 3.13.26 (#665)
+- chore(deps)(deps): bump date-fns from 4.2.1 to 4.3.0 (#664)
+- chore(deps)(deps): bump @dcyfr/ai from 3.0.6 to 3.0.8 (#663)
+- chore(deps)(deps): bump googleapis from 171.4.0 to 172.0.0 (#662)
+- chore(deps)(deps): bump geist from 1.7.0 to 1.7.1 (#661)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.96.0 to 0.98.0 (#660)
+- chore(deps)(deps): bump resend from 6.12.3 to 6.12.4 in the email group (#659)
+- chore(deps)(deps): bump the content-pipeline group with 2 updates (#658)
+- chore(deps)(deps): bump framer-motion in the ui-framework group (#657)
+- chore(deps-dev)(deps-dev): bump the typescript-stack group with 2 updates (#656)
+- chore(deps-dev)(deps-dev): bump the dev-tools group with 8 updates (#655)
+- **readme** - Documentation - rebrand header + link architecture diagrams (#653)
+- **readme** - Documentation - rebrand header + link architecture diagrams (#652)
+- resolve stale-comment and dead-code TODOs (#650)
+- Testing - drop dead skipped suites, restore project-filters status/sort coverage (#649)
+- **contact** - Testing - re-enable BotID bot-block / human-allow contact tests (#647)
+- **activity** - use @/lib/toast wrapper for heatmap export feedback (#644)
+- drop inert VERCEL_AUTOMATION_BYPASS_SECRET loads (#640)
+
+### Fixed
+
+- **deps** - override transitive qs to >=6.15.2 (CVE-2026-8723) (#654)
+- **security** - emergency lockdown now destroys all sessions, not just expired (#648)
+- **activity** - wire share counts into engagement feed, drop dead trending stubs (#645)
+- **activity** - use sonner toast for heatmap export feedback (#642)
+- **a11y** - rebuild color-contrast validator, fix dark info-foreground (#639)
+- **perf+security** - CSP worker-src + Axiom keepalive + trim unused pixel fonts (#636)
+- **embed** - wire x-pathname, resilient activity feed, skip orphan heatmap tests (#635)
+- **a11y+ci** - close all 12 E2E failures hidden by sury build break (#631)
+
+---
+
+**Full Changelog**: [2026.5.25...2026.5.26](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.5.25...v2026.5.26)
+
 ## [2026.5.25] - 2026-05-25
 
 ### Added
