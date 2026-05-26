@@ -128,9 +128,12 @@ updates:
       - "dependencies"
     
     # Ignore specific packages (add as needed)
-    # ignore:
-    #   - dependency-name: "package-name"
-    #     versions: ["x.x.x"]
+    ignore:
+      # sury 11.0.0-alpha.5 broke Next.js server-component bundling via
+      # the xsschema → fastmcp → @dcyfr/ai import chain (closed dependabot
+      # PR #666). All sury 11.x releases are alpha; re-enable when a stable
+      # 11.0.0 (or 12.0.0) is published and the bundling regression is gone.
+      - dependency-name: "sury"
     
     # Auto-merge configuration (requires GitHub auto-merge enabled)
     # Workflow handles security checks - this is just a fallback for simple patches
