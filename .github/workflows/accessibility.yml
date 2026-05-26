@@ -69,7 +69,7 @@ jobs:
 
       - name: Post PR Comment (Violations Found)
         if: failure() && steps.contrast.outcome == 'failure' && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const body = [
@@ -104,7 +104,7 @@ jobs:
 
       - name: Post PR Comment (All Pass)
         if: success() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const body = [
