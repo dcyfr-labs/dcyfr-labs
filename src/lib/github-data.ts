@@ -331,8 +331,12 @@ export async function getGitHubContributions(
     // Try fallback cache
     const fallbackData = await readContributionCache(getFallbackCacheKey());
     if (fallbackData) {
-      fallbackData.warning = 'Using cached data - GitHub API temporarily unavailable';
-      logger.warn('Using fallback cache');
+      // Mark as stale so the client renders the "Last updated <date>" banner.
+      // Symptom-not-cause: previously claimed "GitHub API temporarily unavailable",
+      // which was wrong (it was a token expiry, not an API outage). Reader
+      // shouldn't diagnose — just surface freshness so users decide.
+      fallbackData.warning = 'stale';
+      logger.warn('Using fallback cache', { lastUpdated: fallbackData.lastUpdated });
       return fallbackData;
     }
   } catch (error) {
