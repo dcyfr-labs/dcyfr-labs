@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import { motion } from 'framer-motion';
+import { formatDistanceToNow, parseISO, isValid } from 'date-fns';
 import { ExternalLink, GitCommit, Calendar, Zap, TrendingUp, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { TYPOGRAPHY, SEMANTIC_COLORS, SPACING } from '@/lib/design-tokens';
@@ -93,6 +94,26 @@ function calculateActivityStats(
   };
 }
 
+/**
+ * Render the stale-data banner text for a cache-fallback response.
+ *
+ * Prefers a relative timestamp ("Last updated about 2 hours ago") sourced
+ * from `data.lastUpdated`. If lastUpdated is missing, unparseable, or in
+ * the future (clock skew), falls back to the raw warning string so
+ * empty-state messages from getEmptyState() still surface.
+ */
+function formatStaleBanner(data: ContributionResponse): string {
+  const raw = data.lastUpdated;
+  if (!raw) return data.warning ?? 'Showing cached data';
+  const parsed = parseISO(raw);
+  if (!isValid(parsed)) return data.warning ?? 'Showing cached data';
+  // Future timestamps (clock skew) shouldn't render as "in 5 minutes" — guard.
+  if (parsed.getTime() > Date.now() + 60_000) {
+    return data.warning ?? 'Showing cached data';
+  }
+  return `Last updated ${formatDistanceToNow(parsed, { addSuffix: true })}`;
+}
+
 // ============================================================================
 // COMPONENT
 // ============================================================================
@@ -140,7 +161,17 @@ export function ClientGitHubHeatmap({
         </a>
       </div>
 
-      {/* Warning Banner */}
+      {/* Stale-data Banner
+       *
+       * Shows when the server fell back to the cached snapshot. We render a
+       * symptom ("Last updated X ago") rather than diagnosing a cause — the
+       * actual root cause varies (auth expiry, GitHub outage, deploy lag) and
+       * misdiagnosis is worse than silence. The relative timestamp lets the
+       * viewer decide whether the data is trustworthy.
+       *
+       * Falls back to the raw warning string if lastUpdated is missing or
+       * unparseable, preserving the empty-state messaging path.
+       */}
       {showWarning && data.warning && (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -149,7 +180,7 @@ export function ClientGitHubHeatmap({
         >
           <p className={`text-sm ${SEMANTIC_COLORS.alert.warning.text} flex items-center gap-2`}>
             <AlertCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-            <span>{data.warning}</span>
+            <span>{formatStaleBanner(data)}</span>
           </p>
         </motion.div>
       )}

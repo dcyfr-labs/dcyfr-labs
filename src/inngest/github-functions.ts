@@ -97,7 +97,32 @@ export async function fetchGitHubContributions(): Promise<ContributionResponse |
       // Explicitly no 'warning' field for real API data
     };
   } catch (error) {
-    console.error('Failed to fetch GitHub contributions:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('Failed to fetch GitHub contributions:', message);
+
+    // Capture to Sentry so silent expiry / auth failures don't drift undetected.
+    // Born from 2026-05-27: GITHUB_TOKEN expired silently, cron returned 200 with
+    // "fetch-failed" reason for weeks before /about/drew banner surfaced it.
+    try {
+      const Sentry = await import('@sentry/nextjs');
+      Sentry.captureException(error, {
+        level: 'error',
+        tags: {
+          component: 'github-cache',
+          api: 'github-graphql',
+          source: 'fetchGitHubContributions',
+        },
+        extra: {
+          hasToken: !!GITHUB_TOKEN,
+          username: GITHUB_USERNAME,
+          // GitHub auth failures appear as "Bad credentials" in the message
+          isAuthFailure:
+            message.toLowerCase().includes('bad credentials') || message.includes('401'),
+        },
+      });
+    } catch {
+      // Sentry not available — swallow; console.error above is the floor.
+    }
     return null;
   }
 }

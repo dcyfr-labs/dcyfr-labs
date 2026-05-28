@@ -62,7 +62,7 @@ interface PinnedRepository {
  * @property {number} [totalContributions] - Total contributions in the time period
  * @property {number} [totalRepositories] - Total public repositories
  * @property {PinnedRepository[]} [pinnedRepositories] - Pinned repositories
- * @property {string} [warning] - Optional warning message (e.g., "Using cached data")
+ * @property {string} [warning] - Optional warning presence flag; client renders "Last updated <ago>" from lastUpdated when present
  * @property {string} [source] - Data source indicator ("server-cache", "api", "fallback")
  */
 interface ContributionResponse {
