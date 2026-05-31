@@ -1,11 +1,13 @@
 /**
  * Analytics Data Types
- * 
+ *
  * Shared types for analytics dashboard components.
  * Extracted from AnalyticsClient.tsx for reusability.
  */
 
 export interface PostAnalytics {
+  /** Stable post ID (post-YYYYMMDD-XXXXXXXX) — used for per-post analytics lookups. */
+  id: string;
   slug: string;
   title: string;
   summary: string;
@@ -92,14 +94,14 @@ export interface VercelAnalytics {
   topDevices: VercelDevice[] | null;
 }
 
-export type DateRange = "1" | "7" | "30" | "90" | "all";
+export type DateRange = '1' | '7' | '30' | '90' | 'all';
 
 export const DATE_RANGE_LABELS: Record<DateRange, string> = {
-  "1": "1 Day",
-  "7": "7 Days",
-  "30": "30 Days",
-  "90": "90 Days",
-  "all": "All Time",
+  '1': '1 Day',
+  '7': '7 Days',
+  '30': '30 Days',
+  '90': '90 Days',
+  all: 'All Time',
 };
 
 /**
@@ -116,44 +118,49 @@ export interface DailyData {
 /**
  * Publication date cohort filters
  */
-export type PublicationCohort = 
-  | "last-7-days"
-  | "last-30-days"
-  | "last-90-days"
-  | "this-quarter"
-  | "last-quarter"
-  | "this-year"
-  | "last-year"
-  | "all";
+export type PublicationCohort =
+  | 'last-7-days'
+  | 'last-30-days'
+  | 'last-90-days'
+  | 'this-quarter'
+  | 'last-quarter'
+  | 'this-year'
+  | 'last-year'
+  | 'all';
 
 export const PUBLICATION_COHORT_LABELS: Record<PublicationCohort, string> = {
-  "last-7-days": "Last 7 Days",
-  "last-30-days": "Last 30 Days",
-  "last-90-days": "Last 90 Days",
-  "this-quarter": "This Quarter",
-  "last-quarter": "Last Quarter",
-  "this-year": "This Year",
-  "last-year": "Last Year",
-  "all": "All Time",
+  'last-7-days': 'Last 7 Days',
+  'last-30-days': 'Last 30 Days',
+  'last-90-days': 'Last 90 Days',
+  'this-quarter': 'This Quarter',
+  'last-quarter': 'Last Quarter',
+  'this-year': 'This Year',
+  'last-year': 'Last Year',
+  all: 'All Time',
 };
 
 /**
  * Performance tier filters
  */
-export type PerformanceTierFilter = "all" | "top" | "above-average" | "below-average" | "needs-attention";
+export type PerformanceTierFilter =
+  | 'all'
+  | 'top'
+  | 'above-average'
+  | 'below-average'
+  | 'needs-attention';
 
 export const PERFORMANCE_TIER_LABELS: Record<PerformanceTierFilter, string> = {
-  "all": "All Posts",
-  "top": "Top 10%",
-  "above-average": "Above Average",
-  "below-average": "Below Average",
-  "needs-attention": "Needs Attention",
+  all: 'All Posts',
+  top: 'Top 10%',
+  'above-average': 'Above Average',
+  'below-average': 'Below Average',
+  'needs-attention': 'Needs Attention',
 };
 
 /**
  * Tag filter mode (AND vs OR logic)
  */
-export type TagFilterMode = "AND" | "OR";
+export type TagFilterMode = 'AND' | 'OR';
 
 /**
  * Filter preset configurations
@@ -174,41 +181,41 @@ export interface FilterPreset {
 
 export const DEFAULT_FILTER_PRESETS: FilterPreset[] = [
   {
-    id: "top-performers",
-    name: "Top Performers",
-    description: "Best performing posts (Top 10%)",
+    id: 'top-performers',
+    name: 'Top Performers',
+    description: 'Best performing posts (Top 10%)',
     filters: {
-      performanceTier: "top",
+      performanceTier: 'top',
       hideDrafts: true,
       hideArchived: true,
     },
   },
   {
-    id: "needs-attention",
-    name: "Needs Attention",
-    description: "Low performing posts that need optimization",
+    id: 'needs-attention',
+    name: 'Needs Attention',
+    description: 'Low performing posts that need optimization',
     filters: {
-      performanceTier: "needs-attention",
+      performanceTier: 'needs-attention',
       hideDrafts: true,
       hideArchived: true,
     },
   },
   {
-    id: "recent-posts",
-    name: "Recent Posts",
-    description: "Posts from last 30 days",
+    id: 'recent-posts',
+    name: 'Recent Posts',
+    description: 'Posts from last 30 days',
     filters: {
-      publicationCohort: "last-30-days",
+      publicationCohort: 'last-30-days',
       hideDrafts: true,
       hideArchived: true,
     },
   },
   {
-    id: "this-quarter",
-    name: "This Quarter",
-    description: "Posts published this quarter",
+    id: 'this-quarter',
+    name: 'This Quarter',
+    description: 'Posts published this quarter',
     filters: {
-      publicationCohort: "this-quarter",
+      publicationCohort: 'this-quarter',
       hideDrafts: true,
       hideArchived: true,
     },

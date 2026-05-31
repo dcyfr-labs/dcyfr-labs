@@ -15,6 +15,7 @@ import { Github, Linkedin } from '@/components/ui/brand-icons';
 import { DashboardStats, DashboardStat } from '@/components/dashboard';
 import { TYPOGRAPHY, SPACING } from '@/lib/design-tokens';
 import { getPlatformDisplayName } from '@/lib/analytics';
+import { useAggregateReferralCounts } from '@/hooks/use-referral-tracking';
 import type { PostAnalytics } from '@/types/analytics';
 
 interface SocialMetricsProps {
@@ -35,7 +36,7 @@ interface SocialMetricsProps {
  * />
  * ```
  */
-export function SocialMetrics({ posts: _posts, defaultCollapsed = false }: SocialMetricsProps) {
+export function SocialMetrics({ posts, defaultCollapsed = false }: SocialMetricsProps) {
   const [showMetrics, setShowMetrics] = useState(!defaultCollapsed);
 
   // Platform icons mapping
@@ -49,22 +50,16 @@ export function SocialMetrics({ posts: _posts, defaultCollapsed = false }: Socia
     other: ExternalLink,
   };
 
-  // Mock data for now - will be replaced with real data from API
-  // TODO: Fetch actual referral counts from /api/analytics/referral for each post
-  const mockReferrals = {
-    twitter: 0,
-    dev: 0,
-    linkedin: 0,
-    reddit: 0,
-    hackernews: 0,
-    github: 0,
-    other: 0,
-  };
-
-  const totalReferrals = Object.values(mockReferrals).reduce((sum, count) => sum + count, 0);
+  // Fetch real referral counts for the posts currently in view and aggregate
+  // them per platform. Re-fetches only when the set of post ids changes.
+  const { data: referralData, loading: referralsLoading } = useAggregateReferralCounts(
+    posts.map((post) => post.id)
+  );
+  const referrals = referralData?.referrals ?? {};
+  const totalReferrals = referralData?.total ?? 0;
 
   // Get top referral platforms
-  const topPlatforms = Object.entries(mockReferrals)
+  const topPlatforms = Object.entries(referrals)
     .filter(([_, count]) => count > 0)
     .sort(([_, a], [__, b]) => b - a)
     .slice(0, 4);
@@ -121,7 +116,7 @@ export function SocialMetrics({ posts: _posts, defaultCollapsed = false }: Socia
           </DashboardStats>
 
           {/* Platform Breakdown */}
-          {totalReferrals > 0 && (
+          {!referralsLoading && totalReferrals > 0 && (
             <Card className="p-4">
               <div className={SPACING.content}>
                 <div>
@@ -132,7 +127,7 @@ export function SocialMetrics({ posts: _posts, defaultCollapsed = false }: Socia
                 </div>
 
                 <div className={SPACING.compact}>
-                  {Object.entries(mockReferrals)
+                  {Object.entries(referrals)
                     .filter(([_, count]) => count > 0)
                     .sort(([_, a], [__, b]) => b - a)
                     .map(([platform, count]) => {
@@ -162,8 +157,18 @@ export function SocialMetrics({ posts: _posts, defaultCollapsed = false }: Socia
             </Card>
           )}
 
+          {/* Loading State */}
+          {referralsLoading && (
+            <Card className="p-4 text-center">
+              <div className="flex flex-col items-center gap-2">
+                <TrendingUp className="h-8 w-8 animate-pulse text-muted-foreground/50" />
+                <p className="text-sm font-medium text-muted-foreground">Loading referral data…</p>
+              </div>
+            </Card>
+          )}
+
           {/* No Data State */}
-          {totalReferrals === 0 && (
+          {!referralsLoading && totalReferrals === 0 && (
             <Card className="p-4 text-center">
               <div className="flex flex-col items-center gap-2">
                 <TrendingUp className="h-8 w-8 text-muted-foreground/50" />
