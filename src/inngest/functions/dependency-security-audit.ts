@@ -9,6 +9,11 @@
 
 import { inngest } from '../client';
 import { persistDependencyAudit, type DependencyAuditSnapshot } from '@/lib/maintenance-audit';
+import {
+  reportSecurityAuditIssue,
+  type SecurityIssueResult,
+} from '@/lib/security/dependency-audit-issue';
+import { Octokit } from '@octokit/rest';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 
@@ -137,15 +142,39 @@ export const auditDependencies = inngest.createFunction(
 
         console.error(`[Security Audit] 🔴 ${severity}: ${count} vulnerabilities found!`);
 
+        // Open (or update) a deduplicated GitHub tracking issue. Best-effort:
+        // reportSecurityAuditIssue never throws, so a GitHub outage or missing
+        // token can't fail the audit — the snapshot in step 4 is the contract.
+        let issue: SecurityIssueResult;
+        const token = process.env.GITHUB_TOKEN;
+        if (token) {
+          const octokit = new Octokit({ auth: token });
+          const [owner, repo] = (process.env.GITHUB_REPOSITORY ?? 'dcyfr-labs/dcyfr-labs').split(
+            '/'
+          );
+          issue = await reportSecurityAuditIssue(
+            octokit.rest.issues,
+            { owner, repo },
+            auditResult.vulnerabilities,
+            { branch, changedFiles }
+          );
+          console.warn(
+            `[Security Audit] GitHub issue: ${issue.action}${issue.issueNumber ? ` (#${issue.issueNumber})` : ''}`
+          );
+        } else {
+          console.warn('[Security Audit] GITHUB_TOKEN not set — skipping GitHub issue');
+          issue = { action: 'skipped', reason: 'GITHUB_TOKEN not set' };
+        }
+
         // TODO: Future enhancement - Send email alert
-        // TODO: Future enhancement - Post GitHub issue
         // TODO: Future enhancement - Send Slack notification
         // TODO: Future enhancement - Block PR merge if critical
 
         return {
           severity,
           count,
-          action: 'alert-sent',
+          action: issue.action,
+          issueNumber: issue.issueNumber,
         };
       });
     }
