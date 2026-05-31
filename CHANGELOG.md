@@ -1,3 +1,41 @@
+## [2026.5.31] - 2026-05-31
+
+### Added
+
+- **analytics** - wire SocialMetrics to real referral data (#676)
+
+### Changed
+
+- chore(deps-dev)(deps-dev): bump tmp from 0.2.5 to 0.2.7 (#674)
+- chore(deps)(deps): bump @dcyfr/ai from 3.0.8 to 3.0.9 (#672)
+- **ci** - bump codecov/codecov-action from 5 to 6 (#671)
+- **ci** - bump actions/github-script from 8 to 9 (#670)
+- **ci** - bump actions/cache from 4 to 5 (#669)
+- **ci** - bump actions/upload-artifact from 5 to 7 (#668)
+- **deps** - ignore sury until stable 11.x lands (#667)
+- chore(deps)(deps): bump @tanstack/react-virtual from 3.13.24 to 3.13.26 (#665)
+- chore(deps)(deps): bump date-fns from 4.2.1 to 4.3.0 (#664)
+- chore(deps)(deps): bump @dcyfr/ai from 3.0.6 to 3.0.8 (#663)
+- chore(deps)(deps): bump googleapis from 171.4.0 to 172.0.0 (#662)
+- chore(deps)(deps): bump geist from 1.7.0 to 1.7.1 (#661)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.96.0 to 0.98.0 (#660)
+- chore(deps)(deps): bump resend from 6.12.3 to 6.12.4 in the email group (#659)
+- chore(deps)(deps): bump the content-pipeline group with 2 updates (#658)
+- chore(deps)(deps): bump framer-motion in the ui-framework group (#657)
+- chore(deps-dev)(deps-dev): bump the typescript-stack group with 2 updates (#656)
+- chore(deps-dev)(deps-dev): bump the dev-tools group with 8 updates (#655)
+- **readme** - Documentation - rebrand header + link architecture diagrams (#653)
+- **readme** - Documentation - rebrand header + link architecture diagrams (#652)
+
+### Fixed
+
+- **github-cache** - loud failure, stale banner shows last-updated, rotate fallback (#673)
+- **deps** - override transitive qs to >=6.15.2 (CVE-2026-8723) (#654)
+
+---
+
+**Full Changelog**: [2026.5.28...2026.5.31](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.5.28...v2026.5.31)
+
 ## [2026.5.28] - 2026-05-28
 
 ### Added
