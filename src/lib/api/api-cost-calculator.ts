@@ -286,6 +286,72 @@ export async function calculateMonthlyCost(month?: string): Promise<{
 }
 
 // ============================================================================
+// FREE-TIER HEADROOM
+// ============================================================================
+
+/**
+ * A service's position against its free-tier ceiling, for the cost reports.
+ *
+ * These reports monitor free-tier *headroom* — how close each piece of infra
+ * is to its no-cost limit — rather than dollars (everything is intentionally
+ * on a free tier; real paid-LLM spend is reported elsewhere).
+ */
+export interface ServiceHeadroom {
+  /** Human-readable service name (from PRICING). */
+  name: string;
+  /** Requests recorded this period. */
+  requests: number;
+  /** Free-tier monthly ceiling (`Infinity` for unlimited tiers). */
+  limit: number;
+  /** Percent of the free-tier ceiling consumed, or `null` when unlimited. */
+  percentOfLimit: number | null;
+  /** Display string for the limit (`"3,000"` or `"unlimited"`). */
+  limitLabel: string;
+  /** True when the service's free tier has no enforced request ceiling. */
+  unlimited: boolean;
+}
+
+/**
+ * Format a single service's free-tier headroom for presentation.
+ *
+ * Pure + synchronous so the report routes and unit tests can share it. The
+ * request count is always the real recorded value (it can exceed 100% of the
+ * ceiling); `percentOfLimit` is computed directly so callers can decide how to
+ * render an over-limit figure.
+ */
+export function formatServiceHeadroom(
+  service: keyof typeof PRICING,
+  usage: MonthlyUsageAggregate
+): ServiceHeadroom {
+  const name = PRICING[service].name;
+  const requests = usage.totalRequests;
+  const limit = getServiceMonthlyLimit(service);
+  const unlimited = !Number.isFinite(limit);
+
+  return {
+    name,
+    requests,
+    limit,
+    unlimited,
+    percentOfLimit: unlimited ? null : (requests / limit) * 100,
+    limitLabel: unlimited ? 'unlimited' : limit.toLocaleString(),
+  };
+}
+
+/**
+ * Whether any usage was actually recorded for the period.
+ *
+ * Drives the empty-state in the cost reports: if no service reported a single
+ * request, the report should say so plainly rather than render an empty table
+ * that reads as broken.
+ */
+export function hasRecordedUsage(
+  monthlyCost: Awaited<ReturnType<typeof calculateMonthlyCost>>
+): boolean {
+  return monthlyCost.services.some((s) => s.usage.totalRequests > 0);
+}
+
+// ============================================================================
 // LIMIT PREDICTION
 // ============================================================================
 
@@ -355,9 +421,14 @@ export async function predictLimitDate(
 }
 
 /**
- * Get monthly limit for a service
+ * Get monthly limit for a service.
+ *
+ * Returns the free-tier ceiling expressed as a monthly figure so the cost
+ * reports can show "requests vs free-tier limit" headroom. Per-hour / per-day
+ * caps are extrapolated to a month; genuinely unlimited free tiers return
+ * `Infinity`.
  */
-function getServiceMonthlyLimit(service: keyof typeof PRICING): number {
+export function getServiceMonthlyLimit(service: keyof typeof PRICING): number {
   if (service === 'resend') {
     return PRICING.resend.tiers.free.maxEmails;
   }

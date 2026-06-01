@@ -4,6 +4,9 @@ import {
   calculateMonthlyCost,
   predictLimitDate,
   generateCostRecommendations,
+  formatServiceHeadroom,
+  getServiceMonthlyLimit,
+  hasRecordedUsage,
   PRICING,
   BUDGET,
 } from '@/lib/api/api-cost-calculator';
@@ -246,5 +249,106 @@ describe('generateCostRecommendations', () => {
 
     const result = await generateCostRecommendations();
     expect(result.some((r) => r.includes('❌'))).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getServiceMonthlyLimit — free-tier headroom denominator
+// ---------------------------------------------------------------------------
+
+describe('getServiceMonthlyLimit', () => {
+  it('returns the resend free-tier monthly email cap', () => {
+    expect(getServiceMonthlyLimit('resend')).toBe(PRICING.resend.tiers.free.maxEmails);
+  });
+
+  it('returns sentry developer monthly event cap', () => {
+    expect(getServiceMonthlyLimit('sentry')).toBe(PRICING.sentry.tiers.developer.maxEvents);
+  });
+
+  it('extrapolates redis daily command cap to a monthly figure', () => {
+    expect(getServiceMonthlyLimit('redis')).toBe(PRICING.redis.tiers.free.maxCommands * 30);
+  });
+
+  it('extrapolates github hourly rate limit to a monthly figure', () => {
+    expect(getServiceMonthlyLimit('github')).toBe(
+      PRICING.github.tiers.authenticated.rateLimit * 24 * 30
+    );
+  });
+
+  it('reports unlimited services as Infinity', () => {
+    expect(getServiceMonthlyLimit('semanticScholar')).toBe(Infinity);
+    expect(getServiceMonthlyLimit('inngest')).toBe(Infinity);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// formatServiceHeadroom — honest free-tier headroom presentation
+// ---------------------------------------------------------------------------
+
+describe('formatServiceHeadroom', () => {
+  it('reports requests, limit, and percent-of-limit for a capped service', () => {
+    const usage = makeUsage({ service: 'resend', totalRequests: 300 });
+    const hr = formatServiceHeadroom('resend', usage);
+
+    expect(hr.name).toBe(PRICING.resend.name);
+    expect(hr.requests).toBe(300);
+    expect(hr.limit).toBe(3000);
+    // 300 / 3000 = 10%
+    expect(hr.percentOfLimit).toBeCloseTo(10);
+    expect(hr.limitLabel).toBe('3,000');
+    expect(hr.unlimited).toBe(false);
+  });
+
+  it('marks unlimited free-tier services as unlimited with null percent', () => {
+    const usage = makeUsage({ service: 'inngest', totalRequests: 5000 });
+    const hr = formatServiceHeadroom('inngest', usage);
+
+    expect(hr.unlimited).toBe(true);
+    expect(hr.limit).toBe(Infinity);
+    expect(hr.percentOfLimit).toBeNull();
+    expect(hr.limitLabel).toBe('unlimited');
+    expect(hr.requests).toBe(5000);
+  });
+
+  it('clamps percent-of-limit display value but preserves request count over the cap', () => {
+    const usage = makeUsage({ service: 'resend', totalRequests: 6000 });
+    const hr = formatServiceHeadroom('resend', usage);
+
+    expect(hr.requests).toBe(6000);
+    expect(hr.percentOfLimit).toBeGreaterThan(100);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// hasRecordedUsage — empty-state detection
+// ---------------------------------------------------------------------------
+
+describe('hasRecordedUsage', () => {
+  beforeEach(() => {
+    vi.mocked(getMonthlyUsage).mockReset();
+  });
+
+  it('is false when no service has any recorded usage', async () => {
+    vi.mocked(getMonthlyUsage).mockResolvedValue(null);
+    const monthlyCost = await calculateMonthlyCost();
+    expect(hasRecordedUsage(monthlyCost)).toBe(false);
+  });
+
+  it('is false when services are present but every total is zero', async () => {
+    vi.mocked(getMonthlyUsage).mockImplementation(async (service: string) => {
+      if (service === 'resend') return makeUsage({ service: 'resend', totalRequests: 0 });
+      return null;
+    });
+    const monthlyCost = await calculateMonthlyCost();
+    expect(hasRecordedUsage(monthlyCost)).toBe(false);
+  });
+
+  it('is true when at least one service recorded a request', async () => {
+    vi.mocked(getMonthlyUsage).mockImplementation(async (service: string) => {
+      if (service === 'resend') return makeUsage({ service: 'resend', totalRequests: 12 });
+      return null;
+    });
+    const monthlyCost = await calculateMonthlyCost();
+    expect(hasRecordedUsage(monthlyCost)).toBe(true);
   });
 });

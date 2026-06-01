@@ -1,5 +1,6 @@
 import { inngest } from './client';
 import * as Sentry from '@sentry/nextjs';
+import { recordApiCall } from '@/lib/api';
 
 /**
  * Inngest Error Handler
@@ -225,6 +226,9 @@ ${JSON.stringify(errorData.event.data, null, 2)}
             functionId: errorData.functionId,
             severity,
           });
+
+          // Record successful Resend send for free-tier headroom tracking.
+          await recordApiCall('resend', 'error-handler.alert');
 
           return {
             success: true,

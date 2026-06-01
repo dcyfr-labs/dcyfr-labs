@@ -1,5 +1,6 @@
 import { inngest } from './client';
 import { redis, getRedisEnvironment, getRedisKeyPrefix } from '@/lib/redis-client';
+import { recordApiCall } from '@/lib/api';
 
 // GitHub configuration
 const GITHUB_USERNAME = 'dcyfr';
@@ -78,6 +79,10 @@ export async function fetchGitHubContributions(): Promise<ContributionResponse |
     if (!calendar) {
       throw new Error('Invalid response structure from GitHub API');
     }
+
+    // Record the successful GitHub GraphQL call for free-tier headroom tracking.
+    // recordApiCall absorbs Redis failures internally and never throws.
+    await recordApiCall('github', 'graphql.contributions');
 
     const contributions: ContributionDay[] = calendar.weeks.flatMap(
       (week: { contributionDays: { date: string; contributionCount: number }[] }) =>
