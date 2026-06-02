@@ -1,3 +1,29 @@
+## [2026.6.2] - 2026-06-02
+
+### Added
+
+- **security** - open a GitHub issue on critical/high dependency vulns (#677)
+- **analytics** - wire SocialMetrics to real referral data (#676)
+
+### Changed
+
+- chore(deps-dev)(deps-dev): bump tmp from 0.2.5 to 0.2.7 (#674)
+- chore(deps)(deps): bump @dcyfr/ai from 3.0.8 to 3.0.9 (#672)
+- **ci** - bump codecov/codecov-action from 5 to 6 (#671)
+- **ci** - bump actions/github-script from 8 to 9 (#670)
+- **ci** - bump actions/cache from 4 to 5 (#669)
+- **ci** - bump actions/upload-artifact from 5 to 7 (#668)
+- **deps** - ignore sury until stable 11.x lands (#667)
+
+### Fixed
+
+- **api-cost** - instrument recordApiCall + reframe cost reports as free-tier headroom (#678)
+- **github-cache** - loud failure, stale banner shows last-updated, rotate fallback (#673)
+
+---
+
+**Full Changelog**: [2026.5.31...2026.6.2](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.5.31...v2026.6.2)
+
 ## [2026.5.31] - 2026-05-31
 
 ### Added
