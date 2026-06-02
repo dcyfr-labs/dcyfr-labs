@@ -4,6 +4,7 @@ import {
   checkAdvisoryImpact,
   type PackageLockData,
 } from '@/lib/security-version-checker';
+import { recordApiCall } from '@/lib/api';
 
 /**
  * Security Advisory event types
@@ -375,6 +376,10 @@ export async function fetchGhsaAdvisories(packageName: string) {
         console.warn(
           `[fetchGhsaAdvisories] Successfully fetched ${packageName}: ${Array.isArray(data) ? data.length : (data?.length ?? '?')} advisories`
         );
+        // One GitHub advisories API call per successful package fetch (this fn
+        // is called in a loop over MONITORED_PACKAGES). recordApiCall absorbs
+        // Redis failures internally and never throws.
+        await recordApiCall('github', 'advisories.list');
         return data;
       }
 

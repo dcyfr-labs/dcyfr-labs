@@ -6,6 +6,8 @@ import {
   calculateMonthlyCost,
   generateCostRecommendations,
   predictLimitDate,
+  formatServiceHeadroom,
+  hasRecordedUsage,
   PRICING,
 } from '@/lib/api/api-cost-calculator';
 
@@ -43,44 +45,63 @@ export async function GET(request: Request) {
       }
     }
 
+    const usageRecorded = hasRecordedUsage(monthlyCost);
+
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const emailBody = `
-<h2>Monthly API Cost Report - ${previousMonth}</h2>
-<h3>Summary</h3>
-<ul>
-  <li><strong>Total Cost:</strong> $${monthlyCost.totalCost.toFixed(2)}</li>
-  <li><strong>Budget:</strong> $${monthlyCost.totalBudget}</li>
-  <li><strong>Budget Used:</strong> ${monthlyCost.percentUsed.toFixed(1)}%</li>
-  <li><strong>Status:</strong> ${monthlyCost.withinBudget ? 'Within Budget' : 'Over Budget'}</li>
-</ul>
-<h3>Service Breakdown</h3>
+
+      // These reports monitor FREE-TIER HEADROOM (how close each piece of
+      // free infra is to its no-cost limit), not paid spend — every service
+      // tracked here is intentionally on a free tier. Real paid-LLM spend is
+      // reported separately, out of band.
+      const headroomTable = `
+<h3>Free-Tier Headroom</h3>
 <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse;">
   <thead>
-    <tr><th>Service</th><th>Requests</th><th>Cost</th><th>Tier</th><th>Status</th></tr>
+    <tr><th>Service</th><th>Requests</th><th>Free-tier limit</th><th>% of limit</th><th>Tier</th></tr>
   </thead>
   <tbody>
 ${monthlyCost.services
-  .map(
-    ({ service, usage, cost }) => `
+  .map(({ service, usage, cost }) => {
+    const hr = formatServiceHeadroom(service as keyof typeof PRICING, usage);
+    const pct = hr.percentOfLimit === null ? '—' : `${hr.percentOfLimit.toFixed(1)}%`;
+    return `
     <tr>
-      <td>${PRICING[service as keyof typeof PRICING].name}</td>
-      <td>${usage.totalRequests.toLocaleString()}</td>
-      <td>$${cost.estimatedCost.toFixed(2)}</td>
+      <td>${hr.name}</td>
+      <td>${hr.requests.toLocaleString()}</td>
+      <td>${hr.limitLabel}</td>
+      <td>${pct}</td>
       <td>${cost.tier}</td>
-      <td>${cost.withinBudget ? 'OK' : 'Over'}</td>
-    </tr>`
-  )
+    </tr>`;
+  })
   .join('')}
   </tbody>
-</table>
+</table>`;
+
+      const emptyState = `
+<p><strong>No API usage was recorded this period.</strong></p>
+<p>Usage tracking begins once <code>recordApiCall</code> is wired into call sites
+(emails, GitHub fetches). If you expected activity in ${previousMonth}, confirm the
+instrumented paths ran and that Redis (Upstash) was reachable.</p>`;
+
+      const emailBody = `
+<h2>Monthly API Cost Report - ${previousMonth}</h2>
+<p><em>Free-tier headroom monitor — all tracked services run on free tiers;
+this report tracks how close each is to its no-cost limit. Paid spend is
+reported separately.</em></p>
+<h3>Summary</h3>
+<ul>
+  <li><strong>Total estimated cost:</strong> $${monthlyCost.totalCost.toFixed(2)} (free tier)</li>
+  <li><strong>Services with recorded usage:</strong> ${monthlyCost.services.length}</li>
+</ul>
+${usageRecorded ? headroomTable : emptyState}
 <h3>Predictions for Current Month</h3>
 ${
   predictions.length > 0
     ? `<ul>${predictions
         .map(
           ({ service, prediction }) =>
-            `<li><strong>${PRICING[service as keyof typeof PRICING].name}:</strong> ${prediction.daysUntilLimit !== null ? `${prediction.daysUntilLimit} days until limit (${prediction.confidence} confidence)` : 'No limit predicted'}</li>`
+            `<li><strong>${PRICING[service as keyof typeof PRICING].name}:</strong> ${prediction.daysUntilLimit !== null ? `${prediction.daysUntilLimit} days until free-tier limit (${prediction.confidence} confidence)` : 'No limit predicted'}</li>`
         )
         .join('\n')}</ul>`
     : '<p><em>No predictions available</em></p>'
@@ -106,7 +127,7 @@ ${
     Sentry.captureMessage(`Monthly API Cost Report: ${previousMonth}`, {
       level: 'info',
       tags: { component: 'api-cost-monitoring', month: previousMonth },
-      extra: { monthlyCost, recommendations, predictions: predictions.length },
+      extra: { monthlyCost, recommendations, predictions: predictions.length, usageRecorded },
     });
 
     return NextResponse.json({
@@ -115,6 +136,7 @@ ${
       totalCost: monthlyCost.totalCost,
       budget: monthlyCost.totalBudget,
       percentUsed: monthlyCost.percentUsed,
+      usageRecorded,
       servicesReported: monthlyCost.services.length,
       predictions: predictions.length,
     });

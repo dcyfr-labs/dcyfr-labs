@@ -1,6 +1,7 @@
 import { inngest } from './client';
 import { Resend } from 'resend';
 import { AUTHOR_EMAIL, FROM_EMAIL } from '@/lib/site-config';
+import { recordApiCall } from '@/lib/api';
 
 // Initialize Resend only if configured
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -62,6 +63,9 @@ export const newsletterSubscribeSubmitted = inngest.createFunction(
           emailDomain: email.split('@')[1],
         });
 
+        // Record successful Resend send for free-tier headroom tracking.
+        await recordApiCall('resend', 'newsletter.confirmation');
+
         return { success: true, messageId: result.data?.id };
       } catch (error) {
         console.error('[Newsletter Function] Failed to send confirmation email:', {
@@ -96,6 +100,9 @@ export const newsletterSubscribeSubmitted = inngest.createFunction(
         console.warn('[Newsletter Function] Owner notification sent:', {
           messageId: result.data?.id,
         });
+
+        // Record successful Resend send for free-tier headroom tracking.
+        await recordApiCall('resend', 'newsletter.owner-notify');
 
         return { success: true, messageId: result.data?.id };
       } catch (error) {

@@ -8,6 +8,7 @@ import {
   type SecurityAdvisory,
 } from '@/inngest/security-functions';
 import { parsePackageLock, checkAdvisoryImpact } from '@/lib/security-version-checker';
+import { recordApiCall } from '@/lib/api';
 
 /** Schedule: 3x daily (0:00, 8:00, 16:00 UTC) — migrated from Inngest securityAdvisoryMonitor */
 export async function GET(request: Request) {
@@ -98,7 +99,7 @@ export async function GET(request: Request) {
           `Security Advisory Monitor - ${new Date().toISOString()}\n\n${newAdvisories.length} new security advisories detected:\n\n${advisoryList}`.trim();
 
         try {
-          await fetch('https://api.resend.com/emails', {
+          const emailResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${resendApiKey}`,
@@ -111,6 +112,11 @@ export async function GET(request: Request) {
               text: emailBody,
             }),
           });
+
+          if (emailResponse.ok) {
+            // Record successful Resend send for free-tier headroom tracking.
+            await recordApiCall('resend', 'security-advisory.alert');
+          }
         } catch (emailError) {
           console.error('[cron/security-advisory-monitor] Email send failed:', emailError);
         }

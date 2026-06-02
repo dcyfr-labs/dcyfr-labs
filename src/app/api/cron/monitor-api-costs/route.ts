@@ -5,12 +5,21 @@ import { Resend } from 'resend';
 import {
   calculateMonthlyCost,
   generateCostRecommendations,
+  formatServiceHeadroom,
+  hasRecordedUsage,
   PRICING,
-  BUDGET,
 } from '@/lib/api/api-cost-calculator';
 import { getUsageSummary } from '@/lib/api/api-usage-tracker';
 
-/** Schedule: Daily at 9:00 AM UTC — migrated from Inngest monitorApiCosts */
+/**
+ * Schedule: Daily at 9:00 AM UTC — migrated from Inngest monitorApiCosts.
+ *
+ * This monitor is a FREE-TIER HEADROOM watchdog: every service it tracks runs
+ * on a free tier, so the meaningful signal is "how close are we to a no-cost
+ * limit", not paid dollars. Alerts fire on percent-of-free-tier-limit, not on
+ * a budget (which is intentionally $0). Real paid-LLM spend is reported
+ * separately, out of band.
+ */
 export async function GET(request: Request) {
   if (!validateCronRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -23,50 +32,42 @@ export async function GET(request: Request) {
     const monthlyCost = await calculateMonthlyCost();
     const summary = await getUsageSummary();
     const recommendations = await generateCostRecommendations();
+    const usageRecorded = hasRecordedUsage(monthlyCost);
 
     const alerts: Array<{ level: 'warning' | 'critical'; message: string; service?: string }> = [];
 
-    if (monthlyCost.percentUsed >= ALERT_THRESHOLDS.critical * 100) {
-      alerts.push({
-        level: 'critical',
-        message: `Total API cost at ${monthlyCost.percentUsed.toFixed(1)}% of budget ($${monthlyCost.totalCost.toFixed(2)}/$${monthlyCost.totalBudget})`,
-      });
-    } else if (monthlyCost.percentUsed >= ALERT_THRESHOLDS.warning * 100) {
-      alerts.push({
-        level: 'warning',
-        message: `Total API cost at ${monthlyCost.percentUsed.toFixed(1)}% of budget ($${monthlyCost.totalCost.toFixed(2)}/$${monthlyCost.totalBudget})`,
-      });
-    }
+    // Per-service free-tier headroom alerts. Services on unlimited free tiers
+    // (percentOfLimit === null) are skipped — there is no ceiling to approach.
+    for (const { service, usage } of monthlyCost.services) {
+      const hr = formatServiceHeadroom(service as keyof typeof PRICING, usage);
+      if (hr.percentOfLimit === null) continue;
 
-    for (const { service, cost } of monthlyCost.services) {
-      const serviceBudget = BUDGET[service as keyof typeof BUDGET];
-      const percentUsed = serviceBudget > 0 ? (cost.estimatedCost / serviceBudget) * 100 : 0;
-
-      if (percentUsed >= ALERT_THRESHOLDS.critical * 100) {
+      const pct = hr.percentOfLimit;
+      if (pct >= ALERT_THRESHOLDS.critical * 100) {
         alerts.push({
           level: 'critical',
           service,
-          message: `${PRICING[service as keyof typeof PRICING].name}: $${cost.estimatedCost.toFixed(2)}/$${serviceBudget} (${percentUsed.toFixed(1)}%)`,
+          message: `${hr.name}: ${hr.requests.toLocaleString()}/${hr.limitLabel} free-tier requests (${pct.toFixed(1)}%)`,
         });
-      } else if (percentUsed >= ALERT_THRESHOLDS.warning * 100) {
+      } else if (pct >= ALERT_THRESHOLDS.warning * 100) {
         alerts.push({
           level: 'warning',
           service,
-          message: `${PRICING[service as keyof typeof PRICING].name}: $${cost.estimatedCost.toFixed(2)}/$${serviceBudget} (${percentUsed.toFixed(1)}%)`,
+          message: `${hr.name}: ${hr.requests.toLocaleString()}/${hr.limitLabel} free-tier requests (${pct.toFixed(1)}%)`,
         });
       }
     }
 
     if (alerts.length > 0) {
       for (const alert of alerts) {
-        Sentry.captureMessage(`API Cost Alert: ${alert.message}`, {
+        Sentry.captureMessage(`API Free-Tier Headroom Alert: ${alert.message}`, {
           level: alert.level === 'critical' ? 'error' : 'warning',
           tags: {
             component: 'api-cost-monitoring',
             service: alert.service || 'all',
             alert_type: alert.level,
           },
-          extra: { monthlyCost, summary, recommendations },
+          extra: { monthlyCost, summary, recommendations, usageRecorded },
         });
       }
       console.warn(`[cron/monitor-api-costs] Sent ${alerts.length} alert(s) to Sentry`);
@@ -76,26 +77,27 @@ export async function GET(request: Request) {
     if (criticalAlerts.length > 0 && process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const emailBody = `
-<h2>Critical API Cost Alert</h2>
+<h2>Critical Free-Tier Headroom Alert</h2>
+<p><em>One or more free-tier services are within ${(ALERT_THRESHOLDS.critical * 100).toFixed(0)}% of
+their no-cost limit. These services run on free tiers (no paid spend); this is a
+headroom warning, not a billing alert.</em></p>
 <p><strong>${criticalAlerts.length} critical alert(s) detected:</strong></p>
 <ul>${criticalAlerts.map((alert) => `<li>${alert.message}</li>`).join('\n')}</ul>
 <h3>Current Status</h3>
 <ul>
-  <li><strong>Total Cost:</strong> $${monthlyCost.totalCost.toFixed(2)} / $${monthlyCost.totalBudget}</li>
-  <li><strong>Budget Used:</strong> ${monthlyCost.percentUsed.toFixed(1)}%</li>
-  <li><strong>Services Near Limit:</strong> ${summary.servicesNearLimit.length}</li>
-  <li><strong>Services At Limit:</strong> ${summary.servicesAtLimit.length}</li>
+  <li><strong>Total estimated cost:</strong> $${monthlyCost.totalCost.toFixed(2)} (free tier)</li>
+  <li><strong>Services with recorded usage:</strong> ${monthlyCost.services.length}</li>
 </ul>
 <h3>Recommendations</h3>
 <ul>${recommendations.map((rec) => `<li>${rec}</li>`).join('\n')}</ul>
-<p><em>Sent by dcyfr-labs API Cost Monitor</em></p>
+<p><em>Sent by dcyfr-labs API Free-Tier Monitor</em></p>
       `.trim();
 
       try {
         await resend.emails.send({
           from: 'DCYFR Labs <noreply@dcyfr.ai>',
           to: ALERT_EMAIL,
-          subject: `Critical API Cost Alert - ${criticalAlerts.length} Alert(s)`,
+          subject: `Critical Free-Tier Headroom Alert - ${criticalAlerts.length} Alert(s)`,
           html: emailBody,
         });
         console.warn(`[cron/monitor-api-costs] Sent critical alert email to ${ALERT_EMAIL}`);
@@ -111,6 +113,7 @@ export async function GET(request: Request) {
         budget: monthlyCost.totalBudget,
         percentUsed: monthlyCost.percentUsed,
       },
+      usageRecorded,
       alerts: {
         total: alerts.length,
         critical: criticalAlerts.length,

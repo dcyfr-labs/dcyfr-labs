@@ -2,6 +2,7 @@ import { inngest } from './client';
 import { Resend } from 'resend';
 import { AUTHOR_EMAIL, FROM_EMAIL } from '@/lib/site-config';
 import { track } from '@vercel/analytics/server';
+import { recordApiCall } from '@/lib/api';
 
 // Initialize Resend only if configured
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -89,6 +90,9 @@ export const contactFormSubmitted = inngest.createFunction(
           success: true,
         });
 
+        // Record successful Resend send for free-tier headroom tracking.
+        await recordApiCall('resend', 'contact.owner-notify');
+
         return {
           success: true,
           messageId: result.data?.id,
@@ -135,6 +139,9 @@ export const contactFormSubmitted = inngest.createFunction(
           to: email,
           from: FROM_EMAIL,
         });
+
+        // Record successful Resend send for free-tier headroom tracking.
+        await recordApiCall('resend', 'contact.confirmation');
 
         return {
           success: true,
