@@ -27,6 +27,7 @@ import { posts, featuredPosts } from '@/data/posts';
 import { HomepageHeroActions } from '@/components/home/homepage-hero-actions';
 import { FeaturedPostHero } from '@/components/home/featured-post-hero';
 import { NewsletterSignup } from '@/components/blog/rivet/engagement/newsletter-signup';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Zap, FileText, Briefcase, Package } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -158,10 +159,22 @@ export default async function Home() {
       <script {...getJsonLdScriptProps(jsonLd, nonce)} />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-center pt-16 md:pt-28 lg:pt-32 pb-12 md:pb-16">
+      <div className="relative overflow-hidden flex items-center justify-center pt-16 md:pt-28 lg:pt-32 pb-12 md:pb-16">
+        {/* Full-bleed brand hero — the DCYFR sparkle as a faceted crystal enshrined in a data-sanctum (imagegen gpt-image-1.5, dcyfr brand profile, upscaled to 4K) */}
+        <div className="absolute inset-0 z-0" aria-hidden="true">
+          <Image
+            src="/images/homepage-hero.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/70 to-black/85" />
+        </div>
         <div
           className={cn(
-            'w-full mx-auto text-center',
+            'relative z-10 w-full mx-auto text-center',
             CONTAINER_WIDTHS.thread,
             CONTAINER_PADDING,
             'translate-y-2 animate-slide-up'
@@ -171,11 +184,11 @@ export default async function Home() {
             animationFillMode: 'forwards',
           }}
         >
-          <h1 className={cn(TYPOGRAPHY.logo.xlarge, 'inline-flex items-center text-foreground')}>
+          <h1 className={cn(TYPOGRAPHY.logo.xlarge, 'inline-flex items-center text-white')}>
             DCYFR Labs
           </h1>
 
-          <p className={cn(TYPOGRAPHY.description, 'mt-5')}>
+          <p className={cn(TYPOGRAPHY.description, 'mt-5 text-white/85')}>
             Think Freely. Build Securely. Ship Boldly.
           </p>
 
