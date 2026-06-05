@@ -160,7 +160,7 @@ export default async function Home() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <div className="relative overflow-hidden flex items-center justify-center pt-16 md:pt-28 lg:pt-32 pb-12 md:pb-16">
-        {/* Full-bleed brand hero — imagegen brand lane (Seedream 4.5) against the dcyfr brand profile */}
+        {/* Full-bleed brand hero — the DCYFR sparkle as a faceted crystal enshrined in a data-sanctum (imagegen gpt-image-1.5, dcyfr brand profile, upscaled to 4K) */}
         <div className="absolute inset-0 z-0" aria-hidden="true">
           <Image
             src="/images/homepage-hero.webp"
