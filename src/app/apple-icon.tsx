@@ -1,6 +1,10 @@
 import { ImageResponse } from "next/og";
 import { LOGO_PATH, LOGO_VIEWBOX } from "@/lib/logo-config";
 
+// App icon intentionally uses the FLAT silhouette, not the faceted CrystalMark — the
+// facets blur at small sizes (reduction test). See
+// openspec/changes/dcyfr-crystal-brand-mark/design-decisions.md.
+
 export const runtime = "edge";
 export const size = {
   width: 180,
