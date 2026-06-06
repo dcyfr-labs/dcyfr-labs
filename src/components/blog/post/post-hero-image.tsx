@@ -61,7 +61,7 @@ export function PostHeroImage({ image, title, priority = true }: PostHeroImagePr
           alt={alt}
           fill
           priority={priority}
-          quality={90}
+          quality={95}
           className="object-cover bg-muted/50 dark:bg-muted/30"
           sizes="100vw"
           placeholder="blur"

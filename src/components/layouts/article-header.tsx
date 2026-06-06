@@ -176,7 +176,7 @@ export function ArticleHeader({
               alt={backgroundImage.alt}
               fill
               priority={backgroundImage.priority || false}
-              quality={90}
+              quality={95}
               placeholder="blur"
               blurDataURL={IMAGE_PLACEHOLDER.blur}
               className={cn(
