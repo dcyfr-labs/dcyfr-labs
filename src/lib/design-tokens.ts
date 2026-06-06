@@ -1330,6 +1330,39 @@ export const OPACITY = {
 } as const;
 
 // ============================================================================
+// BRAND MARK (identity)
+// ============================================================================
+
+/**
+ * DCYFR brand-mark identity colors — the fixed (non-theme) palette of the logo /
+ * crystal mark. Unlike the semantic theme tokens (which are intentionally neutral and
+ * adapt to light/dark), these are the brand's constant identity hues: deep navy +
+ * electric blue + crystal cyan. Mirrors the hardcoded values in the icon / OG image
+ * routes and `logo-config.ts` (`CRYSTAL_MARK_COLORS`), which is the geometry + facet
+ * source of truth. Keep in sync.
+ *
+ * Usage rule (from the 2026-06-05 brand-mark exploration):
+ * - `crystal` (faceted) mark → large surfaces only (>= 64px): logo, OG/social, hero.
+ * - `flat` silhouette → favicon, small sizes, monochrome and single-colour print.
+ *   The facets blur below ~32px, so the favicon intentionally stays the flat mark.
+ *
+ * @see /src/lib/logo-config.ts — CRYSTAL_MARK_COLORS / CRYSTAL_MARK_SCHEME
+ * @see /openspec/changes/dcyfr-crystal-brand-mark — governance + provenance
+ */
+export const BRAND_MARK = {
+  /** slate-950 — deep navy surface / deepest facet */
+  navy: '#020617',
+  /** gray-50 — highlight facet / mark on dark surfaces */
+  white: '#f9fafb',
+  /** blue-600 — electric blue, the brand primary facet (NOT purple) */
+  blue: '#2563eb',
+  /** sky-400 — bright crystal accent on dark surfaces */
+  cyan: '#38bdf8',
+  /** sky-500 — deeper crystal accent that contrasts on light surfaces */
+  sky: '#0ea5e9',
+} as const;
+
+// ============================================================================
 // SERIES COLORS
 // ============================================================================
 
