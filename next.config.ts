@@ -52,7 +52,10 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    qualities: [90, 95],
+    // AVIF q90 (next/sharp) smears low-contrast/gradient detail, so dark hero art
+    // reads as "blocky". A single allowed value means requests that omit `quality`
+    // snap to 95 via findClosestQuality (default 75 → nearest), instead of min(90,95)=90.
+    qualities: [95],
     remotePatterns: [
       {
         protocol: 'https',
