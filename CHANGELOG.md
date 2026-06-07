@@ -1,3 +1,40 @@
+## [2026.6.7] - 2026-06-07
+
+### Added
+
+- **home** - full-bleed brand hero image on the landing page (#695)
+- **security** - open a GitHub issue on critical/high dependency vulns (#677)
+- **analytics** - wire SocialMetrics to real referral data (#676)
+
+### Changed
+
+- chore(deps)(deps): bump hono from 4.12.18 to 4.12.23 (#694)
+- chore(deps)(deps): bump react-is from 19.2.6 to 19.2.7 (#693)
+- chore(deps)(deps): bump date-fns from 4.3.0 to 4.4.0 (#689)
+- chore(deps)(deps): bump zustand from 5.0.13 to 5.0.14 (#692)
+- chore(deps)(deps): bump @dcyfr/ai from 3.0.9 to 3.2.1 (#683)
+- chore(deps)(deps): bump inngest in the background-jobs group (#682)
+- chore(deps)(deps): bump lucide-react in the ui-framework group (#681)
+- chore(deps-dev)(deps-dev): bump the dev-tools group with 13 updates (#680)
+- chore(deps)(deps): bump the nextjs-core group with 3 updates (#679)
+- chore(deps)(deps): bump googleapis from 172.0.0 to 173.0.0 (#691)
+- chore(deps)(deps): bump @tanstack/react-virtual from 3.13.26 to 3.14.2 (#690)
+- chore(deps)(deps): bump dompurify from 3.4.5 to 3.4.7 (#688)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.98.0 to 0.100.1 (#687)
+- chore(deps)(deps): bump fuse.js from 7.3.0 to 7.4.1 (#686)
+- chore(deps)(deps): bump @xyflow/react from 12.10.2 to 12.11.0 (#685)
+- chore(deps)(deps): bump web-vitals from 5.2.0 to 5.3.0 (#684)
+
+### Fixed
+
+- **home** - re-encode homepage hero from 6MB master (q90, was 169KB) (#698)
+- **images** - bump AVIF quality to 95 to stop dark-gradient smearing (#697)
+- **api-cost** - instrument recordApiCall + reframe cost reports as free-tier headroom (#678)
+
+---
+
+**Full Changelog**: [2026.6.6...2026.6.7](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.6.6...v2026.6.7)
+
 ## [2026.6.6] - 2026-06-06
 
 ### Added
