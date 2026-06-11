@@ -1,3 +1,23 @@
+## [2026.6.11] - 2026-06-11
+
+### Added
+
+- **home** - real-detail 4K crystal hero (AI upscale) (#708)
+- **home** - full-bleed brand hero image on the landing page (#695)
+
+### Changed
+
+- chore(deps)(deps): bump hono from 4.12.18 to 4.12.23 (#694)
+
+### Fixed
+
+- **home** - re-encode homepage hero from 6MB master (q90, was 169KB) (#698)
+- **images** - bump AVIF quality to 95 to stop dark-gradient smearing (#697)
+
+---
+
+**Full Changelog**: [2026.6.7...2026.6.11](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.6.7...v2026.6.11)
+
 ## [2026.6.7] - 2026-06-07
 
 ### Added
