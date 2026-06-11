@@ -100,11 +100,18 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Restore node_modules cache
+        id: cache-node-modules
         uses: actions/cache/restore@v5
         with:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
-          fail-on-cache-miss: true
+
+      # Fall back to a fresh install instead of hard-failing when the cache is
+      # missed (e.g. the setup job's save was evicted or raced). Previously
+      # `fail-on-cache-miss: true` turned a transient cache hiccup into a red PR.
+      - name: Install dependencies (cache-miss fallback)
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline
 
       - name: Lint and typecheck in parallel
         run: |
@@ -135,11 +142,18 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Restore node_modules cache
+        id: cache-node-modules
         uses: actions/cache/restore@v5
         with:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
-          fail-on-cache-miss: true
+
+      # Fall back to a fresh install instead of hard-failing when the cache is
+      # missed (e.g. the setup job's save was evicted or raced). Previously
+      # `fail-on-cache-miss: true` turned a transient cache hiccup into a red PR.
+      - name: Install dependencies (cache-miss fallback)
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline
 
       - name: Run unit tests with coverage
         run: npm run test:coverage
@@ -171,11 +185,18 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Restore node_modules cache
+        id: cache-node-modules
         uses: actions/cache/restore@v5
         with:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
-          fail-on-cache-miss: true
+
+      # Fall back to a fresh install instead of hard-failing when the cache is
+      # missed (e.g. the setup job's save was evicted or raced). Previously
+      # `fail-on-cache-miss: true` turned a transient cache hiccup into a red PR.
+      - name: Install dependencies (cache-miss fallback)
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline
 
       # Add Next.js build cache for faster builds with cross-branch fallback
       - name: Cache Next.js build
@@ -218,11 +239,18 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Restore node_modules cache
+        id: cache-node-modules
         uses: actions/cache/restore@v5
         with:
           path: node_modules
           key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.run_id }}
-          fail-on-cache-miss: true
+
+      # Fall back to a fresh install instead of hard-failing when the cache is
+      # missed (e.g. the setup job's save was evicted or raced). Previously
+      # `fail-on-cache-miss: true` turned a transient cache hiccup into a red PR.
+      - name: Install dependencies (cache-miss fallback)
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline
 
       - name: Cache Playwright browsers
         uses: actions/cache@v5
@@ -240,9 +268,14 @@ jobs:
         run: npx playwright install-deps
 
       - name: Run E2E tests
-        run: npm run test:e2e
+        # PR gate: chromium only + deterministic spec subset (data-dependent and
+        # visual specs are excluded via E2E_GATING in playwright.config.ts), so
+        # the job finishes well under its 20-minute timeout. The full device
+        # matrix and excluded specs run outside the gate.
+        run: npm run test:e2e -- --project=chromium
         env:
           CI: true
+          E2E_GATING: 'true'
 
       - name: Upload Playwright report
         if: always()

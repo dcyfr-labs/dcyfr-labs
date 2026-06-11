@@ -88,6 +88,8 @@ vi.mock('@octokit/rest', () => ({
 // ============================================================================
 
 describe('getTrendingProjects', () => {
+  const originalFetch = global.fetch;
+
   beforeEach(() => {
     // Suppress console logs in tests
     vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -97,12 +99,30 @@ describe('getTrendingProjects', () => {
     // Reset mocks
     vi.clearAllMocks();
 
-    // Set environment to use approximation (faster tests, no API calls)
+    // Hard network backstop. The `vi.mock('@octokit/rest')` above does NOT
+    // intercept the dynamic `await import('@octokit/rest')` inside
+    // fetchGitHubStats under Vitest 4, so without this the real Octokit
+    // client reaches the live GitHub API — producing 404s for the
+    // testuser/* fixtures and rate-limit flakiness in CI. Stubbing
+    // global.fetch (Octokit's underlying transport) guarantees no request
+    // leaves the test; fetchGitHubStats then falls back to metadata-based
+    // scoring, which is exactly what these assertions exercise.
+    global.fetch = vi.fn(
+      async () =>
+        new Response('{"message":"Not Found"}', {
+          status: 404,
+          statusText: 'Not Found',
+          headers: { 'content-type': 'application/json' },
+        })
+    ) as typeof global.fetch;
+
+    // Set environment to use approximation (faster tests, fewer API calls)
     process.env.USE_ACCURATE_RECENT_STARS = 'false';
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+    global.fetch = originalFetch;
   });
 
   describe('Project Filtering', () => {
