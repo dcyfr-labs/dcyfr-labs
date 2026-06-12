@@ -164,7 +164,7 @@
     "@vitest/ui": "^4.1.8",
     "axe-core": "^4.12.1",
     "axe-playwright": "^2.2.2",
-    "baseline-browser-mapping": "^2.10.35",
+    "baseline-browser-mapping": "^2.10.36",
     "effect": "^3.21.3",
     "eslint": "^10.4.1",
     "eslint-plugin-react-hooks": "^7.1.1",
