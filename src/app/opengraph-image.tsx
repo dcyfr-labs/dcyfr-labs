@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { SITE_DESCRIPTION, SITE_DOMAIN, SITE_TITLE } from "@/lib/site-config";
 import { LOGO_PATH, LOGO_VIEWBOX } from "@/lib/logo-config";
+import { CrystalMark } from "@/components/common";
 
 export const runtime = "edge";
 export const size = {
@@ -60,27 +61,32 @@ export default function OpenGraphImage({
             fontFamily: "Geist, Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif",
           }}
         >
-          <div
-            style={{
-              fontSize: 58,
-              lineHeight: 1.1,
-              fontWeight: 700,
-              letterSpacing: "-0.015em",
-              maxWidth: "920px",
-            }}
-          >
-            {title}
+          {/* brand header + content (faceted crystal mark — large surface, reads at 96px) */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            <CrystalMark surface="dark" width={96} height={96} style={{ display: "flex" }} />
+            <div
+              style={{
+                fontSize: 58,
+                lineHeight: 1.1,
+                fontWeight: 700,
+                letterSpacing: "-0.015em",
+                maxWidth: "920px",
+              }}
+            >
+              {title}
+            </div>
+            <div
+              style={{
+                fontSize: 26,
+                lineHeight: 1.4,
+                opacity: 0.9,
+                maxWidth: "780px",
+              }}
+            >
+              {description}
+            </div>
           </div>
-          <div
-            style={{
-              fontSize: 26,
-              lineHeight: 1.4,
-              opacity: 0.9,
-              maxWidth: "780px",
-            }}
-          >
-            {description}
-          </div>
+          {/* footer: small sparkle stays FLAT (faceting muddies below ~32px) */}
           <div
             style={{
               fontSize: 24,

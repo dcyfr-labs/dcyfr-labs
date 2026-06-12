@@ -13,6 +13,7 @@ export { HighlightText } from './highlight-text';
 export { HorizontalRule } from './horizontal-rule';
 export { KeyboardShortcutsHelp } from './keyboard-shortcuts-help';
 export { default as Logo } from './logo';
+export { CrystalMark } from './crystal-mark';
 export { SiteLogo } from './site-logo';
 export { ThemeAwareLogo } from './theme-aware-logo';
 export { MDX } from './mdx';

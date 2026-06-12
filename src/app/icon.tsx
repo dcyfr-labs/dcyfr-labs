@@ -1,6 +1,10 @@
 import { ImageResponse } from "next/og";
 import { LOGO_PATH, LOGO_VIEWBOX } from "@/lib/logo-config";
 
+// The favicon intentionally uses the FLAT silhouette, not the faceted CrystalMark:
+// the crystal facets blur into a muddy blob below ~32px (reduction test). Do not
+// facet the favicon. See openspec/changes/dcyfr-crystal-brand-mark/design-decisions.md.
+
 export const runtime = "edge";
 export const size = {
   width: 512,
