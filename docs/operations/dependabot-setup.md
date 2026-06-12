@@ -172,57 +172,70 @@ gh api /repos/dcyfr-labs/dcyfr-labs/dependabot/alerts?state=open
 
 ## Auto-Merge Configuration
 
-### GitHub Actions Workflow (Optional)
+**Status: ✅ ACTIVE (2026-06-12), org-wide.** Dependabot patch/minor PRs merge
+with zero human touches. Three pieces work together:
 
-For hands-off dependency management, create `.github/workflows/dependabot-auto-merge.yml`:
+### 1. Branch ruleset ("main protection")
 
-```yaml
-name: Dependabot Auto-Merge
-on: pull_request
+Created via API on every active public repo in the org. For this repo it
+requires these status checks on `main` (exact check-run names — they must
+match the job `name:` values in `test.yml`):
 
-permissions:
-  contents: write
-  pull-requests: write
+- `Code Quality`
+- `Unit & Integration Tests`
+- `Bundle Size Check`
+- `E2E Tests`
 
-jobs:
-  auto-merge:
-    runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
-    steps:
-      - name: Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v1
-        with:
-          github-token: '${{ secrets.GITHUB_TOKEN }}'
+Plus branch-deletion and force-push guards. `strict` (require-branch-up-to-
+date) is **off** so concurrent Dependabot PRs don't serialize. Bypass actors:
+org admins and the `dcyfr-labs-release-bot` App (which `auto-calver.yml` uses
+to push version-bump commits — `GITHUB_TOKEN` cannot push to `main` anymore).
 
-      - name: Auto-merge minor and patch updates
-        if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
-        run: gh pr merge --auto --squash "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+> ⚠️ **Check-name trap:** required contexts match check-run names _exactly_.
+> If a required job is renamed (or a matrix value like a Node version changes
+> the display name in repos that use matrix names), auto-merge waits forever
+> for a check that never reports. Update the ruleset in the same PR that
+> renames a required job. Conversely, never path-filter a required workflow at
+> the `on:` level — filter inside the job (as `test.yml` does with
+> `determine-scope`) so skipped runs report `skipped` (which satisfies the
+> rule) instead of never reporting.
 
-      - name: Auto-approve security updates
-        if: steps.metadata.outputs.update-type == 'version-update:semver-patch'
-        run: gh pr review --approve "$PR_URL"
-        env:
-          PR_URL: ${{github.event.pull_request.html_url}}
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-```
+### 2. Repo setting
+
+**Allow auto-merge** is enabled (Settings → Pull requests), org-wide.
+
+### 3. Workflow: `.github/workflows/dependabot-auto-merge.yml`
+
+A thin caller of the shared reusable workflow in
+[`dcyfr-labs/.github`](https://github.com/dcyfr-labs/.github/blob/main/.github/workflows/dependabot-auto-merge.yml),
+which on every Dependabot PR:
+
+1. Reads update metadata (`dependabot/fetch-metadata`); **majors are never
+   auto-merged** — the job no-ops and the PR stays open for manual review.
+2. Approves the PR and arms **native auto-merge** (`gh pr merge --auto
+--squash`). GitHub merges server-side once the _required_ checks pass —
+   optional/flaky checks (visual snapshots, secret-gated scanners that fail on
+   Dependabot-triggered runs) cannot block the merge.
+3. Falls back to polling all checks + direct merge on repos without usable
+   branch protection (private repos on the GitHub Free org plan).
 
 ### Auto-Merge Rules
 
-**Safe to auto-merge:**
+**Auto-merged (after required checks pass):**
 
-- ✅ Patch updates (1.2.3 → 1.2.4)
-- ✅ Minor updates for dev dependencies
-- ✅ Security updates (after CI passes)
+- ✅ Patch updates (1.2.3 → 1.2.4), including security updates
+- ✅ Minor updates (1.2.3 → 1.3.0)
 
-**Requires manual review:**
+**Stays open for manual review:**
 
 - ⚠️ Major version updates (breaking changes)
-- ⚠️ Updates to core dependencies (Next.js, React)
-- ⚠️ Updates that fail CI checks
+- ⚠️ Anything whose required checks fail (auto-merge stays armed; fix or close)
+
+**Known caveat:** the merge is performed on behalf of `github-actions[bot]`,
+so `on: push` workflows do not run for these merge commits (GitHub
+actions-can't-trigger-actions rule). This is harmless here: Vercel deploys via
+its Git integration (webhook, unaffected), and `auto-calver.yml` already
+ignores dependency-only pushes via `paths-ignore`.
 
 ---
 
@@ -401,6 +414,6 @@ git push
 
 ---
 
-**Last Updated:** November 11, 2025  
+**Last Updated:** June 12, 2026 (auto-merge went live org-wide: rulesets + native auto-merge + shared reusable workflow)  
 **Status:** Active and monitoring  
-**Next Review:** December 9, 2025 (Monthly review)
+**Next Review:** July 2026 (verify auto-merge success rate across the org)
