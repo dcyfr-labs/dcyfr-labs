@@ -19,11 +19,28 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'chore(release)') && !contains(github.event.head_commit.message, '[skip-version]')"
 
     steps:
+      - name: Mint GitHub App token
+        id: app-token
+        # The "main protection" ruleset requires status checks on main, which
+        # blocks direct pushes from GITHUB_TOKEN (github-actions is not a
+        # bypass actor). The dcyfr-labs-release-bot App is the sanctioned
+        # bypass path, so version-bump pushes must authenticate as the App
+        # (same pattern as dcyfr-ai's release.yml). Degrade-safe: if the App
+        # isn't installed on this repo or secrets are missing, mint fails
+        # non-fatally and the push step fails loudly on GITHUB_TOKEN instead
+        # of silently bypassing protection.
+        if: ${{ vars.RELEASE_APP_ID != '' }}
+        continue-on-error: true
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for changelog generation
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

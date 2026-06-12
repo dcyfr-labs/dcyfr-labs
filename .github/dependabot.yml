@@ -1,10 +1,12 @@
 # Dependabot Configuration
 # Automated dependency updates and security alerts
 # Docs: https://docs.github.com/en/code-security/dependabot
-# Auto-merge: .github/workflows/dependabot-auto-merge.yml
-# 
-# IMPORTANT: Repository settings must enable auto-merge:
-# Settings → Pull requests → Allow auto-merge ✓
+# Auto-merge: .github/workflows/dependabot-auto-merge.yml (live since 2026-06-12)
+#   - "Allow auto-merge" repo setting: enabled
+#   - "main protection" ruleset requires: Code Quality, Unit & Integration
+#     Tests, Bundle Size Check, E2E Tests (native auto-merge gates on these)
+#   - patch/minor bumps merge hands-free; majors stay open for manual review
+#   - ops doc: docs/operations/dependabot-setup.md
 
 version: 2
 
