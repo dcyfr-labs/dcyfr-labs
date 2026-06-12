@@ -1,3 +1,31 @@
+## [2026.6.12] - 2026-06-12
+
+### Added
+
+- **home** - real-detail 4K crystal hero (AI upscale) (#708)
+- **home** - full-bleed brand hero image on the landing page (#695)
+
+### Changed
+
+- **ci** - bump codecov/codecov-action from 6 to 7 (#699)
+- chore(deps-dev)(deps-dev): bump the typescript-stack group across 1 directory with 2 updates (#701)
+- chore(deps)(deps): bump the ui-framework group across 1 directory with 10 updates (#702)
+- chore(deps)(deps): bump shiki (#703)
+- chore(deps)(deps): bump @anthropic-ai/sdk from 0.100.1 to 0.104.1 (#706)
+- chore(deps)(deps): bump fuse.js from 7.4.1 to 7.4.2 (#707)
+- chore(deps-dev)(deps-dev): bump the dev-tools group across 1 directory with 10 updates (#711)
+- chore(deps)(deps): bump @grpc/grpc-js from 1.14.3 to 1.14.4 (#712)
+
+### Fixed
+
+- **ci** - make the Test workflow a reliable green gate (#709)
+- **home** - re-encode homepage hero from 6MB master (q90, was 169KB) (#698)
+- **images** - bump AVIF quality to 95 to stop dark-gradient smearing (#697)
+
+---
+
+**Full Changelog**: [2026.6.11...2026.6.12](https://github.com/dcyfr-labs/dcyfr-labs/compare/v2026.6.11...v2026.6.12)
+
 ## [2026.6.11] - 2026-06-11
 
 ### Added
